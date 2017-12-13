@@ -8,9 +8,11 @@ I recently (dec 2017) decided I wanted to opt out from Google services as much a
 ### Details
 
 Main calendar view:
+
 ![Main calendar view](doc/sample_01.png)
 
 Create new task view:
+
 ![Create new task view](doc/sample_02.png)
 
 Built with Firefox, intended to work also on Chrome and Brave, should work also on other recent browsers, but I won't ever add support for Internet Explorer.
