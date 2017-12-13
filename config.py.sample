@@ -1,0 +1,6 @@
+
+DEBUG = True
+DATA_FOLTER = "data"
+BASE_URL = "http://127.0.0.1:5000"
+MIN_YEAR = 2017
+MAX_YEAR = 2100

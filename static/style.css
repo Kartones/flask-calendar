@@ -1,0 +1,211 @@
+body {
+    font:1em/1.4 Verdana, Arial, Helvetica, sans-serif;
+    color: #222;
+    background-color: #FCFCFC;
+}
+
+li {
+    list-style: none;
+}
+
+.header {
+    display: inline;
+}
+
+.header .current-date {
+    color: #444;
+    display: inline;
+    font-weight: 700;
+    font-size: 1.75em;
+    padding-left: 6px;
+    padding-right: 6px;
+    min-width: 25%;
+}
+
+.header .back-to-current {
+    display: inline;
+    color: #444;
+    font-size: 1em;
+    font-weight: 700;
+}
+
+.header .back-to-current a {
+    color: #444;
+    text-decoration: underline;
+}
+
+.header a {
+    text-decoration: none;
+}
+
+.button, .button a {
+    font-size: 1.25em;
+    font-weight: 700;
+    padding: 3px 9px 3px 9px;
+    margin-left: 1px;
+    margin-right: 1px;
+    border-radius: 50%;
+    text-decoration: none;
+}
+
+.form-button {
+    font-size: 1.25em;
+    font-weight: 700;
+    padding: 3px 9px 3px 9px;
+    margin-top: 9px;
+    margin-right: 6px;
+    border: 1px solid #777777;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.smaller {
+    padding: 0px 4px 2px 4px;
+    font-size: 95%;
+}
+
+.new-task {
+    color: #F7F7F7;
+    background-color: #53A93F;
+}
+
+.change-date {
+    color: #444;
+    background-color: #DDD;
+}
+
+.toggle-past-events {
+    color: #444;
+    background-color: #DDD;
+    border-radius: 6px;
+    float: right;
+    font-size: 90%;
+}
+
+.remove-task {
+    color: #F7F7F7;
+    background-color: #DA4739;
+    margin-right: 3px;
+    float: right;
+}
+
+.recurrent-task {
+    color: #F7F7F7;
+    background-color: #2E64E4;
+    margin-right: 3px;
+    float: right;
+}
+
+.calendar-header {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: row wrap;
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+  min-width: 400px;
+}
+
+.weekday-header {
+  background-color: #F0F0F0;
+  color: #666;
+  padding: 1px;
+  margin: 1px;
+  list-style:none;
+  flex-grow: 1;
+  flex-basis: 12%;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.calendar {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: row wrap;
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+  min-width: 400px;
+}
+
+.day {
+  background-color: #F7F7F7;
+  padding: 3px;
+  margin: 1px;
+  height: 120px;
+  margin-top: 6px;
+  list-style:none;
+  flex-grow: 1;
+  flex-basis: 13.5%;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.othermonth {
+  background-color: #F5F5F5;
+}
+
+span.daynumber {
+    font-weight: 400;
+    color: #666;
+    padding: 3px;
+}
+
+span.daynumber-current {
+    font-weight: 700;
+    color: #F7F7F7;
+    background-color: #53A93F;
+    padding: 3px;
+    border-radius: 50%;
+}
+
+.othermonth span.daynumber {
+    color: #BBB;
+}
+
+ul.tasks {
+    font-weight: 300;
+    font-size: 70%;
+    margin: 1px;
+    padding: 0;
+}
+
+ul.tasks li {
+    background-color: #444;
+    color: #FEFEFE;
+    margin-bottom: 1px;
+    padding: 0 4px;
+    cursor: pointer;
+}
+
+ul.tasks li a {
+    color: #F0F0F0;
+
+}
+
+.accordion-hidden {
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+}
+
+.accordion-visible {
+    border-top: 1px dashed #CCC;
+    margin: 0;
+    padding: 0 0 3px 0;
+}
+
+
+.task-details-form input {
+}
+
+.hidden {
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+}
+
+.task-details-form label {
+    font-weight: 700;
+    margin-top: 6px;
+}

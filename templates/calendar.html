@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for("static", filename="favicon.ico") }}">
+</head>
+<body>
+
+    <div class="header">
+        <a class="button new-task" href="/{{ calendar_id }}/{{ year }}/{{ month}}/new_task" title="New task">+</a>
+        <a class="button change-date" href="{{ previous_month_link }}" title="Previous month">&lt;</a>
+        <a class="button change-date" href="{{ next_month_link }}" title="Next month">&gt;</a>
+        <div class="current-date">
+            {{ month_name }} {{ year }}
+        </div>
+        {% if month != current_month %}
+            <div class="back-to-current">
+                ( <a href="/{{ calendar_id }}/">back to current</a> )
+            </div>
+        {% endif %}
+        <a id="toggle-past-events" class="button toggle-past-events" href="" onclick="ToggleViewPastTasks();" title="Toggle viewing past events">View Past</a>
+    </div>
+
+    <ul class="calendar-header">
+        <li class="weekday-header">Mon</li>
+        <li class="weekday-header">Tue</li>
+        <li class="weekday-header">Wed</li>
+        <li class="weekday-header">Thu</li>
+        <li class="weekday-header">Fri</li>
+        <li class="weekday-header">Sat</li>
+        <li class="weekday-header">Sun</li>
+    </ul>
+
+    <ul class="calendar" id="calendar">
+        {% for day in month_days %}
+            {% if day.month != month %}
+                <li class="day othermonth"><span class="daynumber">{{ day.day }}</span></li>
+            {% else %}
+                <li class="day">
+                    {% if day.day == current_day and day.month == current_month and day.year == current_year %}
+                         <span class="daynumber-current">
+                    {% else %}
+                         <span class="daynumber">
+                    {% endif %}
+                   {{ day.day }}</span>
+                   {% if day.day|string in tasks %}
+                        <ul class="tasks">
+                            {% for task in tasks[day.day|string]|sort(attribute="due_time") %}
+                                <li style="background-color:{{ task["color"] }}" class="task">
+                                    {% if not task["is_all_day"] %}
+                                        {{ task["due_time"] }}
+                                    {% endif %}
+                                    {{ task["title"] }}
+                                    <p class="accordion-hidden">
+                                        {{ task["details"]|safe }}
+                                         <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"
+                                            data-month="{{ day.month }}"
+                                            data-day="{{ day.day }}"
+                                            class="button smaller remove-task"
+                                            title="Remove task">x</a>
+                                        {% if "repetition_type" in task %}
+                                        <span class="button smaller recurrent-task" title="Recurent task">R</span>
+                                        {% endif %}
+                                    </p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                   {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+<script type="text/javascript">
+    function ToggleDetails(target) {
+        target.className = target.className === "accordion-hidden" ? "accordion-visible" : "accordion-hidden";
+    };
+
+    function DeleteTask(year, month, day, id) {
+        if (confirm("Remove task?") == true) {
+            fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/",
+                  {
+                    method: "delete"
+                  })
+                .then(response => {
+                    if (response.status == 200) location.reload();
+                });
+        }
+    };
+
+    function readViewPastTasksSetting() {
+        var targetName = "ViewPastTasks",
+            allCookies = document.cookie.split(';');
+        for(var i=0; i < allCookies.length; i++) {
+            var cookie = allCookies[i];
+            if (cookie.indexOf(targetName) > -1) {
+                return cookie.substring(targetName.length + 1, cookie.length) === "1";
+            }
+        }
+        return true;
+    }
+
+    function ToggleViewPastTasks() {
+        var expirationDate = new Date(),
+            currentSetting = readViewPastTasksSetting();
+
+        expirationDate.setTime(expirationDate.getTime() + 31536000000);
+        document.cookie = "ViewPastTasks=" + (currentSetting ? "0" : "1") +
+                          "; expires=" + expirationDate.toUTCString() + "; path=/";
+        location.reload();
+    }
+
+    document.getElementById("calendar").onclick = function(eventData) {
+        if (eventData.target.nodeName === "LI" && eventData.target.className === "task") {
+            ToggleDetails(eventData.target.children[0]);
+            return false;
+        }
+        if (eventData.target.nodeName === "P" && (eventData.target.className === "accordion-hidden" ||
+                                        eventData.target.className === "accordion-visible")) {
+            ToggleDetails(eventData.target);
+            return false;
+        }
+        if (eventData.target.nodeName === "A" && eventData.target.className.indexOf("remove-task") > -1) {
+            DeleteTask(eventData.target.getAttribute("data-year"), eventData.target.getAttribute("data-month"),
+                       eventData.target.getAttribute("data-day"), eventData.target.getAttribute("data-id"));
+        }
+        return;
+    };
+</script>
+</body>
+</html>

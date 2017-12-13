@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>New Task</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for("static", filename="favicon.ico") }}">
+</head>
+<body>
+
+    <form autocomplete="off" method="POST" action="/{{ calendar_id }}/new_task">
+    <div id="task-details-form" class="task-details-form">
+
+        <label for="text">Title</label>
+        <input type="text" autocomplete="off" tabindex="0" placeholder="Title" value="" id="title" name="title" minlength="2" required />
+        <br/>
+
+        <label for="date_picker">Date</label>
+        <input id="date_picker" type="date">
+        <input type="hidden" id="date" name="date" />
+        <br/>
+
+        <label for="is_all_day">All day event</label>
+        <input type="checkbox" id="is_all_day" name="is_all_day" value="1" checked="checked" />
+        <br/>
+
+        <div id="due_time_block" class="hidden">
+            <label for="due_time">Due time</label>
+            <input type="time" id="due_time" name="due_time" value="00:00" />
+        </div>
+        <br/>
+
+        <label for="repeats">Recurrent</label>
+        <input type="checkbox" id="repeats" name="repeats" value="1" />
+        <div id="repetition_block" class="hidden">
+            <input type="radio" id="type_weekly" name="repetition_type" value="w">
+            <label for="type_weekly">Occurs Weekly</label>
+            <input type="radio" id="type_monthly" name="repetition_type" value="m">
+            <label for="type_monthly">Occurs Monthly</label>
+            <br/>
+
+            <input type="radio" id="subtype_weekly" name="repetition_subtype" value="w">
+            <label for="subtype_weekly">Week day (0: monday → 6: sunday)</label>
+            <input type="radio" id="subtype_monthly" name="repetition_subtype" value="m">
+            <label for="subtype_monthly">Month day</label>
+            <br/>
+
+            <label for="repetition_value">Value</label>
+            <input type="number" min="0" max="31" id="repetition_value" name="repetition_value" value="0" />
+        </div>
+        <br/>
+
+        <label for="details">Details</label>
+        <textarea id="details" name="details" placeholder="Details" autocomplete="off" value="" cols="40" rows="5"></textarea>
+        <br/>
+
+        <label for="color">Color</label>
+        <input type="hidden" value="#53A93F" id="color" name="color" />
+        <input type="color" value="#53A93F" id="color_custom" />
+        <input class="form-button color" style="color: #EB5A46" data-color="#EB5A46" type="button" value="Red" />
+        <input class="form-button color" style="color: #53A93F" data-color="#53A93F" type="button" value="Green" />
+        <input class="form-button color" style="color: #0079BF" data-color="#0079BF" type="button" value="Blue" />
+        <input class="form-button color" style="color: #D38D51" data-color="#D38D51" type="button" value="Brown" />
+        <input class="form-button color" style="color: #C377E0" data-color="#C377E0" type="button" value="Purple" />
+        <input class="form-button color" style="color: #FF80CE" data-color="#FF80CE" type="button" value="Pink" />
+        <input class="form-button color" style="color: #E9D160" data-color="#E9D160" type="button" value="Yellow" />
+        <input class="form-button color" style="color: #4D4D4D" data-color="#4D4D4D" type="button" value="Grey" />
+        <br/>
+
+        <input class="form-button new-task" type="submit" value="Save">
+        <input class="form-button" type="button" value="Cancel" onclick="window.history.go(-1); return false;" />
+
+    </div>
+    </form>
+
+<script type="text/javascript">
+    document.getElementById("is_all_day").onclick = function(eventData) {
+        if (eventData.target.checked == true) {
+            document.getElementById("due_time_block").className = "hidden";
+            document.getElementById("due_time").value ="00:00";
+        } else {
+            document.getElementById("due_time_block").className = "";
+        }
+    }
+
+    document.getElementById("repeats").onclick = function(eventData) {
+        if (eventData.target.checked == true) {
+            document.getElementById("type_weekly").checked = true;
+            document.getElementById("subtype_weekly").checked = true;
+            document.getElementById("repetition_value").value = 0;
+            document.getElementById("repetition_block").className = "";
+        } else {
+            document.getElementById("repetition_block").className = "hidden";
+            // To uncheck everything
+            document.getElementById("type_weekly").checked = true;
+            document.getElementById("type_weekly").checked = false;
+            document.getElementById("subtype_weekly").checked = true;
+            document.getElementById("subtype_weekly").checked = false;
+        }
+    }
+
+    document.getElementById("date_picker").onchange = function(eventData) {
+        document.getElementById("date").value = eventData.target.value;
+    }
+
+    document.getElementById("color_custom").onchange = function(eventData) {
+        document.getElementById("color").value = eventData.target.value;
+    }
+    document.getElementById("task-details-form").onclick = function(eventData) {
+        if (eventData.target.nodeName === "INPUT" && eventData.target.className === "form-button color") {
+            document.getElementById("color").value = eventData.target.getAttribute("data-color");
+            document.getElementById("color_custom").value = eventData.target.getAttribute("data-color");
+            return false;
+        } else {
+            return;
+        }
+    };
+</script>
+</body>
+</html>
