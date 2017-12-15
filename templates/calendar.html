@@ -129,15 +129,17 @@
         return;
     };
 
-    (function changeFavicon(daynumber) {
-        var link = document.createElement("link"),
-            url = "{{ url_for("static", filename="favicon.ico") }}";
-        link.id = "favicon";
-        link.rel = "shortcut icon";
-        link.href = url.substr(0, url.indexOf("favicon.ico")) + "favicon_" + daynumber + ".png";
-        document.head.removeChild(document.getElementById("favicon"));
-        document.head.appendChild(link);
-    })({{ current_day }});
+    document.addEventListener('DOMContentLoaded', function() {
+        (function changeFavicon(daynumber) {
+            var link = document.createElement("link"),
+                url = "{{ url_for("static", filename="favicon.ico") }}";
+            link.id = "favicon";
+            link.rel = "shortcut icon";
+            link.href = url.substr(0, url.indexOf("favicon.ico")) + "favicon_" + daynumber + ".png";
+            document.head.removeChild(document.getElementById("favicon"));
+            document.head.appendChild(link);
+        })({{ current_day }});
+    });
 </script>
 </body>
 </html>

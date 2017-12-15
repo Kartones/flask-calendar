@@ -40,6 +40,8 @@ Overall, lessons learned:
 
 ## Running
 
+- copy `config.py.sample` to `config.py` and fill in
+
 ```
 python3 app.py
 ```
