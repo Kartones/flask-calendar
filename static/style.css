@@ -132,7 +132,7 @@ li {
   background-color: #F7F7F7;
   padding: 3px;
   margin: 1px;
-  height: 120px;
+  min-height: 120px;
   margin-top: 6px;
   list-style:none;
   flex-grow: 1;
