@@ -52,10 +52,8 @@ This are initially the only features I plan to build:
 
 - edit existing event
 - error messages
-- requirements file
 - mobile resolution support: if width <= 640 hide delete button, smaller fonts, etc.
 - vanilla js drag & drop to change day of event (only inside same month)
-- preselect current month and year upon entering new task creation
 - a decent weekday and month day choosers when recurrency is selected
 - Option to remove individual repetitions? (idea: repetition-exclude list with year-month-day as keys and ids as array values, then when saving calendar do a cleaning sweep of all past ones)
 - Yearly repetition? (would need month and day)

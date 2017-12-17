@@ -16,8 +16,8 @@
         <br/>
 
         <label for="date_picker">Date</label>
-        <input id="date_picker" type="date">
-        <input type="hidden" id="date" name="date" />
+        <input id="date_picker" type="date" value="{{ year }}-{{ "%02d" % month }}-{{ "%02d" % current_day }}">
+        <input type="hidden" id="date" name="date" value="{{ year }}-{{ "%02d" % month }}-{{ "%02d" % current_day }}" />
         <br/>
 
         <label for="is_all_day">All day event</label>
@@ -55,7 +55,6 @@
         <br/>
 
         <label for="color">Color</label>
-        <input type="hidden" value="#53A93F" id="color" name="color" />
         <input type="color" value="#53A93F" id="color_custom" />
         <input class="form-button color" style="color: #EB5A46" data-color="#EB5A46" type="button" value="Red" />
         <input class="form-button color" style="color: #53A93F" data-color="#53A93F" type="button" value="Green" />
@@ -65,6 +64,7 @@
         <input class="form-button color" style="color: #FF80CE" data-color="#FF80CE" type="button" value="Pink" />
         <input class="form-button color" style="color: #E9D160" data-color="#E9D160" type="button" value="Yellow" />
         <input class="form-button color" style="color: #4D4D4D" data-color="#4D4D4D" type="button" value="Grey" />
+        <input type="hidden" value="#53A93F" id="color" name="color" />
         <br/>
 
         <input class="form-button new-task" type="submit" value="Save">
