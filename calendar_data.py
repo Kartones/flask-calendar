@@ -86,13 +86,17 @@ class CalendarData:
     def update_task_day(self, calendar_id, year_str, month_str, day_str, task_id, new_day_str):
         data = self.load_calendar(calendar_id)
 
+        task_to_update = None
         for index, task in enumerate(data["tasks"]["normal"][year_str][month_str][day_str]):
             if task["id"] == task_id:
-                task = data["tasks"]["normal"][year_str][month_str][day_str].pop(index)
+                task_to_update = data["tasks"]["normal"][year_str][month_str][day_str].pop(index)
+
+        if task_to_update is None:
+            return
 
         if new_day_str not in data["tasks"]["normal"][year_str][month_str]:
             data["tasks"]["normal"][year_str][month_str][new_day_str] = []
-        data["tasks"]["normal"][year_str][month_str][new_day_str].append(task)
+        data["tasks"]["normal"][year_str][month_str][new_day_str].append(task_to_update)
 
         self.save_calendar(contents=data, filename=calendar_id)
 

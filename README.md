@@ -53,6 +53,7 @@ python3 app.py
 
 This are initially the only features I plan to build:
 
+- extract JS to separate file
 - edit existing event
 - error messages
 - disable drag & drop on mobile
