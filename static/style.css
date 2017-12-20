@@ -16,7 +16,7 @@ li {
     color: #444;
     display: inline;
     font-weight: 700;
-    font-size: 1.75em;
+    font-size: 1.5em;
     padding-left: 6px;
     padding-right: 6px;
     min-width: 25%;
@@ -25,7 +25,7 @@ li {
 .header .back-to-current {
     display: inline;
     color: #444;
-    font-size: 1em;
+    font-size: 1.25em;
     font-weight: 700;
 }
 
@@ -39,12 +39,12 @@ li {
 }
 
 .button, .button a {
-    font-size: 1.25em;
+    font-size: 1.3em;
     font-weight: 700;
-    padding: 1px 6px 3px 6px;
+    padding: 3px 6px 3px 6px;
     margin-left: 1px;
     margin-right: 1px;
-    border-radius: 50%;
+    border-radius: 4px;
     text-decoration: none;
 }
 
@@ -77,9 +77,8 @@ li {
 .toggle-past-events {
     color: #444;
     background-color: #DDD;
-    border-radius: 6px;
+    border-radius: 4px;
     float: right;
-    font-size: 90%;
 }
 
 .remove-task {
@@ -98,7 +97,8 @@ li {
 
 .calendar-header {
   padding: 0;
-  margin: 0;
+  margin-top: 3px;
+  margin-bottom: 0;
   display: flex;
   flex-flow: row wrap;
   -webkit-flex-flow: row wrap;
@@ -208,4 +208,30 @@ ul.tasks li a {
 .task-details-form label {
     font-weight: 700;
     margin-top: 6px;
+}
+
+@media screen and (max-width:600px) {
+
+.header .current-date {
+    font-size: 1.25em;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.header .back-to-current {
+    font-size: 1em;
+}
+
+.toggle-past-events {
+   font-size: 1em;
+}
+
+.smaller {
+    visibility: hidden;
+}
+
+.button, .button a {
+    font-size: 1.5em;
+}
+
 }

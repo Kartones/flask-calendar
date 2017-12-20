@@ -59,4 +59,5 @@ This are initially the only features I plan to build:
 - Yearly repetition? (would need month and day)
 - Users (should be able to access calendars), authentication and authorization
 - Multi-day tasks?
+- better favicon (lighter colors so letters can be read better)
 - Type hints + mypy linting
