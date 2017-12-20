@@ -32,6 +32,9 @@ Overall, lessons learned:
 - I suck at CSS so I'll stick to Bootstrap/Foundation. This time what I did works but I've spent more time fighting with CSS than building code.
 - I'll give a try next time to turbolinks, to trully try to avoid javascript for tiny projects.
 
+### Updates / New Features
+
+- Added support for a basic drag & drop (to change day inside same month of a non-recurring task). Intended only for desktop, probably rough on the edges but working.
 
 ## Requirements
 
@@ -52,8 +55,7 @@ This are initially the only features I plan to build:
 
 - edit existing event
 - error messages
-- mobile resolution support: if width <= 640 hide delete button, smaller fonts, etc.
-- vanilla js drag & drop to change day of event (only inside same month)
+- disable drag & drop on mobile
 - a decent weekday and month day choosers when recurrency is selected
 - Option to remove individual repetitions? (idea: repetition-exclude list with year-month-day as keys and ids as array values, then when saving calendar do a cleaning sweep of all past ones)
 - Yearly repetition? (would need month and day)

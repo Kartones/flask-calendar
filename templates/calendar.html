@@ -38,17 +38,20 @@
             {% if day.month != month %}
                 <li class="day othermonth"><span class="daynumber">{{ day.day }}</span></li>
             {% else %}
-                <li class="day">
+                <li class="day" data-day="{{ day.day }}">
                     {% if day.day == current_day and day.month == current_month and day.year == current_year %}
                          <span class="daynumber-current">
                     {% else %}
                          <span class="daynumber">
                     {% endif %}
                    {{ day.day }}</span>
-                   {% if day.day|string in tasks %}
-                        <ul class="tasks">
+                    <ul class="tasks">
+                       {% if day.day|string in tasks %}
                             {% for task in tasks[day.day|string]|sort(attribute="due_time") %}
-                                <li style="background-color:{{ task["color"] }}" class="task">
+                                <li style="background-color:{{ task["color"] }}" class="task" data-day="{{ day.day }}"
+                                    data-id="{{ task["id"] }}"
+                                    {% if "repetition_type" in task %}data-recurrent="1"{% endif %}>
+
                                     {% if not task["is_all_day"] %}
                                         {{ task["due_time"] }}
                                     {% endif %}
@@ -66,14 +69,19 @@
                                     </p>
                                 </li>
                             {% endfor %}
-                        </ul>
-                   {% endif %}
+                       {% endif %}
+                    </ul>
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
 
 <script type="text/javascript">
+    var moving = false,
+        capturedMovementOffset = false,
+        movingElement,
+        movingTimeout;
+
     function ToggleDetails(target) {
         target.className = target.className === "accordion-hidden" ? "accordion-visible" : "accordion-hidden";
     };
@@ -81,12 +89,12 @@
     function DeleteTask(year, month, day, id) {
         if (confirm("Remove task?") == true) {
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/",
-                  {
-                    method: "delete"
-                  })
-                .then(response => {
-                    if (response.status == 200) location.reload();
-                });
+              {
+                method: "delete"
+              })
+            .then(response => {
+                if (response.status == 200) location.reload();
+            });
         }
     };
 
@@ -100,7 +108,7 @@
             }
         }
         return true;
-    }
+    };
 
     function ToggleViewPastTasks() {
         var expirationDate = new Date(),
@@ -110,17 +118,104 @@
         document.cookie = "ViewPastTasks=" + (currentSetting ? "0" : "1") +
                           "; expires=" + expirationDate.toUTCString() + "; path=/";
         location.reload();
-    }
+    };
+
+    document.getElementById("calendar").onmousedown = function(eventData) {
+        if (eventData.target.nodeName === "LI" && eventData.target.className === "task" &&
+            !eventData.target.hasAttribute("data-recurrent")) {
+
+            moving = true;
+            movingElement = eventData.target;
+            movingElement.onmouseup = DragEnd;
+            movingElement.onmousemove = Dragging;
+            movingElement.style.width = movingElement.clientWidth - 12 + "px";
+            movingElement.style.position = "absolute";
+        }
+        return;
+    };
+
+    function DragEnd() {
+        moving = false;
+        capturedMovementOffset = false;
+        movingElement.onmouseup = null;
+        movingElement.onmousemove = null;
+
+        if (movingElement === null) {
+            return;
+        }
+
+        Array.from(document.getElementsByClassName("day")).forEach(function(element) {
+            if (element.className === "day") {
+                var movingElementX = parseInt(movingElement.style.left.slice(0, -2)) + movingElement.clientWidth / 2;
+                var movingElementY = parseInt(movingElement.style.top.slice(0, -2)) + movingElement.clientHeight / 2;
+                if (element.offsetLeft <= movingElementX &&
+                    movingElementX <= (element.offsetLeft + element.clientWidth) &&
+                    element.offsetTop <= movingElementY &&
+                    movingElementY <= (element.offsetTop + element.clientHeight)) {
+
+                    if (movingElement.getAttribute("data-day") !== element.getAttribute("data-day")) {
+                        var old_day = movingElement.getAttribute("data-day");
+                        var new_day = element.getAttribute("data-day");
+                        element.children[1].appendChild(movingElement);
+                        movingElement.setAttribute("data-day", new_day);
+                        movingElement.children[0].children[0].setAttribute("data-day", new_day);
+                        fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/" + old_day + "/" +
+                              movingElement.getAttribute("data-id") + "/",
+                          {
+                            method: "put",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: new_day
+                          })
+                        .then(response => {
+                            if (response.status == 200) location.reload();
+                        });
+
+                    }
+                }
+            }
+        });
+        resetMovingTimeout();
+        movingElement.style.position = null;
+        movingElement.style.width = null;
+        movingElement.style.left = null;
+        movingElement.style.top = null;
+        movingElement = null;
+    };
+
+    function Dragging(e) {
+        if (moving) {
+            if (!capturedMovementOffset) {
+                x = e.offsetX;
+                y = e.offsetY;
+                capturedMovementOffset = true;
+            }
+            posx = e.pageX - x;
+            posy = e.pageY - y;
+            this.style.left = posx + 'px';
+            this.style.top = posy + 'px';
+            if (movingTimeout) {
+                resetMovingTimeout();
+            }
+            movingTimeout = window.setTimeout(DragEnd, 1500);
+        }
+    };
+
+    function resetMovingTimeout() {
+        window.clearTimeout(movingTimeout);
+        movingTimeout = undefined;
+    };
 
     document.getElementById("calendar").onclick = function(eventData) {
         if (eventData.target.nodeName === "LI" && eventData.target.className === "task") {
             ToggleDetails(eventData.target.children[0]);
-            return false;
+            return;
         }
         if (eventData.target.nodeName === "P" && (eventData.target.className === "accordion-hidden" ||
                                         eventData.target.className === "accordion-visible")) {
             ToggleDetails(eventData.target);
-            return false;
+            return;
         }
         if (eventData.target.nodeName === "A" && eventData.target.className.indexOf("remove-task") > -1) {
             DeleteTask(eventData.target.getAttribute("data-year"), eventData.target.getAttribute("data-month"),

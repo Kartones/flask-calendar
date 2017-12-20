@@ -146,5 +146,17 @@ def delete_task(calendar_id, year, month, day, task_id):
     return jsonify({})
 
 
+@app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["PUT"])
+def update_task_day(calendar_id, year, month, day, task_id):
+    new_day = request.data.decode("utf-8")
+    CalendarData(config.DATA_FOLTER).update_task_day(calendar_id=calendar_id,
+                                                     year_str=year,
+                                                     month_str=month,
+                                                     day_str=day,
+                                                     task_id=int(task_id),
+                                                     new_day_str=new_day)
+    return jsonify({})
+
+
 if __name__ == "__main__":
     app.run(debug=config.DEBUG)

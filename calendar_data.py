@@ -83,6 +83,19 @@ class CalendarData:
 
         self.save_calendar(contents=data, filename=calendar_id)
 
+    def update_task_day(self, calendar_id, year_str, month_str, day_str, task_id, new_day_str):
+        data = self.load_calendar(calendar_id)
+
+        for index, task in enumerate(data["tasks"]["normal"][year_str][month_str][day_str]):
+            if task["id"] == task_id:
+                task = data["tasks"]["normal"][year_str][month_str][day_str].pop(index)
+
+        if new_day_str not in data["tasks"]["normal"][year_str][month_str]:
+            data["tasks"]["normal"][year_str][month_str][new_day_str] = []
+        data["tasks"]["normal"][year_str][month_str][new_day_str].append(task)
+
+        self.save_calendar(contents=data, filename=calendar_id)
+
     def create_task(self, calendar_id, year, month, day, title, is_all_day, due_time, details, color, has_repetition,
                     repetition_type, repetition_subtype, repetition_value):
         details = details if len(details) > 0 else "&nbsp;"
