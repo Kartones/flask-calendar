@@ -18,10 +18,6 @@ class CalendarData:
             contents = json.load(file)
         return contents
 
-    def save_calendar(self, contents, filename):
-        with open(os.path.join(".", self.data_folder, "{}.json".format(filename)), "w+") as file:
-            json.dump(contents, file)
-
     def tasks_from_calendar(self, year, month, data=None, calendar_id=None):
         if data is None and calendar_id is None:
             raise ValueError("Need to provide either calendar_id or loaded data")
@@ -81,7 +77,7 @@ class CalendarData:
                 if task["id"] == task_id:
                     data["tasks"]["repetition"].pop(index)
 
-        self.save_calendar(contents=data, filename=calendar_id)
+        self._save_calendar(contents=data, filename=calendar_id)
 
     def update_task_day(self, calendar_id, year_str, month_str, day_str, task_id, new_day_str):
         data = self.load_calendar(calendar_id)
@@ -98,7 +94,7 @@ class CalendarData:
             data["tasks"]["normal"][year_str][month_str][new_day_str] = []
         data["tasks"]["normal"][year_str][month_str][new_day_str].append(task_to_update)
 
-        self.save_calendar(contents=data, filename=calendar_id)
+        self._save_calendar(contents=data, filename=calendar_id)
 
     def create_task(self, calendar_id, year, month, day, title, is_all_day, due_time, details, color, has_repetition,
                     repetition_type, repetition_subtype, repetition_value):
@@ -134,5 +130,26 @@ class CalendarData:
                 data["tasks"]["normal"][year_str][month_str][day_str] = []
             data["tasks"]["normal"][year_str][month_str][day_str].append(new_task)
 
-        self.save_calendar(contents=data, filename=calendar_id)
+        self._save_calendar(contents=data, filename=calendar_id)
         return True
+
+    def _save_calendar(self, contents, filename):
+        self._clear_empty_entries(data=contents)
+        with open(os.path.join(".", self.data_folder, "{}.json".format(filename)), "w+") as file:
+            json.dump(contents, file)
+
+    @staticmethod
+    def _clear_empty_entries(data):
+        for year in data["tasks"]["normal"]:
+            months_to_delete = []
+            for month in data["tasks"]["normal"][year]:
+                days_to_delete = []
+                for day in data["tasks"]["normal"][year][month]:
+                    if len(data["tasks"]["normal"][year][month][day]) == 0:
+                        days_to_delete.append(day)
+                for day in days_to_delete:
+                    del(data["tasks"]["normal"][year][month][day])
+                if len(data["tasks"]["normal"][year][month]) == 0:
+                    months_to_delete.append(month)
+            for month in months_to_delete:
+                del(data["tasks"]["normal"][year][month])
