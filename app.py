@@ -52,6 +52,8 @@ def main_calendar(calendar_id):
                         tasks[day] = []
 
     repetitive_tasks = calendar_data.repetitive_tasks_from_calendar(
+        year_str=str(year),
+        month_str=str(month),
         month_days=GregorianCalendar.month_days_with_weekday(year=year, month=month),
         data=data)
     for day, day_tasks in repetitive_tasks.items():
@@ -155,6 +157,16 @@ def update_task_day(calendar_id, year, month, day, task_id):
                                                      day_str=day,
                                                      task_id=int(task_id),
                                                      new_day_str=new_day)
+    return jsonify({})
+
+
+@app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/hide/", methods=["POST"])
+def hide_repetition_task_instance(calendar_id, year, month, day, task_id):
+    CalendarData(config.DATA_FOLTER).hide_repetition_task_instance(calendar_id=calendar_id,
+                                                                   year_str=year,
+                                                                   month_str=month,
+                                                                   day_str=day,
+                                                                   task_id_str=task_id)
     return jsonify({})
 
 

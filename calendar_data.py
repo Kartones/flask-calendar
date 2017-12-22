@@ -29,7 +29,7 @@ class CalendarData:
                 tasks = data["tasks"]["normal"][str(year)][str(month)]
         return tasks
 
-    def repetitive_tasks_from_calendar(self, month_days, calendar_id=None, data=None):
+    def repetitive_tasks_from_calendar(self, year_str, month_str, month_days, calendar_id=None, data=None):
         if data is None and calendar_id is None:
             raise ValueError("Need to provide either calendar_id or loaded data")
         if data is None and calendar_id is not None:
@@ -37,11 +37,17 @@ class CalendarData:
         repetitive_tasks = {}
 
         for task in data["tasks"]["repetition"]:
+            id_str = str(task["id"])
             monthly_task_assigned = False
             for week in month_days:
                 for weekday, day in enumerate(week):
                     if day == 0:
                         continue
+                    if id_str in data["tasks"]["hidden_repetition"]:
+                        if (year_str in data["tasks"]["hidden_repetition"][id_str] and
+                                month_str in data["tasks"]["hidden_repetition"][id_str][year_str] and
+                                str(day) in data["tasks"]["hidden_repetition"][id_str][year_str][month_str]):
+                            continue
                     if task["repetition_type"] == self.REPETITION_TYPE_WEEKLY:
                         if task["repetition_value"] == weekday:
                             self.add_task_to_list(repetitive_tasks, day, task)
@@ -76,6 +82,8 @@ class CalendarData:
             for index, task in enumerate(data["tasks"]["repetition"]):
                 if task["id"] == task_id:
                     data["tasks"]["repetition"].pop(index)
+                    if str(task_id) in data["tasks"]["hidden_repetition"]:
+                        del(data["tasks"]["hidden_repetition"][str(task_id)])
 
         self._save_calendar(contents=data, filename=calendar_id)
 
@@ -132,6 +140,19 @@ class CalendarData:
 
         self._save_calendar(contents=data, filename=calendar_id)
         return True
+
+    def hide_repetition_task_instance(self, calendar_id, year_str, month_str, day_str, task_id_str):
+        data = self.load_calendar(calendar_id)
+
+        if task_id_str not in data["tasks"]["hidden_repetition"]:
+            data["tasks"]["hidden_repetition"][task_id_str] = {}
+        if year_str not in data["tasks"]["hidden_repetition"][task_id_str]:
+            data["tasks"]["hidden_repetition"][task_id_str][year_str] = {}
+        if month_str not in data["tasks"]["hidden_repetition"][task_id_str][year_str]:
+            data["tasks"]["hidden_repetition"][task_id_str][year_str][month_str] = {}
+        data["tasks"]["hidden_repetition"][task_id_str][year_str][month_str][day_str] = True
+
+        self._save_calendar(contents=data, filename=calendar_id)
 
     def _save_calendar(self, contents, filename):
         self._clear_empty_entries(data=contents)

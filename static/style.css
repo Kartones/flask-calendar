@@ -88,6 +88,13 @@ li {
     float: right;
 }
 
+.hide-recurrent-task {
+    color: #F7F7F7;
+    background-color: #777;
+    margin-right: 3px;
+    float: right;
+}
+
 .recurrent-task {
     color: #F7F7F7;
     background-color: #2E64E4;
