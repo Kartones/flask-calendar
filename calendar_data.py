@@ -2,6 +2,8 @@ import json
 import os
 import time
 
+from gregorian_calendar import GregorianCalendar
+
 
 class CalendarData:
 
@@ -18,23 +20,63 @@ class CalendarData:
             contents = json.load(file)
         return contents
 
-    def tasks_from_calendar(self, year, month, data=None, calendar_id=None):
+    def tasks_from_calendar(self, year, month, view_past_tasks=True, data=None, calendar_id=None):
         if data is None and calendar_id is None:
             raise ValueError("Need to provide either calendar_id or loaded data")
         if data is None and calendar_id is not None:
             data = self.load_calendar(calendar_id)
+
         tasks = {}
         if str(year) in data["tasks"]["normal"]:
             if str(month) in data["tasks"]["normal"][str(year)]:
                 tasks = data["tasks"]["normal"][str(year)][str(month)]
+
+        if not view_past_tasks:
+            current_day, current_month, current_year = GregorianCalendar.current_date()
+            if year < current_year:
+                tasks = {}
+            elif year == current_year:
+                if month < current_month:
+                    tasks = {}
+                else:
+                    for day in tasks.keys():
+                        if month == current_month and int(day) < current_day:
+                            tasks[day] = []
+
         return tasks
 
-    def repetitive_tasks_from_calendar(self, year_str, month_str, month_days, calendar_id=None, data=None):
+    def add_repetitive_tasks_from_calendar(self, year, month, data, tasks, view_past_tasks=True):
+        current_day, current_month, current_year = GregorianCalendar.current_date()
+
+        repetitive_tasks = self._repetitive_tasks_from_calendar(
+            year=year,
+            month=month,
+            month_days=GregorianCalendar.month_days_with_weekday(year=year, month=month),
+            data=data)
+
+        for day, day_tasks in repetitive_tasks.items():
+            if not view_past_tasks:
+                if year < current_year:
+                    continue
+                if year == current_year:
+                    if month < current_month or (month == current_month and int(day) < current_day):
+                        continue
+            if day not in tasks:
+                tasks[day] = []
+            for task in day_tasks:
+                tasks[day].append(task)
+
+        return tasks
+
+    def _repetitive_tasks_from_calendar(self, year, month, month_days, calendar_id=None, data=None):
         if data is None and calendar_id is None:
             raise ValueError("Need to provide either calendar_id or loaded data")
         if data is None and calendar_id is not None:
             data = self.load_calendar(calendar_id)
+
         repetitive_tasks = {}
+        year_str = str(year)
+        month_str = str(month)
 
         for task in data["tasks"]["repetition"]:
             id_str = str(task["id"])
@@ -43,11 +85,8 @@ class CalendarData:
                 for weekday, day in enumerate(week):
                     if day == 0:
                         continue
-                    if id_str in data["tasks"]["hidden_repetition"]:
-                        if (year_str in data["tasks"]["hidden_repetition"][id_str] and
-                                month_str in data["tasks"]["hidden_repetition"][id_str][year_str] and
-                                str(day) in data["tasks"]["hidden_repetition"][id_str][year_str][month_str]):
-                            continue
+                    if self._is_repetition_hidden(data, id_str, year_str, month_str, str(day)):
+                        continue
                     if task["repetition_type"] == self.REPETITION_TYPE_WEEKLY:
                         if task["repetition_value"] == weekday:
                             self.add_task_to_list(repetitive_tasks, day, task)
@@ -61,6 +100,15 @@ class CalendarData:
                                 self.add_task_to_list(repetitive_tasks, day, task)
 
         return repetitive_tasks
+
+    @staticmethod
+    def _is_repetition_hidden(data, id_str, year_str, month_str, day_str):
+        if id_str in data["tasks"]["hidden_repetition"]:
+            if (year_str in data["tasks"]["hidden_repetition"][id_str] and
+                    month_str in data["tasks"]["hidden_repetition"][id_str][year_str] and
+                    day_str in data["tasks"]["hidden_repetition"][id_str][year_str][month_str]):
+                return True
+        return False
 
     @staticmethod
     def add_task_to_list(tasks, day, new_task):

@@ -38,37 +38,11 @@ def main_calendar(calendar_id):
         data = calendar_data.load_calendar(calendar_id)
     except FileNotFoundError:
         abort(404)
-    tasks = calendar_data.tasks_from_calendar(year=year, month=month, data=data)
 
-    # TODO: move this filter inside tasks_from_calendar()
-    if not view_past_tasks:
-        if year < current_year:
-            tasks = {}
-        elif year == current_year:
-            if month < current_month:
-                tasks = {}
-            else:
-                for day in tasks.keys():
-                    if month == current_month and int(day) < current_day:
-                        tasks[day] = []
+    tasks = calendar_data.tasks_from_calendar(year=year, month=month, view_past_tasks=view_past_tasks, data=data)
 
-    repetitive_tasks = calendar_data.repetitive_tasks_from_calendar(
-        year_str=str(year),
-        month_str=str(month),
-        month_days=GregorianCalendar.month_days_with_weekday(year=year, month=month),
-        data=data)
-    # TODO: extract to method (probably place inside repetitive_tasks_from_calendar() and send it also current tasks)
-    for day, day_tasks in repetitive_tasks.items():
-        if not view_past_tasks:
-            if year < current_year:
-                continue
-            if year == current_year:
-                if month < current_month or (month == current_month and int(day) < current_day):
-                    continue
-        if day not in tasks:
-            tasks[day] = []
-        for task in day_tasks:
-            tasks[day].append(task)
+    tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks,
+                                                             view_past_tasks=view_past_tasks)
 
     return render_template("calendar.html",
                            calendar_id=calendar_id,
