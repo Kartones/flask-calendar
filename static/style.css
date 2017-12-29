@@ -67,6 +67,7 @@ li {
 .new-task {
     color: #F7F7F7;
     background-color: #53A93F;
+    margin-top: 18px;
 }
 
 .change-date {
@@ -217,16 +218,16 @@ ul.tasks li a {
     margin-top: 6px;
 }
 
-@media screen and (max-width:600px) {
+@media screen and (max-width:650px) {
 
 .header .current-date {
-    font-size: 1.25em;
+    font-size: 0.85em;
     padding-left: 3px;
     padding-right: 3px;
 }
 
 .header .back-to-current {
-    font-size: 1em;
+    font-size: 0.60em;
 }
 
 .toggle-past-events {
@@ -238,7 +239,11 @@ ul.tasks li a {
 }
 
 .button, .button a {
-    font-size: 1.5em;
+    font-size: 1.1em;
+}
+
+#toggle-past-events {
+    font-size: 0.75em;
 }
 
 }

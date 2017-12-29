@@ -59,6 +59,7 @@ python3 app.py
 This are initially the only features I plan to build:
 
 - cleanup of past "hidden_repetition" tasks when current date's month > stored month (delete full month)
+- min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
 - edit existing event
 - error messages
 - disable drag & drop on mobile

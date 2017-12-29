@@ -40,6 +40,7 @@ def main_calendar(calendar_id):
         abort(404)
     tasks = calendar_data.tasks_from_calendar(year=year, month=month, data=data)
 
+    # TODO: move this filter inside tasks_from_calendar()
     if not view_past_tasks:
         if year < current_year:
             tasks = {}
@@ -56,6 +57,7 @@ def main_calendar(calendar_id):
         month_str=str(month),
         month_days=GregorianCalendar.month_days_with_weekday(year=year, month=month),
         data=data)
+    # TODO: extract to method (probably place inside repetitive_tasks_from_calendar() and send it also current tasks)
     for day, day_tasks in repetitive_tasks.items():
         if not view_past_tasks:
             if year < current_year:
@@ -85,10 +87,15 @@ def main_calendar(calendar_id):
 
 @app.route("/<calendar_id>/<year>/<month>/new_task")
 def new_task(calendar_id, year, month):
-    current_day, *_ = GregorianCalendar.current_date()
+    current_day, current_month, current_year = GregorianCalendar.current_date()
     year = max(min(int(year), config.MAX_YEAR), config.MIN_YEAR)
     month = max(min(int(month), 12), 1)
     month_names = GregorianCalendar.MONTH_NAMES
+
+    if current_month == month and current_year == year:
+        day = current_day
+    else:
+        day = 1
 
     return render_template("task.html",
                            calendar_id=calendar_id,
@@ -96,7 +103,7 @@ def new_task(calendar_id, year, month):
                            month=month,
                            min_year=config.MIN_YEAR,
                            max_year=config.MAX_YEAR,
-                           current_day=current_day,
+                           day=day,
                            month_names=month_names,
                            base_url=config.BASE_URL)
 
