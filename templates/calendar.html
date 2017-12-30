@@ -71,6 +71,9 @@
                                             class="button smaller hide-recurrent-task"
                                             title="Hide this task ocurrence">H</a>
                                         {% endif %}
+                                         <a href="/{{ calendar_id }}/{{ day.year }}/{{ day.month }}/{{ day.day }}/{{ task["id"] }}{% if "repetition_type" in task %}?repeats=1{% endif %}"
+                                            class="button smaller edit-task"
+                                            title="Edit task">E</a>
                                         {% if "repetition_type" in task %}
                                         <span class="button smaller recurrent-task" title="Recurent task">R</span>
                                         {% endif %}
@@ -161,19 +164,24 @@
                     movingElementY <= (element.offsetTop + element.clientHeight)) {
 
                     if (movingElement.getAttribute("data-day") !== element.getAttribute("data-day")) {
-                        var old_day = movingElement.getAttribute("data-day");
-                        var new_day = element.getAttribute("data-day");
+                        var oldDay = movingElement.getAttribute("data-day");
+                        var newDay = element.getAttribute("data-day");
                         element.children[1].appendChild(movingElement);
-                        movingElement.setAttribute("data-day", new_day);
-                        movingElement.children[0].children[0].setAttribute("data-day", new_day);
-                        fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/" + old_day + "/" +
+                        movingElement.setAttribute("data-day", newDay);
+                        movingElement.children[0].children[0].setAttribute("data-day", newDay);
+                        var editTaskButton = movingElement.children[0].children[movingElement.children[0].children.length - 1];
+                        var url = editTaskButton.href;
+                        var urlFragments = url.split("/");
+                        urlFragments[urlFragments.length - 2] = newDay;
+                        editTaskButton.href = urlFragments.join("/");
+                        fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/" + oldDay + "/" +
                               movingElement.getAttribute("data-id") + "/",
                           {
                             method: "put",
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: new_day
+                            body: newDay
                           });
 
                     }

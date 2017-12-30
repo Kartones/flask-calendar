@@ -71,15 +71,100 @@ def new_task(calendar_id, year, month):
     else:
         day = 1
 
+    task = {
+        "date": CalendarData.date_for_frontend(year=year, month=month, day=day),
+        "is_all_day": True,
+        "repeats": False,
+    }
+
     return render_template("task.html",
                            calendar_id=calendar_id,
                            year=year,
                            month=month,
                            min_year=config.MIN_YEAR,
                            max_year=config.MAX_YEAR,
-                           day=day,
                            month_names=month_names,
-                           base_url=config.BASE_URL)
+                           task=task,
+                           base_url=config.BASE_URL,
+                           editing=False)
+
+
+@app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["GET"])
+def edit_task(calendar_id, year, month, day, task_id):
+    month_names = GregorianCalendar.MONTH_NAMES
+    calendar_data = CalendarData(config.DATA_FOLTER)
+
+    repeats = request.args.get("repeats") == "1"
+
+    try:
+        if repeats:
+            task = calendar_data.repetitive_task_from_calendar(calendar_id=calendar_id, year=year, month=month,
+                                                               task_id=int(task_id))
+        else:
+            task = calendar_data.task_from_calendar(calendar_id=calendar_id, year=year, month=month, day=day,
+                                                    task_id=int(task_id))
+    except (FileNotFoundError, IndexError):
+        abort(404)
+
+    return render_template("task.html",
+                           calendar_id=calendar_id,
+                           year=year,
+                           month=month,
+                           day=day,
+                           min_year=config.MIN_YEAR,
+                           max_year=config.MAX_YEAR,
+                           month_names=month_names,
+                           task=task,
+                           base_url=config.BASE_URL,
+                           editing=True)
+
+
+@app.route("/<calendar_id>/<year>/<month>/<day>/task/<task_id>", methods=["POST"])
+def update_task(calendar_id, year, month, day, task_id):
+    # Logic is same as save + delete, could refactor but can wait until need to change any save/delete logic
+
+    calendar_data = CalendarData(config.DATA_FOLTER)
+
+    # For creation of "updated" task use only form data
+    title = request.form["title"]
+    date = request.form.get("date", "")
+    if len(date) > 0:
+        updated_year, updated_month, updated_day = [int(fragment) for fragment in re.split('-', date)]
+    else:
+        updated_year = updated_month = updated_day = None
+    is_all_day = request.form.get("is_all_day", "0") == "1"
+    due_time = request.form["due_time"]
+    details = request.form["details"].replace("\r", "").replace("\n", "<br>")
+    color = request.form["color"]
+    has_repetition = request.form.get("repeats", "0") == "1"
+    repetition_type = request.form.get("repetition_type")
+    repetition_subtype = request.form.get("repetition_subtype")
+    repetition_value = int(request.form["repetition_value"])
+    calendar_data.create_task(calendar_id=calendar_id,
+                              year=updated_year,
+                              month=updated_month,
+                              day=updated_day,
+                              title=title,
+                              is_all_day=is_all_day,
+                              due_time=due_time,
+                              details=details,
+                              color=color,
+                              has_repetition=has_repetition,
+                              repetition_type=repetition_type,
+                              repetition_subtype=repetition_subtype,
+                              repetition_value=repetition_value)
+
+    # For deletion of old task data use only url data
+    calendar_data.delete_task(calendar_id=calendar_id,
+                              year_str=year,
+                              month_str=month,
+                              day_str=day,
+                              task_id=int(task_id))
+
+    if updated_year is None:
+        return redirect("{}/{}/".format(config.BASE_URL, calendar_id), code=302)
+    else:
+        return redirect("{}/{}/?y={}&m={}".format(config.BASE_URL, calendar_id, updated_year, updated_month), code=302)
 
 
 @app.route("/<calendar_id>/new_task", methods=["POST"])

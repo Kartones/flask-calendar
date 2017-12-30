@@ -2,61 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>New Task</title>
+    <title>
+        {% if editing %}
+            Edit Task
+        {% else %}
+            New Task
+        {% endif %}
+    </title>
     <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for("static", filename="favicon.ico") }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-    <form autocomplete="off" method="POST" action="/{{ calendar_id }}/new_task">
+    {% if editing %}
+        <form autocomplete="off" method="POST" action="/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/task/{{ task.get("id") }}">
+    {% else %}
+        <form autocomplete="off" method="POST" action="/{{ calendar_id }}/new_task">
+    {% endif %}
     <div id="task-details-form" class="task-details-form">
 
         <label for="text">Title</label>
-        <input type="text" autocomplete="off" tabindex="0" placeholder="Title" value="" id="title" name="title" minlength="2" required />
+        <input type="text" autocomplete="off" tabindex="0" placeholder="Title" value="{{ task.get("title", "") }}"
+            id="title" name="title" minlength="2" required />
         <br/>
 
         <label for="date_picker">Date</label>
-        <input id="date_picker" type="date" value="{{ year }}-{{ "%02d" % month }}-{{ "%02d" % day }}">
-        <input type="hidden" id="date" name="date" value="{{ year }}-{{ "%02d" % month }}-{{ "%02d" % day }}" />
+        <input id="date_picker" type="date" value="{{ task["date"] }}">
+        <input type="hidden" id="date" name="date" value="{{ task["date"] }}" />
         <br/>
 
         <label for="is_all_day">All day event</label>
-        <input type="checkbox" id="is_all_day" name="is_all_day" value="1" checked="checked" />
+        <input type="checkbox" id="is_all_day" name="is_all_day" value="1"
+            {% if task["is_all_day"] %}
+                checked="checked"
+            {% endif %}
+             />
         <br/>
 
-        <div id="due_time_block" class="hidden">
+        <div id="due_time_block"
+            {% if task["is_all_day"] %}
+                class="hidden"
+            {% endif %}
+             >
             <label for="due_time">Due time</label>
-            <input type="time" id="due_time" name="due_time" value="00:00" />
+            <input type="time" id="due_time" name="due_time" value="{{ task.get("due_time", "00:00") }}" />
         </div>
         <br/>
 
         <label for="repeats">Recurrent</label>
-        <input type="checkbox" id="repeats" name="repeats" value="1" />
-        <div id="repetition_block" class="hidden">
-            <input type="radio" id="type_weekly" name="repetition_type" value="w">
+        <input type="checkbox" id="repeats" name="repeats" value="1"
+            {% if task["repeats"] %}
+                checked="checked"
+            {% endif %}
+            />
+        <div id="repetition_block"
+            {% if not task["repeats"] %}
+                class="hidden"
+            {% endif %}
+             >
+            <input type="radio" id="type_weekly" name="repetition_type" value="w"
+                {% if task.get("repetition_type") == "w" %}
+                    checked="checked"
+                {% endif %}
+                >
             <label for="type_weekly">Occurs Weekly</label>
-            <input type="radio" id="type_monthly" name="repetition_type" value="m">
+            <input type="radio" id="type_monthly" name="repetition_type" value="m"
+                {% if task.get("repetition_type") == "m" %}
+                    checked="checked"
+                {% endif %}
+                >
             <label for="type_monthly">Occurs Monthly</label>
             <br/>
 
-            <input type="radio" id="subtype_weekly" name="repetition_subtype" value="w">
+            <input type="radio" id="subtype_weekly" name="repetition_subtype" value="w"
+                {% if task.get("repetition_subtype") == "w" %}
+                    checked="checked"
+                {% endif %}
+                >
             <label for="subtype_weekly">Week day (0: monday → 6: sunday)</label>
-            <input type="radio" id="subtype_monthly" name="repetition_subtype" value="m">
+            <input type="radio" id="subtype_monthly" name="repetition_subtype" value="m"
+                {% if task.get("repetition_subtype") == "m" %}
+                    checked="checked"
+                {% endif %}
+                >
             <label for="subtype_monthly">Month day</label>
             <br/>
 
             <label for="repetition_value">Value</label>
-            <input type="number" min="0" max="31" id="repetition_value" name="repetition_value" value="0" />
+            <input type="number" min="0" max="31" id="repetition_value" name="repetition_value"
+            value="{{ task.get("repetition_value", 0) }}" />
         </div>
         <br/>
 
         <label for="details">Details</label><br/>
-        <textarea id="details" name="details" placeholder="Details" autocomplete="off" value="" cols="40" rows="5"></textarea>
+        <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="40"
+            rows="5">{% if task.get("details", "&nbsp;") != "&nbsp;" %}{{ task["details"] }}{% endif %}</textarea>
         <br/>
 
         <label for="color">Color</label>
-        <input type="color" value="#53A93F" id="color_custom" />
+        <input type="color" value="{{ task.get("color", "#53A93F") }}" id="color_custom" />
         <input class="form-button color" style="color: #EB5A46" data-color="#EB5A46" type="button" value="Red" />
         <input class="form-button color" style="color: #53A93F" data-color="#53A93F" type="button" value="Green" />
         <br/>
@@ -67,12 +112,11 @@
         <input class="form-button color" style="color: #FF80CE" data-color="#FF80CE" type="button" value="Pink" />
         <input class="form-button color" style="color: #E9D160" data-color="#E9D160" type="button" value="Yellow" />
         <input class="form-button color" style="color: #4D4D4D" data-color="#4D4D4D" type="button" value="Grey" />
-        <input type="hidden" value="#53A93F" id="color" name="color" />
+        <input type="hidden" value="{{ task.get("color", "#53A93F") }}" id="color" name="color" />
         <br/>
 
         <input class="form-button new-task" type="submit" value="Save">
         <input class="form-button" type="button" value="Cancel" onclick="window.history.go(-1); return false;" />
-
     </div>
     </form>
 
@@ -84,7 +128,7 @@
         } else {
             document.getElementById("due_time_block").className = "";
         }
-    }
+    };
 
     document.getElementById("repeats").onclick = function(eventData) {
         if (eventData.target.checked == true) {
@@ -100,15 +144,16 @@
             document.getElementById("subtype_weekly").checked = true;
             document.getElementById("subtype_weekly").checked = false;
         }
-    }
+    };
 
     document.getElementById("date_picker").onchange = function(eventData) {
         document.getElementById("date").value = eventData.target.value;
-    }
+    };
 
     document.getElementById("color_custom").onchange = function(eventData) {
         document.getElementById("color").value = eventData.target.value;
-    }
+    };
+
     document.getElementById("task-details-form").onclick = function(eventData) {
         if (eventData.target.nodeName === "INPUT" && eventData.target.className === "form-button color") {
             document.getElementById("color").value = eventData.target.getAttribute("data-color");

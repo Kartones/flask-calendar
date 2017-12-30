@@ -59,8 +59,12 @@ li {
     text-decoration: none;
 }
 
+.form-button.color {
+    font-size: 1em;
+}
+
 .smaller {
-    padding: 0px 4px 2px 4px;
+    padding: 0px 3px 2px 3px;
     font-size: 95%;
 }
 
@@ -85,21 +89,28 @@ li {
 .remove-task {
     color: #F7F7F7;
     background-color: #DA4739;
-    margin-right: 3px;
+    margin-right: 2px;
     float: right;
 }
 
 .hide-recurrent-task {
     color: #F7F7F7;
     background-color: #777;
-    margin-right: 3px;
+    margin-right: 2px;
     float: right;
 }
 
 .recurrent-task {
     color: #F7F7F7;
-    background-color: #2E64E4;
-    margin-right: 3px;
+    background-color: #039BE5;
+    margin-right: 2px;
+    float: right;
+}
+
+.edit-task {
+    color: #F7F7F7;
+    background-color: #EF6C00;
+    margin-right: 2px;
     float: right;
 }
 

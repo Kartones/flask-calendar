@@ -39,6 +39,7 @@ List of new features added to the original project commits
 - 2017-12-22: "Hide" button to remove individual instances of repetitive/recurrent tasks
 - 2017-12-21: Cleanup of internal data files when a day/month becomes empty of tasks
 - 2017-12-20: Basic drag & drop (to change day inside same month of a non-recurring task). Intended only for desktop, probably rough on the edges but working.
+- 2017-12-30: Event edition. Mobile drag & drop disabled. Mobile CSS improvements.
 
 ## Requirements
 
@@ -58,14 +59,13 @@ python3 app.py
 
 This are initially the only features I plan to build:
 
+- TESTS! No more new features without tests
 - cleanup of past "hidden_repetition" tasks when current date's month > stored month (delete full month)
 - min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
-- edit existing event
+- better favicon (lighter colors so letters can be read better)
 - error messages
-- disable drag & drop on mobile
 - a decent weekday and month day choosers when recurrency is selected
 - Yearly repetition? (would need month and day)
 - Users (should be able to access calendars), authentication and authorization
 - Multi-day tasks?
-- better favicon (lighter colors so letters can be read better)
 - Type hints + mypy linting
