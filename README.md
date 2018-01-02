@@ -49,11 +49,20 @@ Other requirements are on the `requirements.txt` file.
 
 ## Running
 
-- copy `config.py.sample` to `config.py` and fill in
+- copy `config.py.sample` to `config.py` and fill in.
 
 ```
 python3 app.py
 ```
+
+## Testing
+
+- Install requirements from `requirements-dev.txt` file.
+
+```
+pytest
+```
+
 
 ## TODOs / Roadmap
 

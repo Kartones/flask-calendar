@@ -16,9 +16,10 @@
 <body>
 
     {% if editing %}
-        <form autocomplete="off" method="POST" action="/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/task/{{ task.get("id") }}">
+        <form autocomplete="off" method="POST"
+            action="{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/task/{{ task.get("id") }}">
     {% else %}
-        <form autocomplete="off" method="POST" action="/{{ calendar_id }}/new_task">
+        <form autocomplete="off" method="POST" action="{{ base_url }}/{{ calendar_id }}/new_task">
     {% endif %}
     <div id="task-details-form" class="task-details-form">
 
@@ -116,53 +117,74 @@
         <br/>
 
         <input class="form-button new-task" type="submit" value="Save">
+        {% if editing %}
+            <input class="form-button delete-task" id="delete-task" type="button" value="Delete">
+        {% endif %}
         <input class="form-button" type="button" value="Cancel" onclick="window.history.go(-1); return false;" />
     </div>
     </form>
 
 <script type="text/javascript">
-    document.getElementById("is_all_day").onclick = function(eventData) {
-        if (eventData.target.checked == true) {
-            document.getElementById("due_time_block").className = "hidden";
-            document.getElementById("due_time").value ="00:00";
-        } else {
-            document.getElementById("due_time_block").className = "";
-        }
-    };
+    window.onload = function() {
+        document.getElementById("is_all_day").onclick = function(eventData) {
+            if (eventData.target.checked == true) {
+                document.getElementById("due_time_block").className = "hidden";
+                document.getElementById("due_time").value ="00:00";
+            } else {
+                document.getElementById("due_time_block").className = "";
+            }
+        };
 
-    document.getElementById("repeats").onclick = function(eventData) {
-        if (eventData.target.checked == true) {
-            document.getElementById("type_weekly").checked = true;
-            document.getElementById("subtype_weekly").checked = true;
-            document.getElementById("repetition_value").value = 0;
-            document.getElementById("repetition_block").className = "";
-        } else {
-            document.getElementById("repetition_block").className = "hidden";
-            // To uncheck everything
-            document.getElementById("type_weekly").checked = true;
-            document.getElementById("type_weekly").checked = false;
-            document.getElementById("subtype_weekly").checked = true;
-            document.getElementById("subtype_weekly").checked = false;
-        }
-    };
+        document.getElementById("repeats").onclick = function(eventData) {
+            if (eventData.target.checked == true) {
+                document.getElementById("type_weekly").checked = true;
+                document.getElementById("subtype_weekly").checked = true;
+                document.getElementById("repetition_value").value = 0;
+                document.getElementById("repetition_block").className = "";
+            } else {
+                document.getElementById("repetition_block").className = "hidden";
+                // To uncheck everything
+                document.getElementById("type_weekly").checked = true;
+                document.getElementById("type_weekly").checked = false;
+                document.getElementById("subtype_weekly").checked = true;
+                document.getElementById("subtype_weekly").checked = false;
+            }
+        };
 
-    document.getElementById("date_picker").onchange = function(eventData) {
-        document.getElementById("date").value = eventData.target.value;
-    };
+        document.getElementById("date_picker").onchange = function(eventData) {
+            document.getElementById("date").value = eventData.target.value;
+        };
 
-    document.getElementById("color_custom").onchange = function(eventData) {
-        document.getElementById("color").value = eventData.target.value;
-    };
+        document.getElementById("color_custom").onchange = function(eventData) {
+            document.getElementById("color").value = eventData.target.value;
+        };
 
-    document.getElementById("task-details-form").onclick = function(eventData) {
-        if (eventData.target.nodeName === "INPUT" && eventData.target.className === "form-button color") {
-            document.getElementById("color").value = eventData.target.getAttribute("data-color");
-            document.getElementById("color_custom").value = eventData.target.getAttribute("data-color");
-            return false;
-        } else {
-            return;
-        }
-    };
+        document.getElementById("task-details-form").onclick = function(eventData) {
+            if (eventData.target.nodeName === "INPUT" && eventData.target.className === "form-button color") {
+                document.getElementById("color").value = eventData.target.getAttribute("data-color");
+                document.getElementById("color_custom").value = eventData.target.getAttribute("data-color");
+                return false;
+            } else {
+                return;
+            }
+        };
+
+        {% if editing %}
+            document.getElementById("delete-task").onclick = function() {
+                if (confirm("Remove task?") == true) {
+                    fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/{{ task.get("id") }}/",
+                      {
+                        method: "delete"
+                      })
+                    .then(response => {
+                        if (response.status == 200) {
+                            window.location = "{{ base_url }}/{{ calendar_id }}/?y={{ year }}&m={{ month }}";
+                        }
+                    });
+                }
+            };
+        {% endif %}
+    }
 </script>
 </body>
 </html>

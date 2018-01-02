@@ -1,0 +1,86 @@
+{
+  "name": "Personal",
+  "users": [],
+  "tasks": {
+    "repetition": [
+      {
+        "is_all_day": true,
+        "title": "Repetitive weekly weekday",
+        "details": "every monday (all day task)",
+        "id": 0,
+        "due_time": "00:00",
+        "repetition_value": 0,
+        "repetition_subtype": "w",
+        "repetition_type": "w",
+        "color": "#B19CDA"
+      },
+      {
+        "is_all_day": true,
+        "title": "Repetitive monthly weekday",
+        "details": "1st saturday of the month",
+        "id": 1,
+        "due_time": "00:00",
+        "repetition_value": 5,
+        "repetition_subtype": "w",
+        "repetition_type": "m",
+        "color": "#53A93F"
+      },
+      {
+        "is_all_day": true,
+        "title": "Repetitive monthly monthday",
+        "details": "1st day of the month",
+        "id": 2,
+        "due_time": "00:00",
+        "repetition_value": 1,
+        "repetition_subtype": "m",
+        "repetition_type": "m",
+        "color": "#777777"
+      },
+      {
+        "is_all_day": false,
+        "title": "Repetitive weekly weekday",
+        "details": "every thursday at afternoon",
+        "id": 3,
+        "due_time": "19:30",
+        "repetition_value": 3,
+        "repetition_subtype": "w",
+        "repetition_type": "w",
+        "color": "#785649"
+      }
+    ],
+    "normal": {
+      "2017": {
+        "12": {
+          "25": [
+            {
+              "is_all_day": true,
+              "title": "Task title",
+              "details": "Task details",
+              "id": 0,
+              "due_time": "00:00",
+              "color": "#039BE5"
+            },
+            {
+              "is_all_day": false,
+              "title": "Task #2",
+              "details": "Task 2 details",
+              "id": 1,
+              "due_time": "15:30",
+              "color": "#EF6C00"
+            }
+          ]
+        }
+      },
+      "2018": {}
+    },
+    "hidden_repetition": {
+      "3": {
+        "2017": {
+          "12": {
+            "14": true
+          }
+        }
+      }
+    }
+  }
+}

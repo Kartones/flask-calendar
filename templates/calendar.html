@@ -105,7 +105,9 @@
                 method: "delete"
               })
             .then(response => {
-                if (response.status == 200) location.reload();
+                if (response.status == 200) {
+                    location.reload();
+                }
             });
         }
     };
@@ -117,7 +119,9 @@
                 method: "post"
               })
             .then(response => {
-                if (response.status == 200) location.reload();
+                if (response.status == 200) {
+                    location.reload();
+                }
             });
         }
     }

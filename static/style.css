@@ -175,7 +175,7 @@ span.daynumber-current {
     color: #F7F7F7;
     background-color: #53A93F;
     padding: 3px;
-    border-radius: 50%;
+    border-radius: 15%;
 }
 
 .othermonth span.daynumber {
