@@ -48,6 +48,13 @@ li {
     text-decoration: none;
 }
 
+.new-task {
+    color: #F7F7F7;
+    background-color: #A1D360;
+    margin-top: 18px;
+}
+
+
 .form-button {
     font-size: 1.25em;
     font-weight: 700;
@@ -63,15 +70,14 @@ li {
     font-size: 1em;
 }
 
+.form-button.delete-task {
+    color: #F7F7F7;
+    background-color: #D04040;
+}
+
 .smaller {
     padding: 0px 3px 2px 3px;
     font-size: 95%;
-}
-
-.new-task {
-    color: #F7F7F7;
-    background-color: #53A93F;
-    margin-top: 18px;
 }
 
 .change-date {
@@ -88,28 +94,28 @@ li {
 
 .remove-task {
     color: #F7F7F7;
-    background-color: #DA4739;
+    background-color: #FF6B6B;
     margin-right: 2px;
     float: right;
 }
 
 .hide-recurrent-task {
     color: #F7F7F7;
-    background-color: #777;
+    background-color: #556270;
     margin-right: 2px;
     float: right;
 }
 
 .recurrent-task {
     color: #F7F7F7;
-    background-color: #039BE5;
+    background-color: #4ECDC4;
     margin-right: 2px;
     float: right;
 }
 
 .edit-task {
     color: #F7F7F7;
-    background-color: #EF6C00;
+    background-color: #79BD9A;
     margin-right: 2px;
     float: right;
 }
@@ -126,7 +132,7 @@ li {
 }
 
 .weekday-header {
-  background-color: #F0F0F0;
+  background-color: #C0C9CC;
   color: #666;
   padding: 1px;
   margin: 1px;
@@ -148,7 +154,7 @@ li {
 }
 
 .day {
-  background-color: #F7F7F7;
+  background-color: #F2F1F0;
   padding: 3px;
   margin: 1px;
   min-height: 120px;
@@ -161,7 +167,7 @@ li {
 }
 
 .othermonth {
-  background-color: #F5F5F5;
+  background-color: #DEDDDB;
 }
 
 span.daynumber {
@@ -173,13 +179,13 @@ span.daynumber {
 span.daynumber-current {
     font-weight: 700;
     color: #F7F7F7;
-    background-color: #53A93F;
+    background-color: #A1D360;
     padding: 3px;
     border-radius: 15%;
 }
 
 .othermonth span.daynumber {
-    color: #BBB;
+    color: #777774;
 }
 
 ul.tasks {
@@ -241,20 +247,12 @@ ul.tasks li a {
     font-size: 0.60em;
 }
 
-.toggle-past-events {
-   font-size: 1em;
-}
-
-.smaller {
-    visibility: hidden;
-}
-
 .button, .button a {
-    font-size: 1.1em;
+    font-size: 2em;
 }
 
-#toggle-past-events {
-    font-size: 0.75em;
+.toggle-past-events {
+   font-size: 1.1em;
 }
 
 }

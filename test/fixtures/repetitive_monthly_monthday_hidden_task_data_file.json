@@ -1,0 +1,29 @@
+{
+  "name": "Fixture 2017",
+  "users": [],
+  "tasks": {
+    "repetition": [
+      {
+        "is_all_day": true,
+        "title": "Repetitive monthly monthday",
+        "details": "1st day of the month",
+        "id": 2,
+        "due_time": "00:00",
+        "repetition_value": 1,
+        "repetition_subtype": "m",
+        "repetition_type": "m",
+        "color": "#777777"
+      }
+    ],
+    "normal": {},
+    "hidden_repetition": {
+        "2": {
+            "2017": {
+                "12": {
+                    "1": true
+                }
+            }
+        }
+    }
+  }
+}

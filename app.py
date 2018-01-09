@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -!- coding: utf-8 -!-
 
-from flask import Flask, render_template, request, jsonify, redirect, abort
+from flask import Flask, render_template, request, jsonify, redirect, abort, Response
 import re
+from typing import Optional  # noqa: F401
 
 import config
 from gregorian_calendar import GregorianCalendar
@@ -11,18 +12,18 @@ from calendar_data import CalendarData
 app = Flask(__name__)
 
 
-def _previous_month_link(year, month):
+def _previous_month_link(year: int, month: int) -> str:
     month, year = GregorianCalendar.previous_month_and_year(year=year, month=month)
     return "" if year < config.MIN_YEAR or year > config.MAX_YEAR else "?y={}&m={}".format(year, month)
 
 
-def _next_month_link(year, month):
+def _next_month_link(year: int, month: int) -> str:
     month, year = GregorianCalendar.next_month_and_year(year=year, month=month)
     return "" if year < config.MIN_YEAR or year > config.MAX_YEAR else "?y={}&m={}".format(year, month)
 
 
 @app.route("/<calendar_id>/", methods=["GET"])
-def main_calendar(calendar_id):
+def main_calendar(calendar_id: str) -> Response:
 
     current_day, current_month, current_year = GregorianCalendar.current_date()
     year = int(request.args.get("y", current_year))
@@ -60,7 +61,7 @@ def main_calendar(calendar_id):
 
 
 @app.route("/<calendar_id>/<year>/<month>/new_task")
-def new_task(calendar_id, year, month):
+def new_task(calendar_id: str, year: int, month: int) -> Response:
     current_day, current_month, current_year = GregorianCalendar.current_date()
     year = max(min(int(year), config.MAX_YEAR), config.MIN_YEAR)
     month = max(min(int(month), 12), 1)
@@ -90,7 +91,7 @@ def new_task(calendar_id, year, month):
 
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["GET"])
-def edit_task(calendar_id, year, month, day, task_id):
+def edit_task(calendar_id: str, year: int, month: int, day: int, task_id: int) -> Response:
     month_names = GregorianCalendar.MONTH_NAMES
     calendar_data = CalendarData(config.DATA_FOLTER)
 
@@ -120,7 +121,7 @@ def edit_task(calendar_id, year, month, day, task_id):
 
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/task/<task_id>", methods=["POST"])
-def update_task(calendar_id, year, month, day, task_id):
+def update_task(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     # Logic is same as save + delete, could refactor but can wait until need to change any save/delete logic
 
     calendar_data = CalendarData(config.DATA_FOLTER)
@@ -129,7 +130,10 @@ def update_task(calendar_id, year, month, day, task_id):
     title = request.form["title"]
     date = request.form.get("date", "")
     if len(date) > 0:
-        updated_year, updated_month, updated_day = [int(fragment) for fragment in re.split('-', date)]
+        fragments = re.split('-', date)
+        updated_year = fragments[0]  # Optional[int]
+        updated_month = fragments[1]  # Optional[int]
+        updated_day = fragments[2]  # Optional[int]
     else:
         updated_year = updated_month = updated_day = None
     is_all_day = request.form.get("is_all_day", "0") == "1"
@@ -137,9 +141,9 @@ def update_task(calendar_id, year, month, day, task_id):
     details = request.form["details"].replace("\r", "").replace("\n", "<br>")
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
-    repetition_type = request.form.get("repetition_type")
-    repetition_subtype = request.form.get("repetition_subtype")
-    repetition_value = int(request.form["repetition_value"])
+    repetition_type = request.form.get("repetition_type", "")
+    repetition_subtype = request.form.get("repetition_subtype", "")
+    repetition_value = int(request.form["repetition_value"])  # type: int
     calendar_data.create_task(calendar_id=calendar_id,
                               year=updated_year,
                               month=updated_month,
@@ -168,11 +172,14 @@ def update_task(calendar_id, year, month, day, task_id):
 
 
 @app.route("/<calendar_id>/new_task", methods=["POST"])
-def save_task(calendar_id):
+def save_task(calendar_id: str) -> Response:
     title = request.form["title"]
     date = request.form.get("date", "")
     if len(date) > 0:
-        year, month, day = [int(fragment) for fragment in re.split('-', date)]
+        date_fragments = re.split('-', date)
+        year = int(date_fragments[0])  # type: Optional[int]
+        month = int(date_fragments[1])  # type: Optional[int]
+        day = int(date_fragments[2])  # type: Optional[int]
     else:
         year = month = day = None
     is_all_day = request.form.get("is_all_day", "0") == "1"
@@ -205,7 +212,7 @@ def save_task(calendar_id):
 
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["DELETE"])
-def delete_task(calendar_id, year, month, day, task_id):
+def delete_task(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     CalendarData(config.DATA_FOLTER).delete_task(calendar_id=calendar_id,
                                                  year_str=year,
                                                  month_str=month,
@@ -215,7 +222,7 @@ def delete_task(calendar_id, year, month, day, task_id):
 
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["PUT"])
-def update_task_day(calendar_id, year, month, day, task_id):
+def update_task_day(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     new_day = request.data.decode("utf-8")
     CalendarData(config.DATA_FOLTER).update_task_day(calendar_id=calendar_id,
                                                      year_str=year,
@@ -227,7 +234,7 @@ def update_task_day(calendar_id, year, month, day, task_id):
 
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/hide/", methods=["POST"])
-def hide_repetition_task_instance(calendar_id, year, month, day, task_id):
+def hide_repetition_task_instance(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     CalendarData(config.DATA_FOLTER).hide_repetition_task_instance(calendar_id=calendar_id,
                                                                    year_str=year,
                                                                    month_str=month,

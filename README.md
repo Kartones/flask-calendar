@@ -36,6 +36,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2018-xx-xx: Bring back action buttons for small (phone) screens. Improved (less terrible) favicon and colors
 - 2017-12-22: "Hide" button to remove individual instances of repetitive/recurrent tasks
 - 2017-12-21: Cleanup of internal data files when a day/month becomes empty of tasks
 - 2017-12-20: Basic drag & drop (to change day inside same month of a non-recurring task). Intended only for desktop, probably rough on the edges but working.
@@ -43,7 +44,7 @@ List of new features added to the original project commits
 
 ## Requirements
 
-- Python 3.x (tested on 3.5)
+- Python 3.5+ (type hints are compatible with 3.5 upwards)
 
 Other requirements are on the `requirements.txt` file.
 
@@ -69,12 +70,14 @@ pytest
 This are initially the only features I plan to build:
 
 - TESTS! No more new features without tests
+- coverage.py
+- circleci (grab xml config from mazes for programmers prj)
+- set locale to one setup in config
+- reconvert `<br>` to `\n` upon edit description
 - cleanup of past "hidden_repetition" tasks when current date's month > stored month (delete full month)
 - min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
-- better favicon (lighter colors so letters can be read better)
 - error messages
 - a decent weekday and month day choosers when recurrency is selected
 - Yearly repetition? (would need month and day)
 - Users (should be able to access calendars), authentication and authorization
 - Multi-day tasks?
-- Type hints + mypy linting

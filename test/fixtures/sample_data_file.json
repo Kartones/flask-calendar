@@ -1,5 +1,5 @@
 {
-  "name": "Personal",
+  "name": "Fixture 2017",
   "users": [],
   "tasks": {
     "repetition": [
@@ -73,14 +73,6 @@
       },
       "2018": {}
     },
-    "hidden_repetition": {
-      "3": {
-        "2017": {
-          "12": {
-            "14": true
-          }
-        }
-      }
-    }
+    "hidden_repetition": {}
   }
 }

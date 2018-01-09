@@ -1,0 +1,9 @@
+{
+  "name": "Empty Fixture",
+  "users": [],
+  "tasks": {
+    "repetition": [],
+    "normal": {},
+    "hidden_repetition": {}
+  }
+}
