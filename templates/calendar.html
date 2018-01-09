@@ -16,7 +16,7 @@
         <div class="current-date">
             {{ month_name }} {{ year }}
         </div>
-        {% if month != current_month %}
+        {% if month != current_month or year != current_year %}
             <div class="back-to-current">
                 <a href="/{{ calendar_id }}/">back to current</a>
             </div>
