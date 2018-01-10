@@ -131,9 +131,9 @@ def update_task(calendar_id: str, year: str, month: str, day: str, task_id: str)
     date = request.form.get("date", "")
     if len(date) > 0:
         fragments = re.split('-', date)
-        updated_year = fragments[0]  # Optional[int]
-        updated_month = fragments[1]  # Optional[int]
-        updated_day = fragments[2]  # Optional[int]
+        updated_year = int(fragments[0])  # Optional[int]
+        updated_month = int(fragments[1])  # Optional[int]
+        updated_day = int(fragments[2])  # Optional[int]
     else:
         updated_year = updated_month = updated_day = None
     is_all_day = request.form.get("is_all_day", "0") == "1"
