@@ -36,7 +36,8 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
-- 2018-xx-xx: Bring back action buttons for small (phone) screens. Improved (less terrible) favicon and colors. Reconvert `<br>` to `\n` upon edition. Cleanup of past hidden repetition task instances (when saving a calendar and month changes). Some tests.
+- 2018-01-27: Reconvert `<br>` to `\n` upon edition. Cleanup of past hidden repetition task instances (when saving a calendar and month changes). Improved tests (more to come).
+- 2018-01-09: Bring back action buttons for small (phone) screens. Improved (less terrible) favicon and colors.
 - 2017-12-22: "Hide" button to remove individual instances of repetitive/recurrent tasks
 - 2017-12-21: Cleanup of internal data files when a day/month becomes empty of tasks
 - 2017-12-20: Basic drag & drop (to change day inside same month of a non-recurring task). Intended only for desktop, probably rough on the edges but working.
