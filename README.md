@@ -53,7 +53,7 @@ Other requirements are on the `requirements.txt` file.
 
 - copy `config.py.sample` to `config.py` and fill in.
 
-```
+```bash
 python3 app.py
 ```
 
@@ -61,8 +61,13 @@ python3 app.py
 
 - Install requirements from `requirements-dev.txt` file.
 
-```
+```bash
 pytest
+```
+
+- To extract code coverage:
+```bash
+pytest --cov-report html:cov_html --cov=. --cov-config .coveragerc
 ```
 
 
@@ -73,7 +78,6 @@ This are initially the only features I plan to build:
 - TESTS! No more new features without tests
 - loader bottom bar (colored) when running ajax requests
 - double click on event day open new tasks with that day number
-- coverage.py
 - circleci (grab xml config from mazes for programmers prj)
 - set locale to one setup in config
 - error messages
