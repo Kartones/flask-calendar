@@ -50,6 +50,18 @@
     ],
     "normal": {
       "2017": {
+        "11": {
+          "6": [
+            {
+              "is_all_day": true,
+              "title": "Month 11 task",
+              "details": "Task details",
+              "id": 4,
+              "due_time": "00:00",
+              "color": "#000"
+            }
+          ]
+        },
         "12": {
           "25": [
             {

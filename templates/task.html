@@ -98,7 +98,7 @@
 
         <label for="details">Details</label><br/>
         <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="40"
-            rows="5">{% if task.get("details", "&nbsp;") != "&nbsp;" %}{{ task["details"] }}{% endif %}</textarea>
+            rows="5">{{ task["details"] }}</textarea>
         <br/>
 
         <label for="color">Color</label>

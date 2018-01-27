@@ -265,11 +265,14 @@ class CalendarData:
 
     def _save_calendar(self, contents: Dict, filename: str) -> None:
         self._clear_empty_entries(data=contents)
+        self._clear_past_hidden_entries(data=contents)
         with open(os.path.join(".", self.data_folder, "{}.json".format(filename)), "w+") as file:
             json.dump(contents, file)
 
     @staticmethod
     def _clear_empty_entries(data: Dict) -> None:
+        years_to_delete = []
+
         for year in data["tasks"]["normal"]:
             months_to_delete = []
             for month in data["tasks"]["normal"][year]:
@@ -283,3 +286,32 @@ class CalendarData:
                     months_to_delete.append(month)
             for month in months_to_delete:
                 del(data["tasks"]["normal"][year][month])
+            if len(data["tasks"]["normal"][year]) == 0:
+                years_to_delete.append(year)
+
+        for year in years_to_delete:
+            del(data["tasks"]["normal"]["year"])
+
+    @staticmethod
+    def _clear_past_hidden_entries(data: Dict) -> None:
+        _, current_month, current_year = GregorianCalendar.current_date()
+        task_ids_to_delete = []
+
+        for task_id in data["tasks"]["hidden_repetition"]:
+            years_to_delete = []
+            for year in data["tasks"]["hidden_repetition"][task_id]:
+                months_to_delete = []
+                for month in data["tasks"]["hidden_repetition"][task_id][year]:
+                    if (int(year) < current_year) or (int(year) == current_year and int(month) < current_month):
+                        months_to_delete.append(month)
+                for month in months_to_delete:
+                    del(data["tasks"]["hidden_repetition"][task_id][year][month])
+                if len(data["tasks"]["hidden_repetition"][task_id][year]) == 0:
+                    years_to_delete.append(year)
+            for year in years_to_delete:
+                del(data["tasks"]["hidden_repetition"][task_id][year])
+            if len(data["tasks"]["hidden_repetition"][task_id]) == 0:
+                task_ids_to_delete.append(task_id)
+
+        for task_id in task_ids_to_delete:
+            del(data["tasks"]["hidden_repetition"][task_id])

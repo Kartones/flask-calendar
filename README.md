@@ -36,7 +36,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
-- 2018-xx-xx: Bring back action buttons for small (phone) screens. Improved (less terrible) favicon and colors
+- 2018-xx-xx: Bring back action buttons for small (phone) screens. Improved (less terrible) favicon and colors. Reconvert `<br>` to `\n` upon edition. Cleanup of past hidden repetition task instances (when saving a calendar and month changes). Some tests.
 - 2017-12-22: "Hide" button to remove individual instances of repetitive/recurrent tasks
 - 2017-12-21: Cleanup of internal data files when a day/month becomes empty of tasks
 - 2017-12-20: Basic drag & drop (to change day inside same month of a non-recurring task). Intended only for desktop, probably rough on the edges but working.
@@ -70,14 +70,16 @@ pytest
 This are initially the only features I plan to build:
 
 - TESTS! No more new features without tests
+- loader bottom bar (colored) when running ajax requests
+- double click on event day open new tasks with that day number
 - coverage.py
 - circleci (grab xml config from mazes for programmers prj)
 - set locale to one setup in config
-- reconvert `<br>` to `\n` upon edit description
-- cleanup of past "hidden_repetition" tasks when current date's month > stored month (delete full month)
-- min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
 - error messages
+- min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
 - a decent weekday and month day choosers when recurrency is selected
 - Yearly repetition? (would need month and day)
 - Users (should be able to access calendars), authentication and authorization
+- search: simple, just python lowercased search at task titles. think how to represent results, if to go to the month or what
 - Multi-day tasks?
+- task copy/clone functionality?

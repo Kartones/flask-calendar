@@ -41,7 +41,6 @@ def main_calendar(calendar_id: str) -> Response:
         abort(404)
 
     tasks = calendar_data.tasks_from_calendar(year=year, month=month, view_past_tasks=view_past_tasks, data=data)
-
     tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks,
                                                              view_past_tasks=view_past_tasks)
 
@@ -76,6 +75,7 @@ def new_task(calendar_id: str, year: int, month: int) -> Response:
         "date": CalendarData.date_for_frontend(year=year, month=month, day=day),
         "is_all_day": True,
         "repeats": False,
+        "details": ""
     }
 
     return render_template("task.html",
@@ -96,7 +96,6 @@ def edit_task(calendar_id: str, year: int, month: int, day: int, task_id: int) -
     calendar_data = CalendarData(config.DATA_FOLTER)
 
     repeats = request.args.get("repeats") == "1"
-
     try:
         if repeats:
             task = calendar_data.repetitive_task_from_calendar(calendar_id=calendar_id, year=year, month=month,
@@ -106,6 +105,11 @@ def edit_task(calendar_id: str, year: int, month: int, day: int, task_id: int) -
                                                     task_id=int(task_id))
     except (FileNotFoundError, IndexError):
         abort(404)
+
+    if task["details"] == "&nbsp;":
+        task["details"] = ""
+    else:
+        task["details"] = task["details"].replace("<br>", "\n")
 
     return render_template("task.html",
                            calendar_id=calendar_id,
@@ -131,9 +135,9 @@ def update_task(calendar_id: str, year: str, month: str, day: str, task_id: str)
     date = request.form.get("date", "")
     if len(date) > 0:
         fragments = re.split('-', date)
-        updated_year = int(fragments[0])  # Optional[int]
-        updated_month = int(fragments[1])  # Optional[int]
-        updated_day = int(fragments[2])  # Optional[int]
+        updated_year = int(fragments[0])  # type: Optional[int]
+        updated_month = int(fragments[1])  # type: Optional[int]
+        updated_day = int(fragments[2])  # type: Optional[int]
     else:
         updated_year = updated_month = updated_day = None
     is_all_day = request.form.get("is_all_day", "0") == "1"
