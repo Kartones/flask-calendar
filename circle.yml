@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  build:
+    docker:
+       - image: circleci/python:3.6
+    steps:
+       - checkout
+       - run: sudo pip install -r requirements.txt
+       - run: sudo pip install -r requirements-dev.txt
+       - run: pytest
