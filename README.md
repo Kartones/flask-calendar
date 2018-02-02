@@ -77,10 +77,9 @@ pytest --cov-report html:cov_html --cov=. --cov-config .coveragerc
 
 This are initially the only features I plan to build:
 
-- TESTS! No more new features without tests
+- TESTS! Need to increase coverage and also test the main flask app (zero tests)
 - loader bottom bar (colored) when running ajax requests
 - double click on event day open new tasks with that day number
-- circleci (grab xml config from mazes for programmers prj)
 - set locale to one setup in config
 - error messages
 - min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
