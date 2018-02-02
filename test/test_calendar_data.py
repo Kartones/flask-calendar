@@ -10,6 +10,33 @@ def calendar_data() -> CalendarData:
     return CalendarData("test/fixtures")
 
 
+def test_no_data_nor_calendar_id_supplied_to_retrieve_tasks(calendar_data: CalendarData) -> None:
+    with pytest.raises(ValueError):
+        calendar_data.tasks_from_calendar(year=2001, month=1, data=None, calendar_id=None)
+
+
+def test_errors_if_data_missing_keys(calendar_data: CalendarData) -> None:
+    with pytest.raises(ValueError):
+        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={})
+    with pytest.raises(ValueError):
+        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {}})
+    with pytest.raises(ValueError):
+        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {
+            "normal": {},
+            "hidden_repetition": {}
+        }})
+    with pytest.raises(ValueError):
+        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {
+            "normal": {},
+            "repetition": {}
+        }})
+    with pytest.raises(ValueError):
+        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {
+            "repetition": {},
+            "hidden_repetition": {}
+        }})
+
+
 def test_loads_a_valid_data_file(calendar_data: CalendarData) -> None:
     calendar = calendar_data.load_calendar("sample_data_file")
     assert calendar is not None
@@ -130,3 +157,40 @@ def test_hidden_montly_weekday_repetitions_dont_appear(calendar_data: CalendarDa
 
     tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks)
     assert len(tasks) == 0
+
+
+def test_if_dont_want_to_view_past_tasks_dont_appear(calendar_data: CalendarData) -> None:
+    all_tasks = calendar_data.tasks_from_calendar(year=2001, month=1, view_past_tasks=True,
+                                                  calendar_id="past_normal_tasks")
+    non_past_tasks = calendar_data.tasks_from_calendar(year=2001, month=2, view_past_tasks=False,
+                                                       calendar_id="past_normal_tasks")
+
+    assert len(all_tasks) > len(non_past_tasks)
+    assert len(non_past_tasks) == 0
+
+
+def test_existing_individual_task_retrieval(calendar_data: CalendarData) -> None:
+    task_id = 4
+    task = calendar_data.task_from_calendar(calendar_id="sample_data_file", year=2017, month=11, day=6, task_id=4)
+    assert task is not None
+    assert task["id"] == task_id
+    assert task["is_all_day"] is True
+
+
+def test_non_existing_individual_task_retrieval(calendar_data: CalendarData) -> None:
+    with pytest.raises(ValueError):
+        calendar_data.task_from_calendar(calendar_id="sample_data_file", year=2017, month=11, day=6, task_id=0)
+
+
+def test_existing_repetitive_task_retrieval(calendar_data: CalendarData) -> None:
+    task_id = 2
+    task = calendar_data.repetitive_task_from_calendar(calendar_id="sample_data_file", year=2017, month=11,
+                                                       task_id=task_id)
+    assert task is not None
+    assert task["id"] == task_id
+    assert task["is_all_day"] is True
+
+
+def test_non_existing_repetitive_task_retrieval(calendar_data: CalendarData) -> None:
+    with pytest.raises(IndexError):
+        calendar_data.repetitive_task_from_calendar(calendar_id="sample_data_file", year=2017, month=11, task_id=111)

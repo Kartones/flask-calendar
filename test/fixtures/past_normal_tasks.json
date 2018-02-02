@@ -1,0 +1,37 @@
+{
+  "name": "Fixture",
+  "users": [],
+  "tasks": {
+    "repetition": [
+    ],
+    "normal": {
+      "2001": {
+        "1": {
+          "1": [
+            {
+              "is_all_day": true,
+              "title": "A task",
+              "details": "Task details",
+              "id": 1,
+              "due_time": "00:00",
+              "color": "#000"
+            }
+          ]
+        },
+        "12": {
+          "1": [
+            {
+              "is_all_day": false,
+              "title": "Another task",
+              "details": "Task details",
+              "id": 2,
+              "due_time": "15:30",
+              "color": "#EF6C00"
+            }
+          ]
+        }
+      }
+    },
+    "hidden_repetition": {}
+  }
+}

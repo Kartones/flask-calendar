@@ -33,9 +33,12 @@ class CalendarData:
                 data = self.load_calendar(calendar_id)
 
         if "tasks" not in data.keys():
-            ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
-        if "normal" not in data["tasks"].keys():
-            ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
+            raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
+
+        if not all(["normal" in data["tasks"].keys(),
+                    "repetition" in data["tasks"].keys(),
+                    "hidden_repetition" in data["tasks"].keys()]):
+            raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
         tasks = {}  # type: Dict
         if str(year) in data["tasks"]["normal"]:
