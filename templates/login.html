@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for("static", filename="favicon.ico") }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <form autocomplete="off" method="POST" action="{{ base_url }}/do_login">
+        <label for="text">Username</label>
+        <input type="text" autocomplete="off" placeholder="Username" value="" id="username"
+            name="username" minlength="2" required />
+        <br/>
+
+        <label for="text">Password</label>
+        <input type="password" autocomplete="off" placeholder="Password" value="" id="password"
+            name="password" minlength="8" required />
+        <br/>
+
+        <input class="form-button" type="submit" value="Login" />
+    </form>
+
+</body>
+</html>
