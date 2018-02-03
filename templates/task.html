@@ -174,7 +174,8 @@
                 if (confirm("Remove task?") == true) {
                     fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/{{ task.get("id") }}/",
                       {
-                        method: "delete"
+                        method: "delete",
+                        credentials: "include"
                       })
                     .then(response => {
                         if (response.status == 200) {

@@ -23,6 +23,8 @@ No Javascript libraries, no CSS frameworks. Of course the corresponding code and
 
 No databases, as I don't need to do any querying or complex stuff I couldn't also do with JSON files and basic dictionaries.
 
+Authentication works using werkzeug SimpleCache for storage, which means if the application runs with more than one thread you'll get into problems.
+
 Also intended to be a tiny Flask app so minimal coding and functionality used. I didn't wanted to use AJAX at first but quickly came up to the realization that some paths were actually faster so in the end has a few JS lines.
 
 No tests built as main challenge has been my lack of CSS skills and rusty, outdated Javascript. Controllers are also a bit more fat than I'd like but I was just hacking away logic as required without much pre-planning.
@@ -38,6 +40,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2018-02-03: Better redirect upon login (and root/index action no longer 404s). Authorization working.
 - 2018-02-03: Basic user authentication and authorization. There is no user creation so password needs to be manually created and stored into the users data json (salted SHA256 hexdigest). At least authorization is easily managed just adding authorized user ids to corresponding calendar json section.
 - 2018-01-27: Reconvert `<br>` to `\n` upon edition. Cleanup of past hidden repetition task instances (when saving a calendar and month changes). Improved tests (more to come).
 - 2018-01-09: Bring back action buttons for small (phone) screens. Improved (less terrible) favicon and colors.
@@ -80,10 +83,8 @@ pytest --cov-report html:cov_html --cov=. --cov-config .coveragerc
 
 This are initially the only features I plan to build:
 
-- Apply authorization
 - TESTS! Need to increase coverage and also test the main flask app (zero tests)
 - fortify cookie
-- better return 401s only if ajax action (and not just based on http verb)
 - loader bottom bar (colored) when running ajax requests
 - double click on event day open new tasks with that day number
 - set locale to one setup in config

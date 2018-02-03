@@ -1,6 +1,4 @@
 {
-  "name": "Personal",
-  "users": [],
   "tasks": {
     "normal": {
       "2017": {
@@ -9,77 +7,73 @@
             {
               "details": "Task details",
               "title": "Task title",
-              "due_time": "00:00",
               "id": 0,
-              "is_all_day": true,
-              "color": "#039BE5"
+              "color": "#039BE5",
+              "due_time": "00:00",
+              "is_all_day": true
             },
             {
               "details": "Task 2 details",
               "title": "Task #2",
-              "due_time": "15:30",
               "id": 1,
-              "is_all_day": false,
-              "color": "#EF6C00"
+              "color": "#EF6C00",
+              "due_time": "15:30",
+              "is_all_day": false
             }
           ]
         }
       }
     },
-    "hidden_repetition": {
-      "3": {
-        "2017": {
-          "12": {
-            "14": true
-          }
-        }
-      }
-    },
     "repetition": [
       {
-        "details": "every monday (all day task)",
-        "title": "Repetitive weekly weekday",
-        "repetition_subtype": "w",
-        "due_time": "00:00",
-        "id": 0,
         "repetition_value": 0,
         "repetition_type": "w",
-        "is_all_day": true,
-        "color": "#B19CDA"
+        "details": "every monday (all day task)",
+        "title": "Repetitive weekly weekday",
+        "id": 0,
+        "color": "#B19CDA",
+        "due_time": "00:00",
+        "repetition_subtype": "w",
+        "is_all_day": true
       },
       {
-        "details": "1st saturday of the month",
-        "title": "Repetitive monthly weekday",
-        "repetition_subtype": "w",
-        "due_time": "00:00",
-        "id": 1,
         "repetition_value": 5,
         "repetition_type": "m",
-        "is_all_day": true,
-        "color": "#53A93F"
+        "details": "1st saturday of the month",
+        "title": "Repetitive monthly weekday",
+        "id": 1,
+        "color": "#53A93F",
+        "due_time": "00:00",
+        "repetition_subtype": "w",
+        "is_all_day": true
       },
       {
-        "details": "1st day of the month",
-        "title": "Repetitive monthly monthday",
-        "repetition_subtype": "m",
-        "due_time": "00:00",
-        "id": 2,
         "repetition_value": 1,
         "repetition_type": "m",
-        "is_all_day": true,
-        "color": "#777777"
+        "details": "1st day of the month",
+        "title": "Repetitive monthly monthday",
+        "id": 2,
+        "color": "#777777",
+        "due_time": "00:00",
+        "repetition_subtype": "m",
+        "is_all_day": true
       },
       {
-        "details": "every thursday at afternoon",
-        "title": "Repetitive weekly weekday",
-        "repetition_subtype": "w",
-        "due_time": "19:30",
-        "id": 3,
         "repetition_value": 3,
         "repetition_type": "w",
-        "is_all_day": false,
-        "color": "#785649"
+        "details": "every thursday at afternoon",
+        "title": "Repetitive weekly weekday",
+        "id": 3,
+        "color": "#785649",
+        "due_time": "19:30",
+        "repetition_subtype": "w",
+        "is_all_day": false
       }
-    ]
-  }
+    ],
+    "hidden_repetition": {}
+  },
+  "users": [
+    "a_username"
+  ],
+  "name": "Personal"
 }

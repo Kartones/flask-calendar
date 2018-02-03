@@ -1,7 +1,7 @@
 {
     "a_username": {
         "username": "a_username",
-        "id": "00000000-0000-0000-0000-000000000000",
-        "password": "8c2a58390a8a0816cd58307fae930b13e5b185ae430054dd2da855728ef0e656"
+        "password": "8c2a58390a8a0816cd58307fae930b13e5b185ae430054dd2da855728ef0e656",
+        "default_calendar": "sample"
     }
 }

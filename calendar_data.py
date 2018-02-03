@@ -304,7 +304,7 @@ class CalendarData:
                 years_to_delete.append(year)
 
         for year in years_to_delete:
-            del(data["tasks"]["normal"]["year"])
+            del(data["tasks"]["normal"][year])
 
     @staticmethod
     def _clear_past_hidden_entries(data: Dict) -> None:

@@ -1,0 +1,91 @@
+{
+  "tasks": {
+    "repetition": [
+      {
+        "repetition_value": 0,
+        "details": "every monday (all day task)",
+        "title": "Repetitive weekly weekday",
+        "due_time": "00:00",
+        "color": "#B19CDA",
+        "repetition_subtype": "w",
+        "is_all_day": true,
+        "repetition_type": "w",
+        "id": 0
+      },
+      {
+        "repetition_value": 5,
+        "details": "1st saturday of the month",
+        "title": "Repetitive monthly weekday",
+        "due_time": "00:00",
+        "color": "#53A93F",
+        "repetition_subtype": "w",
+        "is_all_day": true,
+        "repetition_type": "m",
+        "id": 1
+      },
+      {
+        "repetition_value": 1,
+        "details": "1st day of the month",
+        "title": "Repetitive monthly monthday",
+        "due_time": "00:00",
+        "color": "#777777",
+        "repetition_subtype": "m",
+        "is_all_day": true,
+        "repetition_type": "m",
+        "id": 2
+      },
+      {
+        "repetition_value": 3,
+        "details": "every thursday at afternoon",
+        "title": "Repetitive weekly weekday",
+        "due_time": "19:30",
+        "color": "#785649",
+        "repetition_subtype": "w",
+        "is_all_day": false,
+        "repetition_type": "w",
+        "id": 3
+      }
+    ],
+    "hidden_repetition": {},
+    "normal": {
+      "2018": {
+        "2": {
+          "3": [
+            {
+              "color": "#53A93F",
+              "details": "&nbsp;",
+              "title": "test 2222",
+              "due_time": "00:00",
+              "id": 1517683764,
+              "is_all_day": true
+            }
+          ]
+        }
+      },
+      "2017": {
+        "12": {
+          "25": [
+            {
+              "color": "#039BE5",
+              "details": "Task details",
+              "title": "Task title",
+              "due_time": "00:00",
+              "is_all_day": true,
+              "id": 0
+            },
+            {
+              "color": "#EF6C00",
+              "details": "Task 2 details",
+              "title": "Task #2",
+              "due_time": "15:30",
+              "is_all_day": false,
+              "id": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  "name": "Personal (unathorized)",
+  "users": []
+}

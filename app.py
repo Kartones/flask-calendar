@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -!- coding: utf-8 -!-
 
 from flask import Flask, render_template, request, jsonify, redirect, abort, Response, make_response
 import re
@@ -9,17 +8,20 @@ import config
 from gregorian_calendar import GregorianCalendar
 from calendar_data import CalendarData
 from authentication import Authentication
-from app_utils import previous_month_link, next_month_link, new_session_id, add_session, authenticated
+from app_utils import (previous_month_link, next_month_link, new_session_id, add_session, authenticated,
+                       get_session_username, authorized)
 
 app = Flask(__name__)
 
 authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
 
 
-@app.route("/logged_in", methods=["GET"])
+@app.route("/", methods=["GET"])
 @authenticated
-def logged_in() -> Response:
-    return render_template("logged_in.html")
+def index() -> Response:
+    username = get_session_username(session_id=str(request.cookies.get("sid")))
+    user_data = authentication.user_data(username=username)
+    return redirect("/{}/".format(user_data["default_calendar"]))
 
 
 @app.route("/login", methods=["GET"])
@@ -35,7 +37,7 @@ def do_login() -> Response:
     if authentication.is_valid(username=username, password=password):
         session_id = new_session_id()
         add_session(session_id=session_id, username=username)
-        response = make_response(redirect("/logged_in"))
+        response = make_response(redirect("/"))
         # TODO: other params from http://flask.pocoo.org/docs/0.12/api/#flask.Response.set_cookie
         response.set_cookie(key="sid", value=session_id, max_age=2678400)  # 1 month
         return response
@@ -45,8 +47,8 @@ def do_login() -> Response:
 
 @app.route("/<calendar_id>/", methods=["GET"])
 @authenticated
+@authorized
 def main_calendar(calendar_id: str) -> Response:
-
     current_day, current_month, current_year = GregorianCalendar.current_date()
     year = int(request.args.get("y", current_year))
     year = max(min(year, config.MAX_YEAR), config.MIN_YEAR)
@@ -83,6 +85,7 @@ def main_calendar(calendar_id: str) -> Response:
 
 @app.route("/<calendar_id>/<year>/<month>/new_task")
 @authenticated
+@authorized
 def new_task(calendar_id: str, year: int, month: int) -> Response:
     current_day, current_month, current_year = GregorianCalendar.current_date()
     year = max(min(int(year), config.MAX_YEAR), config.MIN_YEAR)
@@ -115,6 +118,7 @@ def new_task(calendar_id: str, year: int, month: int) -> Response:
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["GET"])
 @authenticated
+@authorized
 def edit_task(calendar_id: str, year: int, month: int, day: int, task_id: int) -> Response:
     month_names = GregorianCalendar.MONTH_NAMES
     calendar_data = CalendarData(config.DATA_FOLTER)
@@ -150,6 +154,7 @@ def edit_task(calendar_id: str, year: int, month: int, day: int, task_id: int) -
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/task/<task_id>", methods=["POST"])
 @authenticated
+@authorized
 def update_task(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     # Logic is same as save + delete, could refactor but can wait until need to change any save/delete logic
 
@@ -202,6 +207,7 @@ def update_task(calendar_id: str, year: str, month: str, day: str, task_id: str)
 
 @app.route("/<calendar_id>/new_task", methods=["POST"])
 @authenticated
+@authorized
 def save_task(calendar_id: str) -> Response:
     title = request.form["title"]
     date = request.form.get("date", "")
@@ -243,6 +249,7 @@ def save_task(calendar_id: str) -> Response:
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["DELETE"])
 @authenticated
+@authorized
 def delete_task(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     CalendarData(config.DATA_FOLTER).delete_task(calendar_id=calendar_id,
                                                  year_str=year,
@@ -254,6 +261,7 @@ def delete_task(calendar_id: str, year: str, month: str, day: str, task_id: str)
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/", methods=["PUT"])
 @authenticated
+@authorized
 def update_task_day(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     new_day = request.data.decode("utf-8")
     CalendarData(config.DATA_FOLTER).update_task_day(calendar_id=calendar_id,
@@ -267,6 +275,7 @@ def update_task_day(calendar_id: str, year: str, month: str, day: str, task_id: 
 
 @app.route("/<calendar_id>/<year>/<month>/<day>/<task_id>/hide/", methods=["POST"])
 @authenticated
+@authorized
 def hide_repetition_task_instance(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     CalendarData(config.DATA_FOLTER).hide_repetition_task_instance(calendar_id=calendar_id,
                                                                    year_str=year,

@@ -102,7 +102,8 @@
         if (confirm("Remove task?") == true) {
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/",
               {
-                method: "delete"
+                method: "delete",
+                credentials: "include"
               })
             .then(response => {
                 if (response.status == 200) {
@@ -116,7 +117,8 @@
         if (confirm("Remove this task ocurrence?") == true) {
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/hide/",
               {
-                method: "post"
+                method: "post",
+                credentials: "include"
               })
             .then(response => {
                 if (response.status == 200) {
@@ -185,6 +187,7 @@
                             headers: {
                                 "Content-Type": "application/json"
                             },
+                            credentials: "include",
                             body: newDay
                           });
 
