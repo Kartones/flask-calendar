@@ -235,6 +235,30 @@ ul.tasks li a {
     margin-top: 6px;
 }
 
+#statusbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 26px;
+    z-index: 4000000;
+    visibility: hidden;
+    font-weight: 700;
+    text-align: center;
+}
+
+.processing {
+    visibility: visible !important;
+    color: #F7F7F7;
+    background-color: #A1D360;
+}
+
+.error {
+    visibility: visible !important;
+    color: #F7F7F7;
+    background-color: #EB5A46;
+}
+
 @media screen and (max-width:650px) {
 
 .header .current-date {

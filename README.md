@@ -40,7 +40,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
-- 2018-02-04: Dockerized project for local running of both web and tests
+- 2018-02-04: Dockerized project for local running of both web and tests. Status bar to see when there's a pending AJAX request.
 - 2018-02-03: Better redirect upon login (and root/index action no longer 404s). Authorization working.
 - 2018-02-03: Basic user authentication and authorization. There is no user creation so password needs to be manually created and stored into the users data json (salted SHA256 hexdigest). At least authorization is easily managed just adding authorized user ids to corresponding calendar json section.
 - 2018-01-27: Reconvert `<br>` to `\n` upon edition. Cleanup of past hidden repetition task instances (when saving a calendar and month changes). Improved tests (more to come).
@@ -86,7 +86,6 @@ This are initially the only features I plan to build:
 
 - TESTS! Need to increase coverage and also test the main flask app (zero tests)
 - fortify cookie
-- loader bottom bar (colored) when running ajax requests
 - double click on event day open new tasks with that day number
 - set locale to one setup in config
 - error messages

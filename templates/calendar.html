@@ -9,6 +9,8 @@
 </head>
 <body>
 
+    <div id="statusbar" class="">Processing...</div>
+
     <div class="header">
         <a class="button new-task" href="/{{ calendar_id }}/{{ year }}/{{ month}}/new_task" title="New task">+</a>
         <a class="button change-date" href="{{ previous_month_link }}" title="Previous month">&lt;</a>
@@ -98,8 +100,23 @@
         target.className = target.className === "accordion-hidden" ? "accordion-visible" : "accordion-hidden";
     };
 
+    function ShowStatusbar() {
+        document.getElementById("statusbar").className = "processing";
+    };
+
+    function HideStatusbar() {
+        document.getElementById("statusbar").className = "";
+    }
+
+    function SetErrorStatusbar() {
+        var statusbar = document.getElementById("statusbar");
+        statusbar.innerHTML = "The action errored";
+        statusbar.className = "error";
+    };
+
     function DeleteTask(year, month, day, id) {
         if (confirm("Remove task?") == true) {
+            ShowStatusbar();
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/",
               {
                 method: "delete",
@@ -108,6 +125,8 @@
             .then(response => {
                 if (response.status == 200) {
                     location.reload();
+                } else {
+                    SetErrorStatusbar();
                 }
             });
         }
@@ -115,6 +134,7 @@
 
     function DeleteTaskOcurrence(year, month, day, id) {
         if (confirm("Remove this task ocurrence?") == true) {
+            ShowStatusbar();
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/hide/",
               {
                 method: "post",
@@ -123,6 +143,8 @@
             .then(response => {
                 if (response.status == 200) {
                     location.reload();
+                } else {
+                    SetErrorStatusbar();
                 }
             });
         }
@@ -180,6 +202,7 @@
                         var urlFragments = url.split("/");
                         urlFragments[urlFragments.length - 2] = newDay;
                         editTaskButton.href = urlFragments.join("/");
+                        ShowStatusbar();
                         fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/" + oldDay + "/" +
                               movingElement.getAttribute("data-id") + "/",
                           {
@@ -189,7 +212,14 @@
                             },
                             credentials: "include",
                             body: newDay
-                          });
+                          })
+                        .then(response => {
+                            if (response.status == 200) {
+                                HideStatusbar();
+                            } else {
+                                SetErrorStatusbar();
+                            }
+                        });
 
                     }
                 }
