@@ -5,3 +5,4 @@ BASE_URL = "http://127.0.0.1:5000"
 MIN_YEAR = 2017
 MAX_YEAR = 2100
 PASSWORD_SALT = "something random and full of non-standard characters"
+HOST_IP = "0.0.0.0"  # set to None for production

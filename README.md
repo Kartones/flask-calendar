@@ -40,6 +40,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2018-02-04: Dockerized project for local running of both web and tests
 - 2018-02-03: Better redirect upon login (and root/index action no longer 404s). Authorization working.
 - 2018-02-03: Basic user authentication and authorization. There is no user creation so password needs to be manually created and stored into the users data json (salted SHA256 hexdigest). At least authorization is easily managed just adding authorized user ids to corresponding calendar json section.
 - 2018-01-27: Reconvert `<br>` to `\n` upon edition. Cleanup of past hidden repetition task instances (when saving a calendar and month changes). Improved tests (more to come).
@@ -60,7 +61,7 @@ Other requirements are on the `requirements.txt` file.
 - copy `config.py.sample` to `config.py` and fill in.
 
 ```bash
-python3 app.py
+make run
 ```
 
 Sample username is `a_username` with password `a_password`.
@@ -70,12 +71,12 @@ Sample username is `a_username` with password `a_password`.
 - Install requirements from `requirements-dev.txt` file.
 
 ```bash
-pytest
+make test
 ```
 
 - To extract code coverage:
 ```bash
-pytest --cov-report html:cov_html --cov=. --cov-config .coveragerc
+make coverage
 ```
 
 

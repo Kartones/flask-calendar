@@ -6,3 +6,4 @@ config.py
 */__pycache__/*
 cov_html/*
 .coverage
+*.py[c|o]

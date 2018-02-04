@@ -1,0 +1,19 @@
+version: "2"
+services:
+  flask-calendar:
+    build:
+      args:
+        uid: ${UID}
+        gid: ${GID}
+      context: ../..
+      dockerfile: build/dev/Dockerfile
+    image: flask-calendar:dev
+    volumes:
+      - ../..:/code
+      - ../..:/opt/flask-calendar
+      - ~/.gitconfig:/home/flask-calendar/.gitconfig:ro
+      - ~/.ssh:/home/flask-calendar/.ssh:ro
+      - ~/.bash_history.flask-calendar:/home/flask-calendar/.bash_history
+    command: "bash -c 'exec python3 app.py'"
+    ports:
+        - "127.0.0.1:5000:5000"

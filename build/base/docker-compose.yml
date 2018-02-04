@@ -1,0 +1,12 @@
+version: "2"
+services:
+  flask-calendar-base:
+    build:
+      args:
+        uid: ${UID}
+        gid: ${GID}
+      context: ../..
+      dockerfile: build/base/Dockerfile
+    image: flask-calendar:base
+    working_dir: /code
+    command: "/bin/true"

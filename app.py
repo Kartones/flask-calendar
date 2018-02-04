@@ -286,4 +286,4 @@ def hide_repetition_task_instance(calendar_id: str, year: str, month: str, day: 
 
 
 if __name__ == "__main__":
-    app.run(debug=config.DEBUG)
+    app.run(debug=config.DEBUG, host=config.HOST_IP)
