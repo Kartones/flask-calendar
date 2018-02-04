@@ -11,8 +11,6 @@ services:
     volumes:
       - ../..:/code
       - ../..:/opt/flask-calendar
-      - ~/.gitconfig:/home/flask-calendar/.gitconfig:ro
-      - ~/.ssh:/home/flask-calendar/.ssh:ro
       - ~/.bash_history.flask-calendar:/home/flask-calendar/.bash_history
     command: "bash -c 'exec python3 app.py'"
     ports:
