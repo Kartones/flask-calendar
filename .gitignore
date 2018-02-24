@@ -7,3 +7,4 @@ config.py
 cov_html/*
 .coverage
 *.py[c|o]
+.pytest_cache/*

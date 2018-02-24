@@ -17,29 +17,35 @@ Create new task view:
 
 ![Create new task view](doc/sample_02.png)
 
-Built with Firefox, intended to work also on Chrome and Brave, should work also on other recent browsers, but I won't ever add support for Internet Explorer.
+Supports a basic drag & drop on desktop of days (like Google Calendar), edition of existing tasks, creation of repetitive tasks (daily, montly, by weekday, by month day or on specific day number), custom colors, and a few options like hiding past tasks or being able to manually hide those repetitive task ocurrences (I like a "clean view" and usually remove/hide past tasks).
 
-No Javascript libraries, no CSS frameworks. Of course the corresponding code and styles are accordingly non-impressive, but for such a small project didn't wanted to start adding Bootstraps/Foundations or JQuerys or similar.
+It is mobile friendly (buttons for actions are ugly and cannot drag & drop days on mobile, but otherwise works), might not be perfectly designed for all resolutions but at least works.
+
+
+## Remarks
+
+Compatible with Firefox, Brave and Chrome. No plans for other browser support (but PRs are welcome).
+
+No Javascript libraries and no CSS frameworks used, so this means the corresponding code and styles are accordingly non-impressive.
 
 No databases, as I don't need to do any querying or complex stuff I couldn't also do with JSON files and basic dictionaries.
 
-Authentication works using werkzeug SimpleCache for storage, which means if the application runs with more than one thread you'll get into problems.
+Authentication works using werkzeug SimpleCache for storage, which means if the application runs with more than one thread you'll get into problems. Run it with a single process uwsgi or similar.
 
-Also intended to be a tiny Flask app so minimal coding and functionality used. I didn't wanted to use AJAX at first but quickly came up to the realization that some paths were actually faster so in the end has a few JS lines.
-
-No tests built as main challenge has been my lack of CSS skills and rusty, outdated Javascript. Controllers are also a bit more fat than I'd like but I was just hacking away logic as required without much pre-planning.
-
+HTML inputs are favoring HTML5 ones instead of fancy jquery-like plugins to reduce support and increase mobile compatibility.
 
 Overall, lessons learned:
 
-- Next project will be Django. What I win in speed building the routing and views, I lose then building validations.
+- Next project will be Django. What I win in speed building the routing and views, I lose then building forms and validations.
 - I suck at CSS so I'll stick to Bootstrap/Foundation. This time what I did works but I've spent more time fighting with CSS than building code.
 - I'll give a try next time to turbolinks, to trully try to avoid javascript for tiny projects.
+- Introduce tests (including application ones) from the beginning, at least for critical paths always pays off. At least next project can benefit from the docker setup (with pytest, mypy, flake8 and coverage).
 
 ### Changelog
 
 List of new features added to the original project commits
 
+- 2018-02-24: Added locale support. Tasks font 5% bigger.
 - 2018-02-04: Dockerized project for local running of both web and tests. Status bar to see when there's a pending AJAX request.
 - 2018-02-03: Better redirect upon login (and root/index action no longer 404s). Authorization working.
 - 2018-02-03: Basic user authentication and authorization. There is no user creation so password needs to be manually created and stored into the users data json (salted SHA256 hexdigest). At least authorization is easily managed just adding authorized user ids to corresponding calendar json section.
@@ -50,11 +56,13 @@ List of new features added to the original project commits
 - 2017-12-20: Basic drag & drop (to change day inside same month of a non-recurring task). Intended only for desktop, probably rough on the edges but working.
 - 2017-12-30: Event edition. Mobile drag & drop disabled. Mobile CSS improvements.
 
+
 ## Requirements
 
 - Python 3.5+ (type hints are compatible with 3.5 upwards)
 
 Other requirements are on the `requirements.txt` file.
+
 
 ## Running
 
@@ -66,8 +74,20 @@ make run
 
 Sample username is `a_username` with password `a_password`.
 
-## Testing
+### Locale
 
+`dev` Dockerfile installs a sample locale (`es_ES`), but does not activate it. Refer to that file and to the `config.py` file for setting up any locale or commenting the lines that install them to speed up container bootup if you're sure don't want them.
+
+Remember you can check which locales you have installed with `locale -a` and add new ones with the following commands:
+```bash
+cd /usr/share/locales
+sudo ./install-language-pack es_ES
+sudo dpkg-reconfigure locales
+```
+
+
+## Testing
+decent time selector for desktop only
 - Install requirements from `requirements-dev.txt` file.
 
 ```bash
@@ -87,8 +107,8 @@ This are initially the only features I plan to build:
 - TESTS! Need to increase coverage and also test the main flask app (zero tests)
 - fortify cookie
 - double click on event day open new tasks with that day number
-- set locale to one setup in config
 - error messages
+- decent time selector for desktop only
 - min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
 - a decent weekday and month day choosers when recurrency is selected
 - Yearly repetition? (would need month and day)
