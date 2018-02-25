@@ -45,6 +45,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2018-02-25: Double-click on a day triggers new task creation at that day number (instead of day 1/current day as new task button does).
 - 2018-02-24: Added locale support. Tasks font 5% bigger.
 - 2018-02-04: Dockerized project for local running of both web and tests. Status bar to see when there's a pending AJAX request.
 - 2018-02-03: Better redirect upon login (and root/index action no longer 404s). Authorization working.
@@ -87,7 +88,6 @@ sudo dpkg-reconfigure locales
 
 
 ## Testing
-decent time selector for desktop only
 - Install requirements from `requirements-dev.txt` file.
 
 ```bash
@@ -106,8 +106,6 @@ This are initially the only features I plan to build:
 
 - TESTS! Need to increase coverage and also test the main flask app (zero tests)
 - fortify cookie
-- double click on event day open new tasks with that day number
-- error messages
 - decent time selector for desktop only
 - min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
 - a decent weekday and month day choosers when recurrency is selected
@@ -115,3 +113,4 @@ This are initially the only features I plan to build:
 - search: simple, just python lowercased search at task titles. think how to represent results, if to go to the month or what
 - Multi-day tasks?
 - task copy/clone functionality?
+- multi-calendars? json structure already supports a user having N calendars and a calendar having N users. Should also be trivial to add to the cookie a list of calendar names + ids to do a quick switcher combobox topright,

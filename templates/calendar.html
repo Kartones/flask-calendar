@@ -94,7 +94,9 @@
         moving = false,
         capturedMovementOffset = false,
         movingElement,
-        movingTimeout;
+        movingTimeout,
+        clicksCounter = 0,
+        clicksTimeout;
 
     function ToggleDetails(target) {
         target.className = target.className === "accordion-hidden" ? "accordion-visible" : "accordion-hidden";
@@ -284,12 +286,24 @@
         }
 
         document.getElementById("calendar").onclick = function(eventData) {
+            if (eventData.target.nodeName === "LI" && eventData.target.className === "day") {
+                if (++clicksCounter == 1) {
+                    // Single click behaviour (nothing)
+                    clicksTimeout = setTimeout(function() { clicksCounter = 0; }, 200);
+                } else {
+                    clearTimeout(clicksTimeout);
+                    window.location = "/{{ calendar_id }}/{{ year }}/{{ month}}/new_task?day=" +
+                                       eventData.target.getAttribute("data-day");
+                    clicksCounter = 0;
+                }
+                return;
+            }
             if (eventData.target.nodeName === "LI" && eventData.target.className === "task") {
                 ToggleDetails(eventData.target.children[0]);
                 return;
             }
             if (eventData.target.nodeName === "P" && (eventData.target.className === "accordion-hidden" ||
-                                            eventData.target.className === "accordion-visible")) {
+                                                      eventData.target.className === "accordion-visible")) {
                 ToggleDetails(eventData.target);
                 return;
             }
@@ -297,8 +311,7 @@
                 DeleteTask(eventData.target.getAttribute("data-year"), eventData.target.getAttribute("data-month"),
                            eventData.target.getAttribute("data-day"), eventData.target.getAttribute("data-id"));
             }
-            if (eventData.target.nodeName === "A" &&
-                eventData.target.className.indexOf("hide-recurrent-task") > -1) {
+            if (eventData.target.nodeName === "A" && eventData.target.className.indexOf("hide-recurrent-task") > -1) {
 
                 DeleteTaskOcurrence(eventData.target.getAttribute("data-year"),
                                     eventData.target.getAttribute("data-month"),

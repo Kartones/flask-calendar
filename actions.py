@@ -90,6 +90,7 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
         day = current_day
     else:
         day = 1
+    day = int(request.args.get("day", day))
 
     task = {
         "date": CalendarData.date_for_frontend(year=year, month=month, day=day),
