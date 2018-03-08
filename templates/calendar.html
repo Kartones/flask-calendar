@@ -135,7 +135,7 @@
     };
 
     function DeleteTaskOcurrence(year, month, day, id) {
-        if (confirm("Remove this task ocurrence?") == true) {
+        if (confirm("Hide this task ocurrence?") == true) {
             ShowStatusbar();
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/hide/",
               {
@@ -289,12 +289,12 @@
             if (eventData.target.nodeName === "LI" && eventData.target.className === "day") {
                 if (++clicksCounter == 1) {
                     // Single click behaviour (nothing)
-                    clicksTimeout = setTimeout(function() { clicksCounter = 0; }, 200);
+                    clicksTimeout = setTimeout(function() { clicksCounter = 0; }, 300);
                 } else {
                     clearTimeout(clicksTimeout);
+                    clicksCounter = 0;
                     window.location = "/{{ calendar_id }}/{{ year }}/{{ month}}/new_task?day=" +
                                        eventData.target.getAttribute("data-day");
-                    clicksCounter = 0;
                 }
                 return;
             }

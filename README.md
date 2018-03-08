@@ -45,6 +45,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2018-03-08: Changed yellow color preset by orange, made brown darker. Double click "window" increased to 300ms. Small CSS adjustments.
 - 2018-02-25: Double-click on a day triggers new task creation at that day number (instead of day 1/current day as new task button does).
 - 2018-02-24: Added locale support. Tasks font 5% bigger.
 - 2018-02-04: Dockerized project for local running of both web and tests. Status bar to see when there's a pending AJAX request.
@@ -104,6 +105,7 @@ make coverage
 
 This are initially the only features I plan to build:
 
+- separate js, version css and js by qs param (manually for now)
 - TESTS! Need to increase coverage and also test the main flask app (zero tests)
 - fortify cookie
 - decent time selector for desktop only
