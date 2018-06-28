@@ -44,7 +44,7 @@ class CalendarData:
         if "users" not in data.keys():
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
-        return data["users"][username]
+        return cast(Dict, data["users"][username])
 
     def tasks_from_calendar(self, year: int, month: int, view_past_tasks: Optional[bool]=True,
                             data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> Dict:

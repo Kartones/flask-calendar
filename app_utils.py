@@ -6,7 +6,7 @@ from werkzeug.contrib.cache import SimpleCache
 from flask import abort, redirect, request
 
 import config
-from authentication import Authentication
+# from authentication import Authentication
 from authorization import Authorization
 from calendar_data import CalendarData
 from constants import SESSION_ID
