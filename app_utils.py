@@ -6,9 +6,12 @@ from werkzeug.contrib.cache import SimpleCache
 from flask import abort, redirect, request
 
 import config
-from gregorian_calendar import GregorianCalendar
-from calendar_data import CalendarData
+from authentication import Authentication
 from authorization import Authorization
+from calendar_data import CalendarData
+from constants import SESSION_ID
+from exporters.icalendar import ICalendar
+from gregorian_calendar import GregorianCalendar
 
 
 cache = SimpleCache()
@@ -17,7 +20,7 @@ cache = SimpleCache()
 def authenticated(decorated_function: Callable) -> Any:
     @wraps(decorated_function)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        session_id = request.cookies.get("sid")
+        session_id = request.cookies.get(SESSION_ID)
         if session_id is None or not is_session_valid(str(session_id)):
             if request.headers.get("Content-Type", "") == "application/json":
                 abort(401)
@@ -29,7 +32,7 @@ def authenticated(decorated_function: Callable) -> Any:
 def authorized(decorated_function: Callable) -> Any:
     @wraps(decorated_function)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        username = get_session_username(str(request.cookies.get("sid")))
+        username = get_session_username(str(request.cookies.get(SESSION_ID)))
         authorization = Authorization(calendar_data=CalendarData(data_folder=config.DATA_FOLTER))
         if "calendar_id" not in kwargs:
             raise ValueError("calendar_id")
@@ -64,3 +67,24 @@ def add_session(session_id: str, username: str) -> None:
 
 def get_session_username(session_id: str) -> str:
     return str(cache.get(session_id))
+
+
+def export_to_icalendar(calendar_data: CalendarData, calendar_id: str) -> bool:
+    if not config.FEATURE_FLAG_ICAL_EXPORT:
+        return True
+
+    session_id = str(request.cookies.get(SESSION_ID))
+    username = get_session_username(session_id)
+    data = calendar_data.load_calendar(calendar_id)
+
+    # TODO: set output folder from config, etc. and write the data. helper for filename format?
+    # detect if ics_key key not present and throw exception to force configuration.
+
+    # authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
+    # authentication.user_data(username=username)["ics_key"]
+
+    ical_exporter: ICalendar = ICalendar(username=username,
+                                         timezone=config.TIMEZONE,
+                                         months_to_export=config.MONTHS_TO_EXPORT)
+    ical_exporter.write(calendar_data=calendar_data, data=data)
+    return True

@@ -2,6 +2,7 @@
     "a_username": {
         "username": "a_username",
         "password": "5db0240249f03a49d95dbe624ef856293b8c1fae0703c0b725c013f585778074",
-        "default_calendar": "sample"
+        "default_calendar": "sample",
+        "ics_key": "an_ics_key"
     }
 }

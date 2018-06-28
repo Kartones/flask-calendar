@@ -10,6 +10,6 @@ class Authorization:
 
     def can_access(self, username: str, data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> bool:
         if calendar_id is None:
-            return username in self.calendar_data.users(data=data)
+            return username in self.calendar_data.users_list(data=data)
         else:
-            return username in self.calendar_data.users(calendar_id=calendar_id)
+            return username in self.calendar_data.users_list(calendar_id=calendar_id)

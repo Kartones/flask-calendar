@@ -24,7 +24,7 @@ class CalendarData:
             raise ValueError("Error loading calendar from file '{}'".format(filename))
         return cast(Dict, contents)
 
-    def users(self, data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> List:
+    def users_list(self, data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> List:
         if data is None:
             if calendar_id is None:
                 raise ValueError("Need to provide either calendar_id or loaded data")
@@ -34,6 +34,17 @@ class CalendarData:
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
         return cast(List, data["users"])
+
+    def user_details(self, username: str, data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> Dict:
+        if data is None:
+            if calendar_id is None:
+                raise ValueError("Need to provide either calendar_id or loaded data")
+            else:
+                data = self.load_calendar(calendar_id)
+        if "users" not in data.keys():
+            raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
+
+        return data["users"][username]
 
     def tasks_from_calendar(self, year: int, month: int, view_past_tasks: Optional[bool]=True,
                             data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> Dict:

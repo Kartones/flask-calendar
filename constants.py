@@ -1,0 +1,2 @@
+
+SESSION_ID = "sid"

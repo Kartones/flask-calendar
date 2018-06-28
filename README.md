@@ -45,6 +45,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2018-06-29: Less round buttons, bigger task details textbox, trim task title (strip spaces pre and post text) upon create/update. WIP of ICal export feature (controlled via config.FEATURE_FLAG_ICAL_EXPORT boolean value).
 - 2018-03-08: Changed yellow color preset by orange, made brown darker. Double click "window" increased to 300ms. Small CSS adjustments.
 - 2018-02-25: Double-click on a day triggers new task creation at that day number (instead of day 1/current day as new task button does).
 - 2018-02-24: Added locale support. Tasks font 5% bigger.
@@ -105,9 +106,10 @@ make coverage
 
 This are initially the only features I plan to build:
 
-- separate js, version css and js by qs param (manually for now)
 - TESTS! Need to increase coverage and also test the main flask app (zero tests)
 - fortify cookie
+- desktop notifications (only for specific hour tasks)
+- upon deletion confirm include task title
 - decent time selector for desktop only
 - min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
 - a decent weekday and month day choosers when recurrency is selected

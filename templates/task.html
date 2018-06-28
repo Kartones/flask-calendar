@@ -97,19 +97,17 @@
         <br/>
 
         <label for="details">Details</label><br/>
-        <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="40"
-            rows="5">{{ task["details"] }}</textarea>
+        <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="42"
+            rows="7">{{ task["details"] }}</textarea>
         <br/>
 
         <label for="color">Color</label>
         <input type="color" value="{{ task.get("color", "#53A93F") }}" id="color_custom" />
         <input class="form-button color" style="color: #EB5A46" data-color="#EB5A46" type="button" value="Red" />
         <input class="form-button color" style="color: #53A93F" data-color="#53A93F" type="button" value="Green" />
-        <br/>
         <input class="form-button color" style="color: #0079BF" data-color="#0079BF" type="button" value="Blue" />
         <input class="form-button color" style="color: #9F6635" data-color="#9F6635" type="button" value="Brown" />
         <input class="form-button color" style="color: #C377E0" data-color="#C377E0" type="button" value="Purple" />
-        <br/>
         <input class="form-button color" style="color: #FF80CE" data-color="#FF80CE" type="button" value="Pink" />
         <input class="form-button color" style="color: #F68534" data-color="#F68534" type="button" value="Orange" />
         <input class="form-button color" style="color: #4D4D4D" data-color="#4D4D4D" type="button" value="Grey" />

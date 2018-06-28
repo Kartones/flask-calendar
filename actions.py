@@ -5,11 +5,12 @@ from typing import Optional  # noqa: F401
 from flask import render_template, request, jsonify, redirect, abort, Response, make_response
 
 import config
+from constants import SESSION_ID
 from gregorian_calendar import GregorianCalendar
 from calendar_data import CalendarData
 from authentication import Authentication
 from app_utils import (previous_month_link, next_month_link, new_session_id, add_session, authenticated,
-                       get_session_username, authorized)
+                       get_session_username, authorized, export_to_icalendar)
 
 
 authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
@@ -17,7 +18,7 @@ authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_s
 
 @authenticated
 def index_action() -> Response:
-    username = get_session_username(session_id=str(request.cookies.get("sid")))
+    username = get_session_username(session_id=str(request.cookies.get(SESSION_ID)))
     user_data = authentication.user_data(username=username)
     return redirect("/{}/".format(user_data["default_calendar"]))
 
@@ -35,7 +36,7 @@ def do_login_action() -> Response:
         add_session(session_id=session_id, username=username)
         response = make_response(redirect("/"))
         # TODO: other params from http://flask.pocoo.org/docs/0.12/api/#flask.Response.set_cookie
-        response.set_cookie(key="sid", value=session_id, max_age=2678400)  # 1 month
+        response.set_cookie(key=SESSION_ID, value=session_id, max_age=2678400)  # 1 month
         return response
     else:
         return redirect("/login")
@@ -154,7 +155,7 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
     calendar_data = CalendarData(config.DATA_FOLTER)
 
     # For creation of "updated" task use only form data
-    title = request.form["title"]
+    title = request.form["title"].strip()
     date = request.form.get("date", "")
     if len(date) > 0:
         fragments = re.split("-", date)
@@ -171,6 +172,7 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
     repetition_type = request.form.get("repetition_type", "")
     repetition_subtype = request.form.get("repetition_subtype", "")
     repetition_value = int(request.form["repetition_value"])  # type: int
+
     calendar_data.create_task(calendar_id=calendar_id,
                               year=updated_year,
                               month=updated_month,
@@ -184,13 +186,13 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
                               repetition_type=repetition_type,
                               repetition_subtype=repetition_subtype,
                               repetition_value=repetition_value)
-
     # For deletion of old task data use only url data
     calendar_data.delete_task(calendar_id=calendar_id,
                               year_str=year,
                               month_str=month,
                               day_str=day,
                               task_id=int(task_id))
+    export_to_icalendar(calendar_data, calendar_id)
 
     if updated_year is None:
         return redirect("{}/{}/".format(config.BASE_URL, calendar_id), code=302)
@@ -201,7 +203,7 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 @authenticated
 @authorized
 def save_task_action(calendar_id: str) -> Response:
-    title = request.form["title"]
+    title = request.form["title"].strip()
     date = request.form.get("date", "")
     if len(date) > 0:
         date_fragments = re.split("-", date)
@@ -219,19 +221,21 @@ def save_task_action(calendar_id: str) -> Response:
     repetition_subtype = request.form.get("repetition_subtype")
     repetition_value = int(request.form["repetition_value"])
 
-    CalendarData(config.DATA_FOLTER).create_task(calendar_id=calendar_id,
-                                                 year=year,
-                                                 month=month,
-                                                 day=day,
-                                                 title=title,
-                                                 is_all_day=is_all_day,
-                                                 due_time=due_time,
-                                                 details=details,
-                                                 color=color,
-                                                 has_repetition=has_repetition,
-                                                 repetition_type=repetition_type,
-                                                 repetition_subtype=repetition_subtype,
-                                                 repetition_value=repetition_value)
+    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data.create_task(calendar_id=calendar_id,
+                              year=year,
+                              month=month,
+                              day=day,
+                              title=title,
+                              is_all_day=is_all_day,
+                              due_time=due_time,
+                              details=details,
+                              color=color,
+                              has_repetition=has_repetition,
+                              repetition_type=repetition_type,
+                              repetition_subtype=repetition_subtype,
+                              repetition_value=repetition_value)
+    export_to_icalendar(calendar_data, calendar_id)
 
     if year is None:
         return redirect("{}/{}/".format(config.BASE_URL, calendar_id), code=302)
@@ -242,11 +246,14 @@ def save_task_action(calendar_id: str) -> Response:
 @authenticated
 @authorized
 def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
-    CalendarData(config.DATA_FOLTER).delete_task(calendar_id=calendar_id,
-                                                 year_str=year,
-                                                 month_str=month,
-                                                 day_str=day,
-                                                 task_id=int(task_id))
+    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data.delete_task(calendar_id=calendar_id,
+                              year_str=year,
+                              month_str=month,
+                              day_str=day,
+                              task_id=int(task_id))
+    export_to_icalendar(calendar_data, calendar_id)
+
     return jsonify({})
 
 
@@ -254,21 +261,28 @@ def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 @authorized
 def update_task_day_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     new_day = request.data.decode("utf-8")
-    CalendarData(config.DATA_FOLTER).update_task_day(calendar_id=calendar_id,
-                                                     year_str=year,
-                                                     month_str=month,
-                                                     day_str=day,
-                                                     task_id=int(task_id),
-                                                     new_day_str=new_day)
+
+    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data.update_task_day(calendar_id=calendar_id,
+                                  year_str=year,
+                                  month_str=month,
+                                  day_str=day,
+                                  task_id=int(task_id),
+                                  new_day_str=new_day)
+    export_to_icalendar(calendar_data, calendar_id)
+
     return jsonify({})
 
 
 @authenticated
 @authorized
 def hide_repetition_task_instance_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
-    CalendarData(config.DATA_FOLTER).hide_repetition_task_instance(calendar_id=calendar_id,
-                                                                   year_str=year,
-                                                                   month_str=month,
-                                                                   day_str=day,
-                                                                   task_id_str=task_id)
+    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data.hide_repetition_task_instance(calendar_id=calendar_id,
+                                                year_str=year,
+                                                month_str=month,
+                                                day_str=day,
+                                                task_id_str=task_id)
+    export_to_icalendar(calendar_data, calendar_id)
+
     return jsonify({})
