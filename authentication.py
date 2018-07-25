@@ -55,11 +55,5 @@ class Authentication:
             return False
         aut.save()
         return True
-        
-        
-if __name__ == '__main__':
-    import config
-    aut = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
-    #aut.addUser('test', 'test')
-    print(aut.delUser('test'))
+
         
