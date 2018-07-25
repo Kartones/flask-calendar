@@ -6,14 +6,10 @@
 import config
 from authentication import Authentication
 
-
-
 aut = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
-
-
-aut.addUser('test','test')
+aut.addUser('gati','gati')
 
 for i in aut.contents:
-	print(aut.contents[i])
-	
+    print(aut.contents[i])
+    
 

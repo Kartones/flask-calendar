@@ -216,6 +216,11 @@ def save_task_action(calendar_id: str) -> Response:
     due_time = request.form["due_time"]
     details = request.form["details"].replace("\r", "").replace("\n", "<br>")
     color = request.form["color"]
+    
+    
+    username = get_session_username(session_id=str(request.cookies.get(SESSION_ID)))
+    user_data = authentication.user_data(username=username)
+    color = user_data['color']
     has_repetition = request.form.get("repeats", "0") == "1"
     repetition_type = request.form.get("repetition_type")
     repetition_subtype = request.form.get("repetition_subtype")

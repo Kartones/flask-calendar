@@ -1,8 +1,1 @@
-{
-    "a_username": {
-        "username": "a_username",
-        "password": "5db0240249f03a49d95dbe624ef856293b8c1fae0703c0b725c013f585778074",
-        "default_calendar": "sample",
-        "ics_key": "an_ics_key"
-    }
-}
+{"a_username": {"color": "Red","username": "a_username", "password": "5db0240249f03a49d95dbe624ef856293b8c1fae0703c0b725c013f585778074", "default_calendar": "sample", "ics_key": "an_ics_key"}, "nico": {"username": "nico","color":"Blue", "password": "971bcfc028bbb804cc4213a7e83f98099aac8ad556edfd68fee1b0266f990715", "default_calendar": "gati", "ics_key": "an_ics_key"}, "gati": {"username": "gati","color":"yellow", "password": "1344e774fd887c62f41c383d6160fbacddf50d1615899a54dc0a0154651eb586", "default_calendar": "gati", "ics_key": "an_ics_key"}}
