@@ -54,20 +54,15 @@ li {
     margin-top: 18px;
 }
 
-
 .form-button {
-    font-size: 1.25em;
+    font-size: 1em;
     font-weight: 700;
-    padding: 3px 9px 3px 9px;
+    padding: 3px 6px 3px 6px;
     margin-top: 9px;
-    margin-right: 6px;
+    margin-right: 3px;
     border: 1px solid #777777;
     border-radius: 4px;
     text-decoration: none;
-}
-
-.form-button.color {
-    font-size: 1em;
 }
 
 .form-button.delete-task {
@@ -259,27 +254,31 @@ ul.tasks li a {
 
 @media screen and (max-width:650px) {
 
-.header .current-date {
-    font-size: 0.85em;
-    padding-left: 3px;
-    padding-right: 3px;
-}
+    .header .current-date {
+        font-size: 0.85em;
+        padding-left: 3px;
+        padding-right: 3px;
+    }
 
-.header .back-to-current {
-    font-size: 0.60em;
-}
+    .header .back-to-current {
+        font-size: 0.60em;
+    }
 
-.button, .button a {
-    font-size: 2em;
-}
+    .button, .button a {
+        font-size: 2em;
+    }
 
-.toggle-past-events {
-   font-size: 1.1em;
-}
+    .form-button {
+        font-size: 1em;
+    }
 
-.day {
-  min-height: 30px;
-  margin-top: 3px;
-}
+    .toggle-past-events {
+    font-size: 1.1em;
+    }
+
+    .day {
+    min-height: 30px;
+    margin-top: 3px;
+    }
 
 }

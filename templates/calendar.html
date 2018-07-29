@@ -64,12 +64,14 @@
                                          <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"
                                             data-month="{{ day.month }}"
                                             data-day="{{ day.day }}"
+                                            data-title="{{ task["title"]|replace("\"","") }}"
                                             class="button smaller remove-task"
                                             title="Remove task">x</a>
                                         {% if "repetition_type" in task %}
                                          <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"
                                             data-month="{{ day.month }}"
                                             data-day="{{ day.day }}"
+                                            data-title="{{ task["title"]|replace("\"","") }}"
                                             class="button smaller hide-recurrent-task"
                                             title="Hide this task ocurrence">H</a>
                                         {% endif %}
@@ -116,8 +118,8 @@
         statusbar.className = "error";
     };
 
-    function DeleteTask(year, month, day, id) {
-        if (confirm("Remove task?") == true) {
+    function DeleteTask(year, month, day, id, title) {
+        if (confirm("Remove task '" + title + "'?") == true) {
             ShowStatusbar();
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/",
               {
@@ -134,8 +136,8 @@
         }
     };
 
-    function DeleteTaskOcurrence(year, month, day, id) {
-        if (confirm("Hide this task ocurrence?") == true) {
+    function DeleteTaskOcurrence(year, month, day, id, title) {
+        if (confirm("Hide task ocurrence of '" + title + "'?") == true) {
             ShowStatusbar();
             fetch("{{ base_url }}/{{ calendar_id }}/" + year + "/" + month + "/" + day + "/" + id + "/hide/",
               {
@@ -308,15 +310,18 @@
                 return;
             }
             if (eventData.target.nodeName === "A" && eventData.target.className.indexOf("remove-task") > -1) {
-                DeleteTask(eventData.target.getAttribute("data-year"), eventData.target.getAttribute("data-month"),
-                           eventData.target.getAttribute("data-day"), eventData.target.getAttribute("data-id"));
+                DeleteTask(eventData.target.getAttribute("data-year"),
+                           eventData.target.getAttribute("data-month"),
+                           eventData.target.getAttribute("data-day"),
+                           eventData.target.getAttribute("data-id"),
+                           eventData.target.getAttribute("data-title"));
             }
             if (eventData.target.nodeName === "A" && eventData.target.className.indexOf("hide-recurrent-task") > -1) {
-
                 DeleteTaskOcurrence(eventData.target.getAttribute("data-year"),
                                     eventData.target.getAttribute("data-month"),
                                     eventData.target.getAttribute("data-day"),
-                                    eventData.target.getAttribute("data-id"));
+                                    eventData.target.getAttribute("data-id"),
+                                    eventData.target.getAttribute("data-title"));
             }
             return;
         };

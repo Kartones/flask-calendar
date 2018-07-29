@@ -8,3 +8,8 @@ cov_html/*
 .coverage
 *.py[c|o]
 .pytest_cache/*
+pytest_cache/*
+.project
+.pydevproject
+.settings
+.settings/*
