@@ -121,7 +121,11 @@ import config
 authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
 
 # Create a user
-authentication.add_user(username="a username",plaintext_password="a plain password", default_calendar="a default calendar id")
+authentication.add_user(
+    username="a username",
+    plaintext_password="a plain password",
+    default_calendar="a default calendar id"
+)
 
 # Delete a user
 authentication.delete_user(username="a username")
