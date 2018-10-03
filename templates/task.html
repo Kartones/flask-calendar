@@ -98,7 +98,7 @@
 
         <label for="details">Details</label><br/>
         <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="42"
-            rows="6">{{ task["details"] }}</textarea>
+            rows="6">{{ task["details"]|replace("<br>","\n") }}</textarea>
         <br/>
 
         <label for="color">Color</label>

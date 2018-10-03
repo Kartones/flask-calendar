@@ -131,8 +131,6 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
 
     if task["details"] == "&nbsp;":
         task["details"] = ""
-    else:
-        task["details"] = task["details"].replace("<br>", "\n")
 
     return render_template("task.html",
                            calendar_id=calendar_id,

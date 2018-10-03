@@ -7,6 +7,13 @@ import time
 from gregorian_calendar import GregorianCalendar
 
 
+KEY_TASKS = "tasks"
+KEY_USERS = "users"
+KEY_NORMAL_TASK = "normal"
+KEY_REPETITIVE_TASK = "repetition"
+KEY_REPETITIVE_HIDDEN_TASK = "hidden_repetition"
+
+
 class CalendarData:
 
     REPETITION_TYPE_WEEKLY = "w"
@@ -30,10 +37,10 @@ class CalendarData:
                 raise ValueError("Need to provide either calendar_id or loaded data")
             else:
                 data = self.load_calendar(calendar_id)
-        if "users" not in data.keys():
+        if KEY_USERS not in data.keys():
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
-        return cast(List, data["users"])
+        return cast(List, data[KEY_USERS])
 
     def user_details(self, username: str, data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> Dict:
         if data is None:
@@ -41,10 +48,10 @@ class CalendarData:
                 raise ValueError("Need to provide either calendar_id or loaded data")
             else:
                 data = self.load_calendar(calendar_id)
-        if "users" not in data.keys():
+        if KEY_USERS not in data.keys():
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
-        return cast(Dict, data["users"][username])
+        return cast(Dict, data[KEY_USERS][username])
 
     def tasks_from_calendar(self, year: int, month: int, view_past_tasks: Optional[bool]=True,
                             data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> Dict:
@@ -54,18 +61,18 @@ class CalendarData:
             else:
                 data = self.load_calendar(calendar_id)
 
-        if "tasks" not in data.keys():
+        if KEY_TASKS not in data.keys():
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
-        if not all(["normal" in data["tasks"].keys(),
-                    "repetition" in data["tasks"].keys(),
-                    "hidden_repetition" in data["tasks"].keys()]):
+        if not all([KEY_NORMAL_TASK in data[KEY_TASKS].keys(),
+                    KEY_REPETITIVE_TASK in data[KEY_TASKS].keys(),
+                    KEY_REPETITIVE_HIDDEN_TASK in data[KEY_TASKS].keys()]):
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
         tasks = {}  # type: Dict
-        if str(year) in data["tasks"]["normal"]:
-            if str(month) in data["tasks"]["normal"][str(year)]:
-                tasks = data["tasks"]["normal"][str(year)][str(month)]
+        if str(year) in data[KEY_TASKS][KEY_NORMAL_TASK]:
+            if str(month) in data[KEY_TASKS][KEY_NORMAL_TASK][str(year)]:
+                tasks = data[KEY_TASKS][KEY_NORMAL_TASK][str(year)][str(month)]
 
         if not view_past_tasks:
             current_day, current_month, current_year = GregorianCalendar.current_date()
@@ -88,7 +95,7 @@ class CalendarData:
         month_str = str(month)
         day_str = str(day)
 
-        for index, task in enumerate(data["tasks"]["normal"][year_str][month_str][day_str]):
+        for index, task in enumerate(data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][day_str]):
             if task["id"] == task_id:
                 task["repeats"] = False
                 task["date"] = self.date_for_frontend(year=year, month=month, day=day)
@@ -98,7 +105,7 @@ class CalendarData:
     def repetitive_task_from_calendar(self, calendar_id: str, year: int, month: int, task_id: int) -> Dict:
         data = self.load_calendar(calendar_id)
 
-        task = [task for task in data["tasks"]["repetition"] if task["id"] == task_id][0]  # type: Dict
+        task = [task for task in data[KEY_TASKS][KEY_REPETITIVE_TASK] if task["id"] == task_id][0]  # type: Dict
         task["repeats"] = True
         task["date"] = self.date_for_frontend(year=year, month=month, day=1)
         return task
@@ -142,20 +149,20 @@ class CalendarData:
         deleted = False
         data = self.load_calendar(calendar_id)
 
-        if (year_str in data["tasks"]["normal"] and
-                month_str in data["tasks"]["normal"][year_str] and
-                day_str in data["tasks"]["normal"][year_str][month_str]):
-            for index, task in enumerate(data["tasks"]["normal"][year_str][month_str][day_str]):
+        if (year_str in data[KEY_TASKS][KEY_NORMAL_TASK] and
+                month_str in data[KEY_TASKS][KEY_NORMAL_TASK][year_str] and
+                day_str in data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str]):
+            for index, task in enumerate(data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][day_str]):
                 if task["id"] == task_id:
-                    data["tasks"]["normal"][year_str][month_str][day_str].pop(index)
+                    data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][day_str].pop(index)
                     deleted = True
 
         if not deleted:
-            for index, task in enumerate(data["tasks"]["repetition"]):
+            for index, task in enumerate(data[KEY_TASKS][KEY_REPETITIVE_TASK]):
                 if task["id"] == task_id:
-                    data["tasks"]["repetition"].pop(index)
-                    if str(task_id) in data["tasks"]["hidden_repetition"]:
-                        del(data["tasks"]["hidden_repetition"][str(task_id)])
+                    data[KEY_TASKS][KEY_REPETITIVE_TASK].pop(index)
+                    if str(task_id) in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK]:
+                        del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][str(task_id)])
 
         self._save_calendar(contents=data, filename=calendar_id)
 
@@ -164,16 +171,16 @@ class CalendarData:
         data = self.load_calendar(calendar_id)
 
         task_to_update = None
-        for index, task in enumerate(data["tasks"]["normal"][year_str][month_str][day_str]):
+        for index, task in enumerate(data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][day_str]):
             if task["id"] == task_id:
-                task_to_update = data["tasks"]["normal"][year_str][month_str][day_str].pop(index)
+                task_to_update = data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][day_str].pop(index)
 
         if task_to_update is None:
             return
 
-        if new_day_str not in data["tasks"]["normal"][year_str][month_str]:
-            data["tasks"]["normal"][year_str][month_str][new_day_str] = []
-        data["tasks"]["normal"][year_str][month_str][new_day_str].append(task_to_update)
+        if new_day_str not in data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str]:
+            data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][new_day_str] = []
+        data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][new_day_str].append(task_to_update)
 
         self._save_calendar(contents=data, filename=calendar_id)
 
@@ -197,20 +204,20 @@ class CalendarData:
             new_task["repetition_type"] = repetition_type
             new_task["repetition_subtype"] = repetition_subtype
             new_task["repetition_value"] = repetition_value
-            data["tasks"]["repetition"].append(new_task)
+            data[KEY_TASKS][KEY_REPETITIVE_TASK].append(new_task)
         else:
             if year is None or month is None or day is None:
                 return False
             year_str = str(year)
             month_str = str(month)
             day_str = str(day)
-            if year_str not in data["tasks"]["normal"]:
-                data["tasks"]["normal"][year_str] = {}
-            if month_str not in data["tasks"]["normal"][year_str]:
-                data["tasks"]["normal"][year_str][month_str] = {}
-            if day_str not in data["tasks"]["normal"][year_str][month_str]:
-                data["tasks"]["normal"][year_str][month_str][day_str] = []
-            data["tasks"]["normal"][year_str][month_str][day_str].append(new_task)
+            if year_str not in data[KEY_TASKS][KEY_NORMAL_TASK]:
+                data[KEY_TASKS][KEY_NORMAL_TASK][year_str] = {}
+            if month_str not in data[KEY_TASKS][KEY_NORMAL_TASK][year_str]:
+                data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str] = {}
+            if day_str not in data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str]:
+                data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][day_str] = []
+            data[KEY_TASKS][KEY_NORMAL_TASK][year_str][month_str][day_str].append(new_task)
 
         self._save_calendar(contents=data, filename=calendar_id)
         return True
@@ -219,13 +226,13 @@ class CalendarData:
                                       task_id_str: str) -> None:
         data = self.load_calendar(calendar_id)
 
-        if task_id_str not in data["tasks"]["hidden_repetition"]:
-            data["tasks"]["hidden_repetition"][task_id_str] = {}
-        if year_str not in data["tasks"]["hidden_repetition"][task_id_str]:
-            data["tasks"]["hidden_repetition"][task_id_str][year_str] = {}
-        if month_str not in data["tasks"]["hidden_repetition"][task_id_str][year_str]:
-            data["tasks"]["hidden_repetition"][task_id_str][year_str][month_str] = {}
-        data["tasks"]["hidden_repetition"][task_id_str][year_str][month_str][day_str] = True
+        if task_id_str not in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK]:
+            data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id_str] = {}
+        if year_str not in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id_str]:
+            data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id_str][year_str] = {}
+        if month_str not in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id_str][year_str]:
+            data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id_str][year_str][month_str] = {}
+        data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id_str][year_str][month_str][day_str] = True
 
         self._save_calendar(contents=data, filename=calendar_id)
 
@@ -241,12 +248,12 @@ class CalendarData:
         year_str = str(year)
         month_str = str(month)
 
-        if "tasks" not in data.keys():
+        if KEY_TASKS not in data.keys():
             ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
-        if "repetition" not in data["tasks"].keys():
+        if KEY_REPETITIVE_TASK not in data[KEY_TASKS].keys():
             ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
-        for task in data["tasks"]["repetition"]:
+        for task in data[KEY_TASKS][KEY_REPETITIVE_TASK]:
             id_str = str(task["id"])
             monthly_task_assigned = False
             for week in month_days:
@@ -273,18 +280,18 @@ class CalendarData:
 
     @staticmethod
     def _is_repetition_hidden_for_day(data: Dict, id_str: str, year_str: str, month_str: str, day_str: str) -> bool:
-        if id_str in data["tasks"]["hidden_repetition"]:
-            if (year_str in data["tasks"]["hidden_repetition"][id_str] and
-                    month_str in data["tasks"]["hidden_repetition"][id_str][year_str] and
-                    day_str in data["tasks"]["hidden_repetition"][id_str][year_str][month_str]):
+        if id_str in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK]:
+            if (year_str in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][id_str] and
+                    month_str in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][id_str][year_str] and
+                    day_str in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][id_str][year_str][month_str]):
                 return True
         return False
 
     @staticmethod
     def _is_repetition_hidden(data: Dict, id_str: str, year_str: str, month_str: str) -> bool:
-        if id_str in data["tasks"]["hidden_repetition"]:
-            if (year_str in data["tasks"]["hidden_repetition"][id_str] and
-                    month_str in data["tasks"]["hidden_repetition"][id_str][year_str]):
+        if id_str in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK]:
+            if (year_str in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][id_str] and
+                    month_str in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][id_str][year_str]):
                 return True
         return False
 
@@ -298,45 +305,45 @@ class CalendarData:
     def _clear_empty_entries(data: Dict) -> None:
         years_to_delete = []
 
-        for year in data["tasks"]["normal"]:
+        for year in data[KEY_TASKS][KEY_NORMAL_TASK]:
             months_to_delete = []
-            for month in data["tasks"]["normal"][year]:
+            for month in data[KEY_TASKS][KEY_NORMAL_TASK][year]:
                 days_to_delete = []
-                for day in data["tasks"]["normal"][year][month]:
-                    if len(data["tasks"]["normal"][year][month][day]) == 0:
+                for day in data[KEY_TASKS][KEY_NORMAL_TASK][year][month]:
+                    if len(data[KEY_TASKS][KEY_NORMAL_TASK][year][month][day]) == 0:
                         days_to_delete.append(day)
                 for day in days_to_delete:
-                    del(data["tasks"]["normal"][year][month][day])
-                if len(data["tasks"]["normal"][year][month]) == 0:
+                    del(data[KEY_TASKS][KEY_NORMAL_TASK][year][month][day])
+                if len(data[KEY_TASKS][KEY_NORMAL_TASK][year][month]) == 0:
                     months_to_delete.append(month)
             for month in months_to_delete:
-                del(data["tasks"]["normal"][year][month])
-            if len(data["tasks"]["normal"][year]) == 0:
+                del(data[KEY_TASKS][KEY_NORMAL_TASK][year][month])
+            if len(data[KEY_TASKS][KEY_NORMAL_TASK][year]) == 0:
                 years_to_delete.append(year)
 
         for year in years_to_delete:
-            del(data["tasks"]["normal"][year])
+            del(data[KEY_TASKS][KEY_NORMAL_TASK][year])
 
     @staticmethod
     def _clear_past_hidden_entries(data: Dict) -> None:
         _, current_month, current_year = GregorianCalendar.current_date()
         task_ids_to_delete = []
 
-        for task_id in data["tasks"]["hidden_repetition"]:
+        for task_id in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK]:
             years_to_delete = []
-            for year in data["tasks"]["hidden_repetition"][task_id]:
+            for year in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id]:
                 months_to_delete = []
-                for month in data["tasks"]["hidden_repetition"][task_id][year]:
+                for month in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year]:
                     if (int(year) < current_year) or (int(year) == current_year and int(month) < current_month):
                         months_to_delete.append(month)
                 for month in months_to_delete:
-                    del(data["tasks"]["hidden_repetition"][task_id][year][month])
-                if len(data["tasks"]["hidden_repetition"][task_id][year]) == 0:
+                    del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year][month])
+                if len(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year]) == 0:
                     years_to_delete.append(year)
             for year in years_to_delete:
-                del(data["tasks"]["hidden_repetition"][task_id][year])
-            if len(data["tasks"]["hidden_repetition"][task_id]) == 0:
+                del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year])
+            if len(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id]) == 0:
                 task_ids_to_delete.append(task_id)
 
         for task_id in task_ids_to_delete:
-            del(data["tasks"]["hidden_repetition"][task_id])
+            del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id])

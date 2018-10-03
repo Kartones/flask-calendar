@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
 import locale
+import os
 
-from flask import Flask
+from flask import Flask, send_from_directory
 
 import config
 from authentication import Authentication
@@ -18,6 +19,14 @@ app = Flask(__name__)
 authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
 if config.LOCALE is not None:
     locale.setlocale(locale.LC_ALL, config.LOCALE)
+
+
+# To avoid main_calendar_action below shallowing favicon requests and generating error logs
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
+
 
 app.add_url_rule("/", "index_action", index_action, methods=["GET"])
 app.add_url_rule("/login", "login_action", login_action, methods=["GET"])

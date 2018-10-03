@@ -45,7 +45,8 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
-- 2018-07-29: CSS adjustments, show task name at delete/hide modal. User creation & deletion (by [@linuxnico](https://github.com/linuxnico))
+- 2018-10-03: Fix favicon.ico request creating error log traces & tiny code cleanup.
+- 2018-07-29: CSS adjustments, show task name at delete/hide modal. User creation & deletion (by [@linuxnico](https://github.com/linuxnico)).
 - 2018-06-29: Less round buttons, bigger task details textbox, trim task title (strip spaces pre and post text) upon create/update. WIP of ICal export feature (controlled via config.FEATURE_FLAG_ICAL_EXPORT boolean value).
 - 2018-03-08: Changed yellow color preset by orange, made brown darker. Double click "window" increased to 300ms. Small CSS adjustments.
 - 2018-02-25: Double-click on a day triggers new task creation at that day number (instead of day 1/current day as new task button does).
