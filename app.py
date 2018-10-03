@@ -3,7 +3,7 @@
 import locale
 import os
 
-from flask import Flask, send_from_directory
+from flask import Flask, Response, send_from_directory
 
 import config
 from authentication import Authentication
@@ -23,7 +23,7 @@ if config.LOCALE is not None:
 
 # To avoid main_calendar_action below shallowing favicon requests and generating error logs
 @app.route('/favicon.ico')
-def favicon():
+def favicon() -> Response:
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
                                mimetype='image/vnd.microsoft.icon')
 
