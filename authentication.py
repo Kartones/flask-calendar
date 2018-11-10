@@ -27,7 +27,7 @@ class Authentication:
 
     def add_user(self, username: str, plaintext_password: str, default_calendar: str) -> None:
         if username in self.contents:
-            raise ValueError(f"Username {username} already exists")
+            raise ValueError("Username {} already exists".format(username))
         hashed_password = self._hash_password(plaintext_password)
         self.contents[username] = {
             "username": username,

@@ -139,6 +139,7 @@ authentication.delete_user(username="a username")
 This are initially the only features I plan to build:
 
 - TESTS! Need to increase coverage and also test the main flask app (zero tests)
+- ICAL export (ongoing at /exporters/)
 - fortify cookie
 - desktop notifications (only for specific hour tasks)
 - decent time selector for desktop only

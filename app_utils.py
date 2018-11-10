@@ -83,8 +83,8 @@ def export_to_icalendar(calendar_data: CalendarData, calendar_id: str) -> bool:
     # authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
     # authentication.user_data(username=username)["ics_key"]
 
-    ical_exporter: ICalendar = ICalendar(username=username,
-                                         timezone=config.TIMEZONE,
-                                         months_to_export=config.MONTHS_TO_EXPORT)
+    ical_exporter = ICalendar(username=username,
+                              timezone=config.TIMEZONE,
+                              months_to_export=config.MONTHS_TO_EXPORT)  # type: ICalendar
     ical_exporter.write(calendar_data=calendar_data, data=data)
     return True
