@@ -45,6 +45,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2018-11-10: Fallback to Python 3.5 as it's more commonly found at Linux distros, etc.
 - 2018-10-03: Fix favicon.ico request creating error log traces & tiny code cleanup.
 - 2018-07-29: CSS adjustments, show task name at delete/hide modal. User creation & deletion (by [@linuxnico](https://github.com/linuxnico)).
 - 2018-06-29: Less round buttons, bigger task details textbox, trim task title (strip spaces pre and post text) upon create/update. WIP of ICal export feature (controlled via config.FEATURE_FLAG_ICAL_EXPORT boolean value).

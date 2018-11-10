@@ -31,7 +31,7 @@ class CalendarData:
             raise ValueError("Error loading calendar from file '{}'".format(filename))
         return cast(Dict, contents)
 
-    def users_list(self, data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> List:
+    def users_list(self, data: Optional[Dict] = None, calendar_id: Optional[str] = None) -> List:
         if data is None:
             if calendar_id is None:
                 raise ValueError("Need to provide either calendar_id or loaded data")
@@ -42,7 +42,7 @@ class CalendarData:
 
         return cast(List, data[KEY_USERS])
 
-    def user_details(self, username: str, data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> Dict:
+    def user_details(self, username: str, data: Optional[Dict] = None, calendar_id: Optional[str] = None) -> Dict:
         if data is None:
             if calendar_id is None:
                 raise ValueError("Need to provide either calendar_id or loaded data")
@@ -53,8 +53,8 @@ class CalendarData:
 
         return cast(Dict, data[KEY_USERS][username])
 
-    def tasks_from_calendar(self, year: int, month: int, view_past_tasks: Optional[bool]=True,
-                            data: Optional[Dict]=None, calendar_id: Optional[str]=None) -> Dict:
+    def tasks_from_calendar(self, year: int, month: int, view_past_tasks: Optional[bool] = True,
+                            data: Optional[Dict] = None, calendar_id: Optional[str] = None) -> Dict:
         if data is None:
             if calendar_id is None:
                 raise ValueError("Need to provide either calendar_id or loaded data")
@@ -236,8 +236,9 @@ class CalendarData:
 
         self._save_calendar(contents=data, filename=calendar_id)
 
-    def _repetitive_tasks_from_calendar(self, year: int, month: int, month_days: List, calendar_id: Optional[str]=None,
-                                        data: Dict=None) -> Dict:
+    def _repetitive_tasks_from_calendar(
+        self, year: int, month: int, month_days: List, calendar_id: Optional[str] = None, data: Dict = None
+    ) -> Dict:
         if data is None:
             if calendar_id is None:
                 raise ValueError("Need to provide either calendar_id or loaded data")
