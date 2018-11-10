@@ -114,8 +114,9 @@ class CalendarData:
     def date_for_frontend(year: int, month: int, day: int) -> str:
         return "{0}-{1:02d}-{2:02d}".format(int(year), int(month), int(day))
 
-    def add_repetitive_tasks_from_calendar(self, year: int, month: int, data: Dict, tasks: Dict,
-                                           view_past_tasks: Optional[bool]=True) -> Dict:
+    def add_repetitive_tasks_from_calendar(
+        self, year: int, month: int, data: Dict, tasks: Dict, view_past_tasks: Optional[bool] = True
+    ) -> Dict:
         current_day, current_month, current_year = GregorianCalendar.current_date()
 
         repetitive_tasks = self._repetitive_tasks_from_calendar(
