@@ -1,7 +1,14 @@
 import hashlib
 import json
 import os
+import time
 from typing import cast, Dict
+from werkzeug.contrib.cache import SimpleCache
+
+import config
+
+
+cache = SimpleCache()
 
 
 class Authentication:
@@ -17,8 +24,10 @@ class Authentication:
 
     def is_valid(self, username: str, password: str) -> bool:
         if username not in self.contents.keys():
+            self._failed_attempt(username)
             return False
         if self._hash_password(password) != self.contents[username]["password"]:
+            self._failed_attempt(username)
             return False
         return True
 
@@ -49,3 +58,14 @@ class Authentication:
     def _save(self) -> None:
         with open(os.path.join(".", self.data_folder, self.USERS_FILENAME), "w") as file:
             json.dump(self.contents, file)
+
+    def _failed_attempt(self, username: str) -> None:
+        key = "LF_{}".format(username)
+        attempts = cache.get(key)
+        if attempts is None:
+            attempts = 0
+        else:
+            attempts = int(attempts) + 1
+        wait = config.FAILED_LOGIN_DELAY_BASE**attempts
+        cache.set(key, attempts, timeout=7200)  # Keep for 2h
+        time.sleep(wait)

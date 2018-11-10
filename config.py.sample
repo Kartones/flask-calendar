@@ -11,3 +11,6 @@ TIMEZONE = "Europe/Madrid" # https://en.wikipedia.org/wiki/List_of_tz_database_t
 MONTHS_TO_EXPORT = 6  # currently only used for ICS export
 
 FEATURE_FLAG_ICAL_EXPORT = False
+
+# (base ^ attempts ) second delays between failed logins
+FAILED_LOGIN_DELAY_BASE = 2
