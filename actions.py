@@ -13,7 +13,10 @@ from app_utils import (previous_month_link, next_month_link, new_session_id, add
                        get_session_username, authorized, export_to_icalendar)
 
 
-authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
+authentication = Authentication(
+    data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
+    failed_login_delay_base=config.FAILED_LOGIN_DELAY_BASE
+)
 
 
 @authenticated

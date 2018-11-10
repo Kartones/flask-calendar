@@ -16,7 +16,10 @@ from actions import (index_action, login_action, do_login_action, main_calendar_
 
 app = Flask(__name__)
 
-authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
+authentication = Authentication(
+    data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
+    failed_login_delay_base=config.FAILED_LOGIN_DELAY_BASE
+)
 if config.LOCALE is not None:
     locale.setlocale(locale.LC_ALL, config.LOCALE)
 

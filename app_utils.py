@@ -80,7 +80,10 @@ def export_to_icalendar(calendar_data: CalendarData, calendar_id: str) -> bool:
     # TODO: set output folder from config, etc. and write the data. helper for filename format?
     # detect if ics_key key not present and throw exception to force configuration.
 
-    # authentication = Authentication(data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT)
+    # authentication = Authentication(
+    #     data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
+    #     failed_login_delay_base=config.FAILED_LOGIN_DELAY_BASE
+    # )
     # authentication.user_data(username=username)["ics_key"]
 
     ical_exporter = ICalendar(username=username,

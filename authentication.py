@@ -5,8 +5,6 @@ import time
 from typing import cast, Dict
 from werkzeug.contrib.cache import SimpleCache
 
-import config
-
 
 cache = SimpleCache()
 
@@ -15,11 +13,12 @@ class Authentication:
 
     USERS_FILENAME = "users.json"
 
-    def __init__(self, data_folder: str, password_salt: str) -> None:
+    def __init__(self, data_folder: str, password_salt: str, failed_login_delay_base: int) -> None:
         self.contents = {}  # type: Dict
         with open(os.path.join(".", data_folder, self.USERS_FILENAME)) as file:
             self.contents = json.load(file)
         self.password_salt = password_salt
+        self.failed_login_delay_base = failed_login_delay_base
         self.data_folder = data_folder
 
     def is_valid(self, username: str, password: str) -> bool:
@@ -66,6 +65,6 @@ class Authentication:
             attempts = 0
         else:
             attempts = int(attempts) + 1
-        wait = config.FAILED_LOGIN_DELAY_BASE**attempts
+        wait = self.failed_login_delay_base**attempts
         cache.set(key, attempts, timeout=7200)  # Keep for 2h
         time.sleep(wait)

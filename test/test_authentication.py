@@ -8,7 +8,8 @@ CORRECT_PASSWORD = "a_password"
 
 @pytest.fixture
 def authentication() -> Authentication:
-    return Authentication(data_folder="test/fixtures", password_salt="a test salt")
+    return Authentication(
+            data_folder="test/fixtures", password_salt="a test salt", failed_login_delay_base=0)
 
 
 def test_not_authenticated_if_username_doesnt_exists(authentication: Authentication) -> None:
