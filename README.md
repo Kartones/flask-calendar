@@ -143,8 +143,6 @@ This are initially the only features I plan to build:
 - ICAL export (ongoing at /exporters/)
 - fortify cookie
 - desktop notifications (only for specific hour tasks)
-- decent time selector for desktop only
-- min and max dates for input type date: min="xxxx-xx-xx" max="xxxx-xx-xx"
 - a decent weekday and month day choosers when recurrency is selected
 - Yearly repetition? (would need month and day)
 - search: simple, just python lowercased search at task titles. think how to represent results, if to go to the month or what
