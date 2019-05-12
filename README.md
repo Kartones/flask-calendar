@@ -45,6 +45,7 @@ Overall, lessons learned:
 
 List of new features added to the original project commits
 
+- 2019-05-12: Option to automatically decorate URLs at task details as `<a hrefs>` (with `target=_blank`). Needs new `config.AUTO_DECORATE_TASK_DETAILS_HYPERLINK` value (boolean).
 - 2018-11-10: Basic rate limiter for failed login attempts. Needs new config.FAILED_LOGIN_DELAY_BASE value, makes user wait exponentially more on each failed attempt, just to hinder brute forcing.
 - 2018-11-10: Fallback to Python 3.5 as it's more commonly found at Linux distros, etc.
 - 2018-10-03: Fix favicon.ico request creating error log traces & tiny code cleanup.
