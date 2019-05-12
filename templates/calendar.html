@@ -60,7 +60,7 @@
                                     {% endif %}
                                     {{ task["title"] }}
                                     <p class="accordion-hidden">
-                                        {{ task["details"]|safe }}
+                                        {{ task["details"]|task_details_for_markup|safe }}
                                          <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"
                                             data-month="{{ day.month }}"
                                             data-day="{{ day.day }}"

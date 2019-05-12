@@ -187,7 +187,7 @@ class CalendarData:
 
     def create_task(self, calendar_id: str, year: Optional[int], month: Optional[int], day: Optional[int], title: str,
                     is_all_day: bool, due_time: str, details: str, color: str, has_repetition: bool,
-                    repetition_type: str, repetition_subtype: str, repetition_value: int) -> bool:
+                    repetition_type: Optional[str], repetition_subtype: Optional[str], repetition_value: int) -> bool:
         details = details if len(details) > 0 else "&nbsp;"
         data = self.load_calendar(calendar_id)
 

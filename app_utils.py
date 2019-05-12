@@ -1,4 +1,5 @@
 from functools import wraps
+import re
 from typing import Any, Callable
 import uuid
 from werkzeug.contrib.cache import SimpleCache
@@ -13,8 +14,11 @@ from constants import SESSION_ID
 from exporters.icalendar import ICalendar
 from gregorian_calendar import GregorianCalendar
 
-
 cache = SimpleCache()
+
+# captures patterns like www.xxx xxx. plus querystring parameters
+URLS_REGEX_PATTERN = r"((?:(?:https?):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.&]+)"
+DECORATED_URL_FORMAT = "<a href=\"{}\" target=\"_blank\">{}</a>"
 
 
 def authenticated(decorated_function: Callable) -> Any:
@@ -91,3 +95,19 @@ def export_to_icalendar(calendar_data: CalendarData, calendar_id: str) -> bool:
                               months_to_export=config.MONTHS_TO_EXPORT)  # type: ICalendar
     ical_exporter.write(calendar_data=calendar_data, data=data)
     return True
+
+
+def task_details_for_markup(details: str) -> str:
+    if not config.AUTO_DECORATE_TASK_DETAILS_HYPERLINK:
+        return details
+
+    decorated_fragments = []
+
+    fragments = re.split(URLS_REGEX_PATTERN, details)
+    for index, fragment in enumerate(fragments):
+        if index % 2 == 1:
+            decorated_fragments.append(DECORATED_URL_FORMAT.format(fragment, fragment))
+        else:
+            decorated_fragments.append(fragment)
+
+    return "".join(decorated_fragments)

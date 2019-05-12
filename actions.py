@@ -1,8 +1,9 @@
 
 import re
-from typing import Optional  # noqa: F401
+from typing import (cast, Optional)  # noqa: F401
+from werkzeug.wrappers import Response
 
-from flask import render_template, request, jsonify, redirect, abort, Response, make_response
+from flask import render_template, request, jsonify, redirect, abort, make_response
 
 import config
 from constants import SESSION_ID
@@ -27,7 +28,7 @@ def index_action() -> Response:
 
 
 def login_action() -> Response:
-    return render_template("login.html")
+    return cast(Response, render_template("login.html"))
 
 
 def do_login_action() -> Response:
@@ -40,7 +41,7 @@ def do_login_action() -> Response:
         response = make_response(redirect("/"))
         # TODO: other params from http://flask.pocoo.org/docs/0.12/api/#flask.Response.set_cookie
         response.set_cookie(key=SESSION_ID, value=session_id, max_age=2678400)  # 1 month
-        return response
+        return cast(Response, response)
     else:
         return redirect("/login")
 
@@ -67,19 +68,21 @@ def main_calendar_action(calendar_id: str) -> Response:
     tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks,
                                                              view_past_tasks=view_past_tasks)
 
-    return render_template("calendar.html",
-                           calendar_id=calendar_id,
-                           year=year,
-                           month=month,
-                           month_name=month_name,
-                           current_year=current_year,
-                           current_month=current_month,
-                           current_day=current_day,
-                           month_days=GregorianCalendar.month_days(year=year, month=month),
-                           previous_month_link=previous_month_link(year=year, month=month),
-                           next_month_link=next_month_link(year=year, month=month),
-                           base_url=config.BASE_URL,
-                           tasks=tasks)
+    return cast(Response, render_template(
+        "calendar.html",
+        calendar_id=calendar_id,
+        year=year,
+        month=month,
+        month_name=month_name,
+        current_year=current_year,
+        current_month=current_month,
+        current_day=current_day,
+        month_days=GregorianCalendar.month_days(year=year, month=month),
+        previous_month_link=previous_month_link(year=year, month=month),
+        next_month_link=next_month_link(year=year, month=month),
+        base_url=config.BASE_URL,
+        tasks=tasks)
+    )
 
 
 @authenticated
@@ -103,16 +106,18 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
         "details": ""
     }
 
-    return render_template("task.html",
-                           calendar_id=calendar_id,
-                           year=year,
-                           month=month,
-                           min_year=config.MIN_YEAR,
-                           max_year=config.MAX_YEAR,
-                           month_names=month_names,
-                           task=task,
-                           base_url=config.BASE_URL,
-                           editing=False)
+    return cast(Response, render_template(
+        "task.html",
+        calendar_id=calendar_id,
+        year=year,
+        month=month,
+        min_year=config.MIN_YEAR,
+        max_year=config.MAX_YEAR,
+        month_names=month_names,
+        task=task,
+        base_url=config.BASE_URL,
+        editing=False)
+    )
 
 
 @authenticated
@@ -135,17 +140,19 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
     if task["details"] == "&nbsp;":
         task["details"] = ""
 
-    return render_template("task.html",
-                           calendar_id=calendar_id,
-                           year=year,
-                           month=month,
-                           day=day,
-                           min_year=config.MIN_YEAR,
-                           max_year=config.MAX_YEAR,
-                           month_names=month_names,
-                           task=task,
-                           base_url=config.BASE_URL,
-                           editing=True)
+    return cast(Response, render_template(
+        "task.html",
+        calendar_id=calendar_id,
+        year=year,
+        month=month,
+        day=day,
+        min_year=config.MIN_YEAR,
+        max_year=config.MAX_YEAR,
+        month_names=month_names,
+        task=task,
+        base_url=config.BASE_URL,
+        editing=True)
+    )
 
 
 @authenticated
@@ -255,7 +262,7 @@ def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_i
                               task_id=int(task_id))
     export_to_icalendar(calendar_data, calendar_id)
 
-    return jsonify({})
+    return cast(Response, jsonify({}))
 
 
 @authenticated
@@ -272,7 +279,7 @@ def update_task_day_action(calendar_id: str, year: str, month: str, day: str, ta
                                   new_day_str=new_day)
     export_to_icalendar(calendar_data, calendar_id)
 
-    return jsonify({})
+    return cast(Response, jsonify({}))
 
 
 @authenticated
@@ -286,4 +293,4 @@ def hide_repetition_task_instance_action(calendar_id: str, year: str, month: str
                                                 task_id_str=task_id)
     export_to_icalendar(calendar_data, calendar_id)
 
-    return jsonify({})
+    return cast(Response, jsonify({}))

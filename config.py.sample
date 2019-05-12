@@ -14,3 +14,6 @@ FEATURE_FLAG_ICAL_EXPORT = False
 
 # (base ^ attempts ) second delays between failed logins
 FAILED_LOGIN_DELAY_BASE = 2
+
+# If true, will automatically decorate hyperlinks with <a> tags upon rendering them
+AUTO_DECORATE_TASK_DETAILS_HYPERLINK = True
