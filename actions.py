@@ -11,7 +11,7 @@ from gregorian_calendar import GregorianCalendar
 from calendar_data import CalendarData
 from authentication import Authentication
 from app_utils import (previous_month_link, next_month_link, new_session_id, add_session, authenticated,
-                       get_session_username, authorized)
+                       get_session_username, authorized, export_to_icalendar)
 
 
 authentication = Authentication(
