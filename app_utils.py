@@ -11,7 +11,6 @@ import config
 from authorization import Authorization
 from calendar_data import CalendarData
 from constants import SESSION_ID
-from exporters.icalendar import ICalendar
 from gregorian_calendar import GregorianCalendar
 
 cache = SimpleCache()
@@ -71,30 +70,6 @@ def add_session(session_id: str, username: str) -> None:
 
 def get_session_username(session_id: str) -> str:
     return str(cache.get(session_id))
-
-
-def export_to_icalendar(calendar_data: CalendarData, calendar_id: str) -> bool:
-    if not config.FEATURE_FLAG_ICAL_EXPORT:
-        return True
-
-    session_id = str(request.cookies.get(SESSION_ID))
-    username = get_session_username(session_id)
-    data = calendar_data.load_calendar(calendar_id)
-
-    # TODO: set output folder from config, etc. and write the data. helper for filename format?
-    # detect if ics_key key not present and throw exception to force configuration.
-
-    # authentication = Authentication(
-    #     data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
-    #     failed_login_delay_base=config.FAILED_LOGIN_DELAY_BASE
-    # )
-    # authentication.user_data(username=username)["ics_key"]
-
-    ical_exporter = ICalendar(username=username,
-                              timezone=config.TIMEZONE,
-                              months_to_export=config.MONTHS_TO_EXPORT)  # type: ICalendar
-    ical_exporter.write(calendar_data=calendar_data, data=data)
-    return True
 
 
 def task_details_for_markup(details: str) -> str:

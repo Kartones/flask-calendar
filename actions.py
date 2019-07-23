@@ -11,7 +11,7 @@ from gregorian_calendar import GregorianCalendar
 from calendar_data import CalendarData
 from authentication import Authentication
 from app_utils import (previous_month_link, next_month_link, new_session_id, add_session, authenticated,
-                       get_session_username, authorized, export_to_icalendar)
+                       get_session_username, authorized)
 
 
 authentication = Authentication(
@@ -200,7 +200,6 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
                               month_str=month,
                               day_str=day,
                               task_id=int(task_id))
-    export_to_icalendar(calendar_data, calendar_id)
 
     if updated_year is None:
         return redirect("{}/{}/".format(config.BASE_URL, calendar_id), code=302)
@@ -243,7 +242,6 @@ def save_task_action(calendar_id: str) -> Response:
                               repetition_type=repetition_type,
                               repetition_subtype=repetition_subtype,
                               repetition_value=repetition_value)
-    export_to_icalendar(calendar_data, calendar_id)
 
     if year is None:
         return redirect("{}/{}/".format(config.BASE_URL, calendar_id), code=302)
@@ -260,7 +258,6 @@ def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_i
                               month_str=month,
                               day_str=day,
                               task_id=int(task_id))
-    export_to_icalendar(calendar_data, calendar_id)
 
     return cast(Response, jsonify({}))
 
@@ -277,7 +274,6 @@ def update_task_day_action(calendar_id: str, year: str, month: str, day: str, ta
                                   day_str=day,
                                   task_id=int(task_id),
                                   new_day_str=new_day)
-    export_to_icalendar(calendar_data, calendar_id)
 
     return cast(Response, jsonify({}))
 
@@ -291,6 +287,5 @@ def hide_repetition_task_instance_action(calendar_id: str, year: str, month: str
                                                 month_str=month,
                                                 day_str=day,
                                                 task_id_str=task_id)
-    export_to_icalendar(calendar_data, calendar_id)
 
     return cast(Response, jsonify({}))
