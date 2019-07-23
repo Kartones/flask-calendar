@@ -2,7 +2,7 @@ from functools import wraps
 import re
 from typing import Any, Callable
 import uuid
-from werkzeug.contrib.cache import SimpleCache
+from cachelib.simple import SimpleCache
 
 from flask import abort, redirect, request
 

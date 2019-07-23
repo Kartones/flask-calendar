@@ -3,7 +3,7 @@ import json
 import os
 import time
 from typing import cast, Dict
-from werkzeug.contrib.cache import SimpleCache
+from cachelib.simple import SimpleCache
 
 
 cache = SimpleCache()
