@@ -67,17 +67,15 @@ List of new features added to the original project commits
 
 ## Requirements
 
-### Production
-
 - Python 3.5+ (type hints are compatible with 3.5 upwards)
 
 Other requirements are on the `requirements.txt` file. Install them with `pip` or similar.
 
-### Development
+## Docker Environment
 
-- Docker and Docker Compose
+- Requires Docker and Docker Compose
 
-## Running
+### Running
 
 - copy `config.py.sample` to `config.py` and fill in.
 
@@ -99,16 +97,45 @@ sudo dpkg-reconfigure locales
 ```
 
 
-## Testing
-- Install requirements from `requirements-dev.txt` file.
-
+### Testing
+- Run tests:
 ```bash
 make test
 ```
 
-- To extract code coverage:
+- Extract code coverage:
 ```bash
 make coverage
+```
+
+## Virtualenv Environment
+
+1. Create the virtual environment:
+```bash
+$ python3 -m venv .venv
+```
+
+2. Activate it:
+```bash
+$ source .venv/bin/activate
+```
+
+3. Install dependencies (in the virtual environment):
+```bash
+(.venv) $ pip install -r requirements.txt
+(.venv) $ pip install -r requirements-dev.txt
+```
+
+4. You are now ready to run the test, extract coverage or run a testing server:
+```bash
+(.venv) $ # Run tests
+(.venv) $ pytest
+
+(.venv) $ # Extract coverage into './cov_html' folder
+(.venv) $ pytest --cov-report html:cov_html  --cov=. --cov-config .coveragerc
+
+(.venv) $ # Run testing server
+(.venv) $ python app.py
 ```
 
 ## Miscellaneous

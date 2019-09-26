@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 
-SOURCE_FOLDER = "."
+SOURCE_PATHS = "*.py test"
 
 
 def test_flake8_compliance() -> None:
@@ -10,7 +10,7 @@ def test_flake8_compliance() -> None:
                                             shell=True,
                                             stderr=sys.stderr).decode("ascii").replace("\n", "")
 
-    result = subprocess.call("{} {}".format(flake8_binary, SOURCE_FOLDER),
+    result = subprocess.call("{} {}".format(flake8_binary, SOURCE_PATHS),
                              shell=True,
                              stdout=sys.stdout,
                              stderr=sys.stderr)
@@ -24,7 +24,7 @@ def test_mypy_compliance() -> None:
 
     result = subprocess.call("{} --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs"
                              " --warn-redundant-casts --warn-return-any --warn-unused-ignores --strict-optional"
-                             " {}".format(mypy_binary, SOURCE_FOLDER),
+                             " {}".format(mypy_binary, SOURCE_PATHS),
                              shell=True,
                              stdout=sys.stdout,
                              stderr=sys.stderr)
