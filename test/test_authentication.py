@@ -12,16 +12,13 @@ def authentication() -> Authentication:
             data_folder="test/fixtures", password_salt="a test salt", failed_login_delay_base=0)
 
 
-def test_not_authenticated_if_username_doesnt_exists(authentication: Authentication) -> None:
-    assert authentication.is_valid(username="an_irrelevant_username", password="an_irrelevant_password") is False
-
-
-def test_not_authenticated_if_password_doesnt_matches(authentication: Authentication) -> None:
-    assert authentication.is_valid(username=EXISTING_USERNAME, password="an_irrelevant_password") is False
-
-
-def test_authenticated_if_credentials_correct(authentication: Authentication) -> None:
-    assert authentication.is_valid(username=EXISTING_USERNAME, password=CORRECT_PASSWORD) is True
+@pytest.mark.parametrize("username, password, expected", [
+    ("an_irrelevant_username", "an_irrelevant_password", False),
+    (EXISTING_USERNAME, "an_irrelevant_password", False),
+    (EXISTING_USERNAME, CORRECT_PASSWORD, True),
+])
+def test_is_valid_authentication(authentication: Authentication, username: str, password: str, expected: bool):
+    assert authentication.is_valid(username=username, password=password) is expected
 
 
 def test_retrieve_user_data(authentication: Authentication) -> None:

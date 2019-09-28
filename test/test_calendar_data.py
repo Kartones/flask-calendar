@@ -10,31 +10,25 @@ def calendar_data() -> CalendarData:
     return CalendarData("test/fixtures")
 
 
-def test_no_data_nor_calendar_id_supplied_to_retrieve_tasks(calendar_data: CalendarData) -> None:
-    with pytest.raises(ValueError):
-        calendar_data.tasks_from_calendar(year=2001, month=1, data=None, calendar_id=None)
-
-
-def test_errors_if_data_missing_keys(calendar_data: CalendarData) -> None:
-    with pytest.raises(ValueError):
-        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={})
-    with pytest.raises(ValueError):
-        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {}})
-    with pytest.raises(ValueError):
-        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {
+def test_error_retrieving_tasks_from_calendar(subtests, calendar_data: CalendarData) -> None:
+    test_data = [
+        {"year": 2001, "month": 1, "calendar_id": None, "data": None},
+        {"year": 2001, "month": 1, "calendar_id": None, "data": {}},
+        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {}}},
+        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {
             "normal": {},
-            "hidden_repetition": {}
-        }})
-    with pytest.raises(ValueError):
-        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {
+            "hidden_repetition": {}}}},
+        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {
             "normal": {},
-            "repetition": {}
-        }})
-    with pytest.raises(ValueError):
-        calendar_data.tasks_from_calendar(year=2001, month=1, calendar_id=None, data={"tasks": {
+            "repetition": {}}}},
+        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {
             "repetition": {},
-            "hidden_repetition": {}
-        }})
+            "hidden_repetition": {}}}},
+    ]
+    for data in test_data:
+        with subtests.test(data=data["data"]):
+            with pytest.raises(ValueError):
+                calendar_data.tasks_from_calendar(**data)
 
 
 def test_loads_a_valid_data_file(calendar_data: CalendarData) -> None:

@@ -3,3 +3,4 @@ flake8
 mypy
 coverage
 pytest-cov
+pytest-subtests
