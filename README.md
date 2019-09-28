@@ -168,7 +168,7 @@ authentication.delete_user(username="a username")
 This are initially the only features I plan to build:
 
 - TESTS! Need to increase coverage
-- ICAL export (ongoing at /exporters/)
+- ICAL export (ongoing at [a separate branch](https://github.com/Kartones/flask-calendar/tree/icalendar-exporter))
 - fortify cookie
 - desktop notifications (only for specific hour tasks)
 - a decent weekday and month day choosers when recurrency is selected
