@@ -5,13 +5,13 @@ from werkzeug.wrappers import Response
 
 from flask import render_template, request, jsonify, redirect, abort, make_response
 
-from settings import config
-from constants import SESSION_ID
-from gregorian_calendar import GregorianCalendar
-from calendar_data import CalendarData
-from authentication import Authentication
-from app_utils import (previous_month_link, next_month_link, new_session_id, add_session, authenticated,
-                       get_session_username, authorized)
+from .settings import config
+from .constants import SESSION_ID
+from .gregorian_calendar import GregorianCalendar
+from .calendar_data import CalendarData
+from .authentication import Authentication
+from .app_utils import (previous_month_link, next_month_link, new_session_id, add_session, authenticated,
+                        get_session_username, authorized)
 
 
 authentication = Authentication(
