@@ -6,7 +6,7 @@ from typing import cast
 
 from flask import Flask, Response, send_from_directory
 
-import config
+from settings import config
 from authentication import Authentication
 
 
