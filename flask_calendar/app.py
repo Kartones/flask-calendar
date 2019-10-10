@@ -6,6 +6,7 @@ from typing import cast
 
 from flask import Flask, Response, send_from_directory
 
+from .constants import TEMPLATE_DIR
 from .settings import config
 from .authentication import Authentication
 
@@ -16,7 +17,7 @@ from .actions import (index_action, login_action, do_login_action, main_calendar
 from .app_utils import task_details_for_markup
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=TEMPLATE_DIR)
 
 authentication = Authentication(
     data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
