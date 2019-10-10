@@ -2,7 +2,7 @@ from unittest.mock import ANY, patch, MagicMock
 
 import pytest
 
-from calendar_data import CalendarData
+from flask_calendar.calendar_data import CalendarData
 
 
 @pytest.fixture
@@ -97,7 +97,7 @@ def test_joins_repetitive_tasks_with_normal_ones(calendar_data: CalendarData) ->
     assert tasks["6"][1]["repetition_type"] == CalendarData.REPETITION_TYPE_WEEKLY
 
 
-@patch("calendar_data.CalendarData._save_calendar")
+@patch("flask_calendar.calendar_data.CalendarData._save_calendar")
 def test_creates_new_normal_task(save_calendar_mock: MagicMock, calendar_data: CalendarData) -> None:
     year = 2017
     month = 12

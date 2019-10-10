@@ -1,5 +1,5 @@
 import pytest
-from app_utils import task_details_for_markup
+from flask_calendar.app_utils import task_details_for_markup
 
 
 SOURCE_STRING_PLACEHOLDER = "pre {} post"

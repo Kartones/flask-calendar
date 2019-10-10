@@ -1,6 +1,6 @@
 import pytest
 
-from authentication import Authentication
+from flask_calendar.authentication import Authentication
 
 EXISTING_USERNAME = "a_username"
 CORRECT_PASSWORD = "a_password"
