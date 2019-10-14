@@ -135,7 +135,7 @@ $ source .venv/bin/activate
 (.venv) $ pytest --cov-report html:cov_html  --cov=. --cov-config .coveragerc
 
 (.venv) $ # Run testing server
-(.venv) $ python app.py
+(.venv) $ python -m flask_calendar.app
 ```
 
 ## Miscellaneous
