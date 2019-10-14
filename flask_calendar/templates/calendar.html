@@ -40,43 +40,46 @@
 
     <ul class="calendar" id="calendar">
         {% for day in month_days %}
-            {% if day.month != month %}
-                <li class="day othermonth"
-                    data-year="{{ day.year }}"
-                    data-month="{{ day.month }}"
-                    data-day="{{ day.day }}">
+            <li
+                {% if day.month != month %}
+                    class="day othermonth"
+                {% else %}
+                    class="day"
+                {% endif %}
+                data-year="{{ day.year }}"
+                data-month="{{ day.month }}"
+                data-day="{{ day.day }}">
 
-                    <span class="daynumber">{{ day.day }}</span>
-                </li>
-            {% else %}
-                <li class="day"
-                    data-year="{{ day.year }}"
-                    data-month="{{ day.month }}"
-                    data-day="{{ day.day }}">
+                {% if day.day == current_day and day.month == current_month and day.year == current_year %}
+                        <span class="daynumber-current">
+                {% else %}
+                        <span class="daynumber">
+                {% endif %}
+                {{ day.day }}</span>
+                <ul class="tasks">
+                    {% if day.day|string in tasks %}
+                        {% for task in tasks[day.day|string]|sort(attribute="due_time") %}
+                            <li
+                                class="task"
+                                {% if day.month != month %}
+                                    style="background-color:grey"
+                                {% else %}
+                                    style="background-color:{{ task["color"] }}"
+                                {% endif %}
+                                data-year="{{ day.year }}"
+                                data-month="{{ day.month }}"
+                                data-day="{{ day.day }}"
+                                data-id="{{ task["id"] }}"
+                                {% if "repetition_type" in task %}data-recurrent="1"{% endif %}>
 
-                    {% if day.day == current_day and day.month == current_month and day.year == current_year %}
-                         <span class="daynumber-current">
-                    {% else %}
-                         <span class="daynumber">
-                    {% endif %}
-                   {{ day.day }}</span>
-                    <ul class="tasks">
-                       {% if day.day|string in tasks %}
-                            {% for task in tasks[day.day|string]|sort(attribute="due_time") %}
-                                <li style="background-color:{{ task["color"] }}" class="task"
-                                    data-year="{{ day.year }}"
-                                    data-month="{{ day.month }}"
-                                    data-day="{{ day.day }}"
-                                    data-id="{{ task["id"] }}"
-                                    {% if "repetition_type" in task %}data-recurrent="1"{% endif %}>
-
-                                    {% if not task["is_all_day"] %}
-                                        {{ task["due_time"] }}
-                                    {% endif %}
-                                    {{ task["title"] }}
-                                    <p class="accordion-hidden">
-                                        {{ task["details"]|task_details_for_markup|safe }}
-                                         <a href="#"
+                                {% if not task["is_all_day"] %}
+                                    {{ task["due_time"] }}
+                                {% endif %}
+                                {{ task["title"] }}
+                                <p class="accordion-hidden">
+                                    {{ task["details"]|task_details_for_markup|safe }}
+                                    {% if day.month == current_month and day.year == current_year %}
+                                        <a href="#"
                                             data-id="{{ task["id"] }}"
                                             data-year="{{ day.year }}"
                                             data-month="{{ day.month }}"
@@ -85,28 +88,28 @@
                                             class="button smaller remove-task"
                                             title="Remove task">x</a>
                                         {% if "repetition_type" in task %}
-                                         <a href="#"
-                                            data-id="{{ task["id"] }}"
-                                            data-year="{{ day.year }}"
-                                            data-month="{{ day.month }}"
-                                            data-day="{{ day.day }}"
-                                            data-title="{{ task["title"]|replace("\"","") }}"
-                                            class="button smaller hide-recurrent-task"
-                                            title="Hide this task ocurrence">H</a>
+                                            <a href="#"
+                                                data-id="{{ task["id"] }}"
+                                                data-year="{{ day.year }}"
+                                                data-month="{{ day.month }}"
+                                                data-day="{{ day.day }}"
+                                                data-title="{{ task["title"]|replace("\"","") }}"
+                                                class="button smaller hide-recurrent-task"
+                                                title="Hide this task ocurrence">H</a>
                                         {% endif %}
-                                         <a href="/{{ calendar_id }}/{{ day.year }}/{{ day.month }}/{{ day.day }}/{{ task["id"] }}{% if "repetition_type" in task %}?repeats=1{% endif %}"
-                                            class="button smaller edit-task"
-                                            title="Edit task">E</a>
-                                        {% if "repetition_type" in task %}
-                                        <span class="button smaller recurrent-task" title="Recurent task">R</span>
-                                        {% endif %}
-                                    </p>
-                                </li>
-                            {% endfor %}
-                       {% endif %}
-                    </ul>
-                </li>
-            {% endif %}
+                                            <a href="/{{ calendar_id }}/{{ day.year }}/{{ day.month }}/{{ day.day }}/{{ task["id"] }}{% if "repetition_type" in task %}?repeats=1{% endif %}"
+                                                class="button smaller edit-task"
+                                                title="Edit task">E</a>
+                                    {% endif %}
+                                    {% if "repetition_type" in task %}
+                                    <span class="button smaller recurrent-task" title="Recurent task">R</span>
+                                    {% endif %}
+                                </p>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </li>
         {% endfor %}
     </ul>
 
@@ -330,19 +333,22 @@
                 ToggleDetails(eventData.target);
                 return;
             }
-            if (eventData.target.nodeName === "A" && eventData.target.className.indexOf("remove-task") > -1) {
-                DeleteTask(eventData.target.getAttribute("data-year"),
+            if (eventData.target.nodeName === "A") {
+                if (eventData.target.className.indexOf("remove-task") > -1) {
+                    DeleteTask(eventData.target.getAttribute("data-year"),
                            eventData.target.getAttribute("data-month"),
                            eventData.target.getAttribute("data-day"),
                            eventData.target.getAttribute("data-id"),
                            eventData.target.getAttribute("data-title"));
-            }
-            if (eventData.target.nodeName === "A" && eventData.target.className.indexOf("hide-recurrent-task") > -1) {
-                DeleteTaskOcurrence(eventData.target.getAttribute("data-year"),
-                                    eventData.target.getAttribute("data-month"),
-                                    eventData.target.getAttribute("data-day"),
-                                    eventData.target.getAttribute("data-id"),
-                                    eventData.target.getAttribute("data-title"));
+                } else {
+                    if (eventData.target.className.indexOf("hide-recurrent-task") > -1) {
+                        DeleteTaskOcurrence(eventData.target.getAttribute("data-year"),
+                                        eventData.target.getAttribute("data-month"),
+                                        eventData.target.getAttribute("data-day"),
+                                        eventData.target.getAttribute("data-id"),
+                                        eventData.target.getAttribute("data-title"));
+                    }
+                }
             }
             return;
         };
