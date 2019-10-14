@@ -4,7 +4,7 @@ import os
 import time
 
 
-from gregorian_calendar import GregorianCalendar
+from flask_calendar.gregorian_calendar import GregorianCalendar
 
 
 KEY_TASKS = "tasks"

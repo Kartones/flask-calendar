@@ -6,14 +6,14 @@ from typing import cast
 
 from flask import Flask, Response, send_from_directory
 
-from settings import config
-from authentication import Authentication
+from flask_calendar.settings import config
+from flask_calendar.authentication import Authentication
 
 
-from actions import (index_action, login_action, do_login_action, main_calendar_action, new_task_action,
-                     edit_task_action, update_task_action, save_task_action, delete_task_action, update_task_day_action,
-                     hide_repetition_task_instance_action)
-from app_utils import task_details_for_markup
+from flask_calendar.actions import (index_action, login_action, do_login_action, main_calendar_action, new_task_action,
+                                    edit_task_action, update_task_action, save_task_action, delete_task_action,
+                                    update_task_day_action, hide_repetition_task_instance_action)
+from flask_calendar.app_utils import task_details_for_markup
 
 
 app = Flask(__name__)
