@@ -7,7 +7,7 @@ import importlib.util
 config = None
 
 
-def load_file(config_name: str = "config.py"):
+def load_file(config_name: str = "config.py") -> None:
     global config
     path = Path(config_name)
     if not path.exists():
