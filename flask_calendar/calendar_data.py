@@ -37,7 +37,7 @@ class CalendarData:
                 raise ValueError("Need to provide either calendar_id or loaded data")
             else:
                 data = self.load_calendar(calendar_id)
-        if KEY_USERS not in data.keys():
+        if KEY_USERS not in data:
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
         return cast(List, data[KEY_USERS])
@@ -48,7 +48,7 @@ class CalendarData:
                 raise ValueError("Need to provide either calendar_id or loaded data")
             else:
                 data = self.load_calendar(calendar_id)
-        if KEY_USERS not in data.keys():
+        if KEY_USERS not in data:
             raise ValueError("Incomplete data for calendar id '{}'".format(calendar_id))
 
         return cast(Dict, data[KEY_USERS][username])
@@ -63,11 +63,13 @@ class CalendarData:
         return False
 
     def tasks_from_calendar(self, year: int, month: int, data: Dict) -> Dict:
-        if KEY_TASKS not in data.keys():
+        if not data or KEY_TASKS not in data:
             raise ValueError("Incomplete data for calendar")
-        if not all([KEY_NORMAL_TASK in data[KEY_TASKS].keys(),
-                    KEY_REPETITIVE_TASK in data[KEY_TASKS].keys(),
-                    KEY_REPETITIVE_HIDDEN_TASK in data[KEY_TASKS].keys()]):
+        if not all([
+            KEY_NORMAL_TASK in data[KEY_TASKS],
+            KEY_REPETITIVE_TASK in data[KEY_TASKS],
+            KEY_REPETITIVE_HIDDEN_TASK in data[KEY_TASKS]
+        ]):
             raise ValueError("Incomplete data for calendar")
 
         tasks = {}  # type: Dict
@@ -96,7 +98,7 @@ class CalendarData:
             if self.is_past(day.year, day.month, current_year, current_month):
                 tasks[month_str] = {}
 
-            for task_day_number in tasks[month_str].keys():
+            for task_day_number in tasks[month_str]:
                 if day.month == current_month and int(task_day_number) < current_day:
                     tasks[month_str][task_day_number] = []
 
@@ -131,7 +133,7 @@ class CalendarData:
 
         repetitive_tasks = self._repetitive_tasks_from_calendar(year, month, data)
 
-        for repetitive_tasks_month in repetitive_tasks.keys():
+        for repetitive_tasks_month in repetitive_tasks:
             for day, day_tasks in repetitive_tasks[repetitive_tasks_month].items():
                 if repetitive_tasks_month not in tasks:
                     tasks[repetitive_tasks_month] = {}
@@ -241,9 +243,9 @@ class CalendarData:
         tasks[month_str][day_str].append(new_task)
 
     def _repetitive_tasks_from_calendar(self, year: int, month: int, data: Dict) -> Dict:
-        if KEY_TASKS not in data.keys():
+        if KEY_TASKS not in data:
             ValueError("Incomplete data for calendar")
-        if KEY_REPETITIVE_TASK not in data[KEY_TASKS].keys():
+        if KEY_REPETITIVE_TASK not in data[KEY_TASKS]:
             ValueError("Incomplete data for calendar")
 
         repetitive_tasks = {}  # type: Dict

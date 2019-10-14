@@ -22,7 +22,7 @@ class Authentication:
         self.data_folder = data_folder
 
     def is_valid(self, username: str, password: str) -> bool:
-        if username not in self.contents.keys():
+        if username not in self.contents:
             self._failed_attempt(username)
             return False
         if self._hash_password(password) != self.contents[username]["password"]:
