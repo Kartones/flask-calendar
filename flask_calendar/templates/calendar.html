@@ -57,8 +57,8 @@
                 {% endif %}
                 {{ day.day }}</span>
                 <ul class="tasks">
-                    {% if day.day|string in tasks %}
-                        {% for task in tasks[day.day|string]|sort(attribute="due_time") %}
+                    {% if day.month|string in tasks and day.day|string in tasks[day.month|string] %}
+                        {% for task in tasks[day.month|string][day.day|string]|sort(attribute="due_time") %}
                             <li
                                 class="task"
                                 {% if day.month != month %}
@@ -78,7 +78,7 @@
                                 {{ task["title"] }}
                                 <p class="accordion-hidden">
                                     {{ task["details"]|task_details_for_markup|safe }}
-                                    {% if day.month == current_month and day.year == current_year %}
+                                    {% if day.month == month %}
                                         <a href="#"
                                             data-id="{{ task["id"] }}"
                                             data-year="{{ day.year }}"
@@ -102,7 +102,7 @@
                                                 title="Edit task">E</a>
                                     {% endif %}
                                     {% if "repetition_type" in task %}
-                                    <span class="button smaller recurrent-task" title="Recurent task">R</span>
+                                        <span class="button smaller recurrent-task" title="Recurent task">R</span>
                                     {% endif %}
                                 </p>
                             </li>

@@ -15,7 +15,8 @@ from flask_calendar.app_utils import (previous_month_link, next_month_link, new_
 
 
 authentication = Authentication(
-    data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
+    data_folder=config.USERS_DATA_FOLDER,
+    password_salt=config.PASSWORD_SALT,
     failed_login_delay_base=config.FAILED_LOGIN_DELAY_BASE
 )
 
@@ -23,7 +24,7 @@ authentication = Authentication(
 @authenticated
 def index_action() -> Response:
     username = get_session_username(session_id=str(request.cookies.get(SESSION_ID)))
-    user_data = authentication.user_data(username=username)
+    user_data = authentication.user_data(username)
     return redirect("/{}/".format(user_data["default_calendar"]))
 
 
@@ -35,9 +36,9 @@ def do_login_action() -> Response:
     username = request.form.get("username", "")
     password = request.form.get("password", "")
 
-    if authentication.is_valid(username=username, password=password):
+    if authentication.is_valid(username, password):
         session_id = new_session_id()
-        add_session(session_id=session_id, username=username)
+        add_session(session_id, username)
         response = make_response(redirect("/"))
         # TODO: other params from http://flask.pocoo.org/docs/0.12/api/#flask.Response.set_cookie
         response.set_cookie(key=SESSION_ID, value=session_id, max_age=2678400)  # 1 month
@@ -56,7 +57,10 @@ def main_calendar_action(calendar_id: str) -> Response:
     month = max(min(month, 12), 1)
     month_name = GregorianCalendar.MONTH_NAMES[month - 1]
 
-    view_past_tasks = request.cookies.get("ViewPastTasks", "1") == "1"
+    if config.HIDE_PAST_TASKS:
+        view_past_tasks = False
+    else:
+        view_past_tasks = request.cookies.get("ViewPastTasks", "1") == "1"
 
     calendar_data = CalendarData(config.DATA_FOLTER)
     try:
@@ -64,9 +68,11 @@ def main_calendar_action(calendar_id: str) -> Response:
     except FileNotFoundError:
         abort(404)
 
-    tasks = calendar_data.tasks_from_calendar(year=year, month=month, view_past_tasks=view_past_tasks, data=data)
-    tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks,
-                                                             view_past_tasks=view_past_tasks)
+    tasks = calendar_data.tasks_from_calendar(year, month, data)
+    tasks = calendar_data.add_repetitive_tasks_from_calendar(year, month, data, tasks)
+
+    if not view_past_tasks:
+        calendar_data.hide_past_tasks(year, month, tasks)
 
     return cast(Response, render_template(
         "calendar.html",
@@ -77,13 +83,12 @@ def main_calendar_action(calendar_id: str) -> Response:
         current_year=current_year,
         current_month=current_month,
         current_day=current_day,
-        month_days=GregorianCalendar.month_days(year=year, month=month),
-        previous_month_link=previous_month_link(year=year, month=month),
-        next_month_link=next_month_link(year=year, month=month),
+        month_days=GregorianCalendar.month_days(year, month),
+        previous_month_link=previous_month_link(year, month),
+        next_month_link=next_month_link(year, month),
         base_url=config.BASE_URL,
         tasks=tasks,
-        display_view_past_button=config.SHOW_VIEW_PAST_BUTTON)
-    )
+        display_view_past_button=config.SHOW_VIEW_PAST_BUTTON))
 
 
 @authenticated
@@ -101,7 +106,7 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
     day = int(request.args.get("day", day))
 
     task = {
-        "date": CalendarData.date_for_frontend(year=year, month=month, day=day),
+        "date": CalendarData.date_for_frontend(year, month, day),
         "is_all_day": True,
         "repeats": False,
         "details": ""
@@ -130,11 +135,13 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
     repeats = request.args.get("repeats") == "1"
     try:
         if repeats:
-            task = calendar_data.repetitive_task_from_calendar(calendar_id=calendar_id, year=year, month=month,
-                                                               task_id=int(task_id))
+            task = calendar_data.repetitive_task_from_calendar(
+                calendar_id=calendar_id, year=year, month=month, task_id=int(task_id)
+            )
         else:
-            task = calendar_data.task_from_calendar(calendar_id=calendar_id, year=year, month=month, day=day,
-                                                    task_id=int(task_id))
+            task = calendar_data.task_from_calendar(
+                calendar_id=calendar_id, year=year, month=month, day=day, task_id=int(task_id)
+            )
     except (FileNotFoundError, IndexError):
         abort(404)
 
