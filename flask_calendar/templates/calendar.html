@@ -23,7 +23,9 @@
                 <a href="/{{ calendar_id }}/">back to current</a>
             </div>
         {% endif %}
-        <a id="toggle-past-events" class="button toggle-past-events" href="" onclick="ToggleViewPastTasks();" title="Toggle viewing past events">View Past</a>
+        {% if display_view_past_button %}
+            <a id="toggle-past-events" class="button toggle-past-events" href="" onclick="ToggleViewPastTasks();" title="Toggle viewing past events">View Past</a>
+        {% endif %}
     </div>
 
     <ul class="calendar-header">
@@ -39,9 +41,19 @@
     <ul class="calendar" id="calendar">
         {% for day in month_days %}
             {% if day.month != month %}
-                <li class="day othermonth"><span class="daynumber">{{ day.day }}</span></li>
+                <li class="day othermonth"
+                    data-year="{{ day.year }}"
+                    data-month="{{ day.month }}"
+                    data-day="{{ day.day }}">
+
+                    <span class="daynumber">{{ day.day }}</span>
+                </li>
             {% else %}
-                <li class="day" data-day="{{ day.day }}">
+                <li class="day"
+                    data-year="{{ day.year }}"
+                    data-month="{{ day.month }}"
+                    data-day="{{ day.day }}">
+
                     {% if day.day == current_day and day.month == current_month and day.year == current_year %}
                          <span class="daynumber-current">
                     {% else %}
@@ -51,7 +63,10 @@
                     <ul class="tasks">
                        {% if day.day|string in tasks %}
                             {% for task in tasks[day.day|string]|sort(attribute="due_time") %}
-                                <li style="background-color:{{ task["color"] }}" class="task" data-day="{{ day.day }}"
+                                <li style="background-color:{{ task["color"] }}" class="task"
+                                    data-year="{{ day.year }}"
+                                    data-month="{{ day.month }}"
+                                    data-day="{{ day.day }}"
                                     data-id="{{ task["id"] }}"
                                     {% if "repetition_type" in task %}data-recurrent="1"{% endif %}>
 
@@ -61,14 +76,18 @@
                                     {{ task["title"] }}
                                     <p class="accordion-hidden">
                                         {{ task["details"]|task_details_for_markup|safe }}
-                                         <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"
+                                         <a href="#"
+                                            data-id="{{ task["id"] }}"
+                                            data-year="{{ day.year }}"
                                             data-month="{{ day.month }}"
                                             data-day="{{ day.day }}"
                                             data-title="{{ task["title"]|replace("\"","") }}"
                                             class="button smaller remove-task"
                                             title="Remove task">x</a>
                                         {% if "repetition_type" in task %}
-                                         <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"
+                                         <a href="#"
+                                            data-id="{{ task["id"] }}"
+                                            data-year="{{ day.year }}"
                                             data-month="{{ day.month }}"
                                             data-day="{{ day.day }}"
                                             data-title="{{ task["title"]|replace("\"","") }}"
@@ -196,6 +215,8 @@
                     movingElementY <= (element.offsetTop + element.clientHeight)) {
 
                     if (movingElement.getAttribute("data-day") !== element.getAttribute("data-day")) {
+                        var oldYear = movingElement.getAttribute("data-year");
+                        var oldMonth = movingElement.getAttribute("data-month");
                         var oldDay = movingElement.getAttribute("data-day");
                         var newDay = element.getAttribute("data-day");
                         element.children[1].appendChild(movingElement);
@@ -207,7 +228,7 @@
                         urlFragments[urlFragments.length - 2] = newDay;
                         editTaskButton.href = urlFragments.join("/");
                         ShowStatusbar();
-                        fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/" + oldDay + "/" +
+                        fetch("{{ base_url }}/{{ calendar_id }}/" + oldYear + "/" + oldMonth + "/" + oldDay + "/" +
                               movingElement.getAttribute("data-id") + "/",
                           {
                             method: "put",
@@ -295,7 +316,7 @@
                 } else {
                     clearTimeout(clicksTimeout);
                     clicksCounter = 0;
-                    window.location = "/{{ calendar_id }}/{{ year }}/{{ month}}/new_task?day=" +
+                    window.location = "/{{ calendar_id }}/{{ year }}/{{ month }}/new_task?day=" +
                                        eventData.target.getAttribute("data-day");
                 }
                 return;

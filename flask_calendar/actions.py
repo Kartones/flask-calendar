@@ -81,7 +81,8 @@ def main_calendar_action(calendar_id: str) -> Response:
         previous_month_link=previous_month_link(year=year, month=month),
         next_month_link=next_month_link(year=year, month=month),
         base_url=config.BASE_URL,
-        tasks=tasks)
+        tasks=tasks,
+        display_view_past_button=config.SHOW_VIEW_PAST_BUTTON)
     )
 
 
