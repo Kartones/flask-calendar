@@ -6,12 +6,12 @@ from cachelib.simple import SimpleCache
 
 from flask import abort, redirect, request
 
-from .settings import config
+from settings import config
 # from authentication import Authentication
-from .authorization import Authorization
-from .calendar_data import CalendarData
-from .constants import SESSION_ID
-from .gregorian_calendar import GregorianCalendar
+from authorization import Authorization
+from calendar_data import CalendarData
+from constants import SESSION_ID
+from gregorian_calendar import GregorianCalendar
 
 cache = SimpleCache()
 

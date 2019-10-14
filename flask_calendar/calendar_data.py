@@ -4,7 +4,7 @@ import os
 import time
 
 
-from .gregorian_calendar import GregorianCalendar
+from gregorian_calendar import GregorianCalendar
 
 
 KEY_TASKS = "tasks"
