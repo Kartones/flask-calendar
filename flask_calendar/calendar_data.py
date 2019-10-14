@@ -93,7 +93,6 @@ class CalendarData:
 
         for day in GregorianCalendar.month_days(year, month):
             month_str = str(day.month)
-            year_str = str(day.year)
 
             if self.is_past(day.year, day.month, current_year, current_month):
                 tasks[month_str] = {}

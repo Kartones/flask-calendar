@@ -5,7 +5,7 @@ from werkzeug.wrappers import Response
 
 from flask import render_template, request, jsonify, redirect, abort, make_response
 
-from flask_calendar.settings import config
+import config
 from flask_calendar.constants import SESSION_ID
 from flask_calendar.gregorian_calendar import GregorianCalendar
 from flask_calendar.calendar_data import CalendarData
