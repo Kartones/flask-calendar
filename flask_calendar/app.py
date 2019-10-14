@@ -6,7 +6,7 @@ from typing import cast
 
 from flask import Flask, Response, send_from_directory
 
-from flask_calendar.settings import config
+import config
 from flask_calendar.authentication import Authentication
 
 

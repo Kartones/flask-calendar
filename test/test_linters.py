@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 
-CODE_SOURCE_PATH = "*.py"
+CODE_SOURCE_PATH = "flask_calendar/*.py"
 TEST_SOURCE_PATH = "test"
 
 

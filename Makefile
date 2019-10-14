@@ -44,7 +44,7 @@ shell: build
 
 test: build
 	set -o pipefail; \
-	$(COMPOSE_CMD) pytest
+	$(COMPOSE_CMD) pytest -s
 
 # opening html file currently only works on Linux
 coverage: build

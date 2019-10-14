@@ -1,3 +1,4 @@
+from typing import Dict
 from unittest.mock import ANY, patch, MagicMock
 
 import pytest
@@ -10,18 +11,23 @@ def calendar_data() -> CalendarData:
     return CalendarData("test/fixtures")
 
 
+@pytest.fixture
+def past_normal_tasks_data(calendar_data: CalendarData) -> Dict:
+    return calendar_data.load_calendar(filename="past_normal_tasks")
+
+
 def test_error_retrieving_tasks_from_calendar(subtests, calendar_data: CalendarData) -> None:
     test_data = [
-        {"year": 2001, "month": 1, "calendar_id": None, "data": None},
-        {"year": 2001, "month": 1, "calendar_id": None, "data": {}},
-        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {}}},
-        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {
+        {"year": 2001, "month": 1, "data": None},
+        {"year": 2001, "month": 1, "data": {}},
+        {"year": 2001, "month": 1, "data": {"tasks": {}}},
+        {"year": 2001, "month": 1, "data": {"tasks": {
             "normal": {},
             "hidden_repetition": {}}}},
-        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {
+        {"year": 2001, "month": 1, "data": {"tasks": {
             "normal": {},
             "repetition": {}}}},
-        {"year": 2001, "month": 1, "calendar_id": None, "data": {"tasks": {
+        {"year": 2001, "month": 1, "data": {"tasks": {
             "repetition": {},
             "hidden_repetition": {}}}},
     ]
@@ -48,53 +54,52 @@ def test_loads_a_valid_data_file(calendar_data: CalendarData) -> None:
     assert task["is_all_day"] is False
 
 
-def test_loads_normal_tasks_from_calendar_given_calendar_id(calendar_data: CalendarData) -> None:
-    tasks = calendar_data.tasks_from_calendar(year=2017, month=12, calendar_id="sample_data_file")
-
-    assert len(tasks) == 1
-    assert len(tasks["25"]) == 2
-    assert tasks["25"][0]["id"] in [0, 1]
-    assert tasks["25"][1]["id"] in [0, 1]
-    assert tasks["25"][0]["id"] != tasks["25"][1]["id"]
-
-
 def test_loads_normal_tasks_from_calendar_given_data(calendar_data: CalendarData) -> None:
     data = calendar_data.load_calendar("sample_data_file")
-    tasks = calendar_data.tasks_from_calendar(year=2017, month=12, data=data)
-    assert len(tasks) == 1
-    assert len(tasks["25"]) == 2
-    assert tasks["25"][0]["id"] in [0, 1]
-    assert tasks["25"][1]["id"] in [0, 1]
-    assert tasks["25"][0]["id"] != tasks["25"][1]["id"]
+    year = 2017
+    month = 12
+    month_str = str(month)
+
+    tasks = calendar_data.tasks_from_calendar(year, month, data)
+    assert len(tasks[month_str]) == 1
+    assert len(tasks[month_str]["25"]) == 2
+    assert tasks[month_str]["25"][0]["id"] in [0, 1]
+    assert tasks[month_str]["25"][1]["id"] in [0, 1]
+    assert tasks[month_str]["25"][0]["id"] != tasks[month_str]["25"][1]["id"]
 
 
 def test_joins_repetitive_tasks_with_normal_ones(calendar_data: CalendarData) -> None:
     year = 2017
     month = 11
+    month_str = str(month)
     data = calendar_data.load_calendar("sample_data_file")
 
-    tasks = calendar_data.tasks_from_calendar(year=year, month=month, data=data)
-    assert len(tasks) == 1
+    tasks = calendar_data.tasks_from_calendar(year, month, data)
+    assert len(tasks[month_str]) == 1
 
-    tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks)
-    assert len(tasks) > 0
-    repetitive_weekly_weekday_task_ocurrences = 4    # month has 4 mondays
-    repetitive_weekly_weekday_3_task_ocurrences = 5  # month has 5 thursdays
+    tasks = calendar_data.add_repetitive_tasks_from_calendar(year, month, data, tasks)
+    assert len(tasks[month_str]) > 0
+    # month has 4 mondays
+    repetitive_weekly_weekday_task_ocurrences = 4
+    # month has 5 thursdays
+    repetitive_weekly_weekday_3_task_ocurrences = 5
     repetitive_monthly_weekday_task_ocurrences = 1
     repetitive_monthly_monthday_task_ocurrences = 1
 
-    # We"re counting the number of days with tasks, not the exact number of tasks (day 6 has 2 tasks)
-    assert len(tasks) == (repetitive_weekly_weekday_task_ocurrences + repetitive_monthly_weekday_task_ocurrences +
-                          repetitive_monthly_monthday_task_ocurrences + repetitive_weekly_weekday_3_task_ocurrences)
-    assert len(tasks["6"]) == 2
+    # We're counting the number of days with tasks, not the exact number of tasks (day 6 has 2 tasks)
+    assert len(tasks[month_str]) == (
+        repetitive_weekly_weekday_task_ocurrences + repetitive_monthly_weekday_task_ocurrences +
+        repetitive_monthly_monthday_task_ocurrences + repetitive_weekly_weekday_3_task_ocurrences
+    )
+    assert len(tasks[month_str]["6"]) == 2
 
     # Normal task should be first (as repetitive ones are appended afterwards)
-    assert tasks["6"][0]["id"] == 4
-    assert "repetition_value" not in tasks["6"][0]
-    assert "repetition_value" in tasks["6"][1]
-    assert tasks["6"][1]["repetition_value"] == 0
-    assert tasks["6"][1]["repetition_subtype"] == CalendarData.REPETITION_SUBTYPE_WEEK_DAY
-    assert tasks["6"][1]["repetition_type"] == CalendarData.REPETITION_TYPE_WEEKLY
+    assert tasks[month_str]["6"][0]["id"] == 4
+    assert "repetition_value" not in tasks[month_str]["6"][0]
+    assert "repetition_value" in tasks[month_str]["6"][1]
+    assert tasks[month_str]["6"][1]["repetition_value"] == 0
+    assert tasks[month_str]["6"][1]["repetition_subtype"] == CalendarData.REPETITION_SUBTYPE_WEEK_DAY
+    assert tasks[month_str]["6"][1]["repetition_type"] == CalendarData.REPETITION_TYPE_WEEKLY
 
 
 @patch("flask_calendar.calendar_data.CalendarData._save_calendar")
@@ -120,47 +125,50 @@ def test_creates_new_normal_task(save_calendar_mock: MagicMock, calendar_data: C
                                        repetition_subtype=repetition_subtype, repetition_value=repetition_value)
     assert result is True
 
-    save_calendar_mock.assert_called_once_with(contents=ANY, filename=calendar_id)
-    args, kwargs = save_calendar_mock.call_args
-    assert "contents" in kwargs
-    assert "tasks" in kwargs["contents"]
-    assert "normal" in kwargs["contents"]["tasks"]
-    assert str(year) in kwargs["contents"]["tasks"]["normal"]
-    assert str(month) in kwargs["contents"]["tasks"]["normal"][str(year)]
-    assert str(day) in kwargs["contents"]["tasks"]["normal"][str(year)][str(month)]
-    assert len(kwargs["contents"]["tasks"]["normal"][str(year)][str(month)][str(day)]) == 1
-    assert "title" in kwargs["contents"]["tasks"]["normal"][str(year)][str(month)][str(day)][0]
-    assert kwargs["contents"]["tasks"]["normal"][str(year)][str(month)][str(day)][0]["title"] == title
+    save_calendar_mock.assert_called_once_with(ANY, filename=calendar_id)
+    call_args, _ = save_calendar_mock.call_args
+    data = call_args[0]
+    assert "tasks" in data
+    assert "normal" in data["tasks"]
+    assert str(year) in data["tasks"]["normal"]
+    assert str(month) in data["tasks"]["normal"][str(year)]
+    assert str(day) in data["tasks"]["normal"][str(year)][str(month)]
+    assert len(data["tasks"]["normal"][str(year)][str(month)][str(day)]) == 1
+    assert "title" in data["tasks"]["normal"][str(year)][str(month)][str(day)][0]
+    assert data["tasks"]["normal"][str(year)][str(month)][str(day)][0]["title"] == title
 
 
 def test_hidden_montly_monthday_repetitions_dont_appear(calendar_data: CalendarData) -> None:
     year = 2017
     month = 12
     data = calendar_data.load_calendar("repetitive_monthly_monthday_hidden_task_data_file")
-    tasks = calendar_data.tasks_from_calendar(year=year, month=month, data=data)
 
+    tasks = calendar_data.tasks_from_calendar(year=year, month=month, data=data)
     tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks)
-    assert len(tasks) == 0
+
+    assert str(month) not in tasks
 
 
 def test_hidden_montly_weekday_repetitions_dont_appear(calendar_data: CalendarData) -> None:
     year = 2017
     month = 12
     data = calendar_data.load_calendar("repetitive_monthly_weekday_hidden_task_data_file")
+
     tasks = calendar_data.tasks_from_calendar(year=year, month=month, data=data)
-
     tasks = calendar_data.add_repetitive_tasks_from_calendar(year=year, month=month, data=data, tasks=tasks)
-    assert len(tasks) == 0
+
+    assert str(month) not in tasks
 
 
-def test_if_dont_want_to_view_past_tasks_dont_appear(calendar_data: CalendarData) -> None:
-    all_tasks = calendar_data.tasks_from_calendar(year=2001, month=1, view_past_tasks=True,
-                                                  calendar_id="past_normal_tasks")
-    non_past_tasks = calendar_data.tasks_from_calendar(year=2001, month=2, view_past_tasks=False,
-                                                       calendar_id="past_normal_tasks")
+def test_tasks_can_be_filtered_after_retrieval(calendar_data: CalendarData, past_normal_tasks_data: Dict) -> None:
+    year = 2001
 
-    assert len(all_tasks) > len(non_past_tasks)
-    assert len(non_past_tasks) == 0
+    tasks = calendar_data.tasks_from_calendar(year, 1, past_normal_tasks_data)
+    assert len(tasks["1"]) > 0
+
+    # if we switch to next month, month 1 should become empty
+    calendar_data.hide_past_tasks(year, 2, tasks)
+    assert len(tasks["1"]) == 0
 
 
 def test_existing_individual_task_retrieval(calendar_data: CalendarData) -> None:
@@ -178,8 +186,9 @@ def test_non_existing_individual_task_retrieval(calendar_data: CalendarData) -> 
 
 def test_existing_repetitive_task_retrieval(calendar_data: CalendarData) -> None:
     task_id = 2
-    task = calendar_data.repetitive_task_from_calendar(calendar_id="sample_data_file", year=2017, month=11,
-                                                       task_id=task_id)
+    task = calendar_data.repetitive_task_from_calendar(
+        calendar_id="sample_data_file", year=2017, month=11, task_id=task_id
+    )
     assert task is not None
     assert task["id"] == task_id
     assert task["is_all_day"] is True

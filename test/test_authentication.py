@@ -25,7 +25,7 @@ def test_retrieve_user_data(authentication: Authentication) -> None:
     user = authentication.user_data(username=EXISTING_USERNAME)
     assert user is not None
     for key in ["username", "password", "default_calendar"]:
-        assert key in user.keys()
+        assert key in user
         assert user[key] is not None
 
 

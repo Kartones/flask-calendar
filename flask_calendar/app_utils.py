@@ -6,7 +6,7 @@ from cachelib.simple import SimpleCache
 
 from flask import abort, redirect, request
 
-from flask_calendar.settings import config
+import config
 # from authentication import Authentication
 from flask_calendar.authorization import Authorization
 from flask_calendar.calendar_data import CalendarData
