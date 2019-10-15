@@ -4,7 +4,7 @@
 
 ## Introduction
 
-I recently (dec 2017) decided I wanted to opt out from Google services as much as possible. One of the services that tied me most was Calendar. There are not many alternatives, and even fewer web-based. I decided to try using a Trello board with due dates and some labels for a while, but proved to be harder to maintain. Add the lack of a month calendar view, and no support for recurrent/repetitive tasks, and I decided to do good use of a holidays to spend some hours and build a simple GCalendar clone.
+At December 2017, I decided I wanted to opt out from Google services as much as possible. One of the services that tied me most was Calendar. There are not many alternatives, and even fewer web-based. I decided to try using a Trello board with due dates and some labels for a while, but proved to be harder to maintain. Add the lack of a month calendar view, and no support for recurrent/repetitive tasks, and I decided to do good use of a holidays to spend some hours and build a simple GCalendar clone.
 
 
 ### Details
@@ -41,29 +41,6 @@ Overall, lessons learned:
 - I'll give a try next time to turbolinks, to trully try to avoid javascript for tiny projects.
 - Introduce tests (including application ones) from the beginning, at least for critical paths always pays off. At least next project can benefit from the docker setup (with pytest, mypy, flake8 and coverage).
 
-### Changelog
-
-List of new features added to the original project commits
-
-- 2019-05-12: Option to automatically decorate URLs at task details as `<a hrefs>` (with `target=_blank`). Needs new `config.AUTO_DECORATE_TASK_DETAILS_HYPERLINK` value (boolean).
-- 2018-11-10: Basic rate limiter for failed login attempts. Needs new config.FAILED_LOGIN_DELAY_BASE value, makes user wait exponentially more on each failed attempt, just to hinder brute forcing.
-- 2018-11-10: Fallback to Python 3.5 as it's more commonly found at Linux distros, etc.
-- 2018-10-03: Fix favicon.ico request creating error log traces & tiny code cleanup.
-- 2018-07-29: CSS adjustments, show task name at delete/hide modal. User creation & deletion (by [@linuxnico](https://github.com/linuxnico)).
-- 2018-06-29: Less round buttons, bigger task details textbox, trim task title (strip spaces pre and post text) upon create/update. WIP of ICal export feature (controlled via config.FEATURE_FLAG_ICAL_EXPORT boolean value).
-- 2018-03-08: Changed yellow color preset by orange, made brown darker. Double click "window" increased to 300ms. Small CSS adjustments.
-- 2018-02-25: Double-click on a day triggers new task creation at that day number (instead of day 1/current day as new task button does).
-- 2018-02-24: Added locale support. Tasks font 5% bigger.
-- 2018-02-04: Dockerized project for local running of both web and tests. Status bar to see when there's a pending AJAX request.
-- 2018-02-03: Better redirect upon login (and root/index action no longer 404s). Authorization working.
-- 2018-02-03: Basic user authentication and authorization. There is no user creation so password needs to be manually created and stored into the users data json (salted SHA256 hexdigest). At least authorization is easily managed just adding authorized user ids to corresponding calendar json section.
-- 2018-01-27: Reconvert `<br>` to `\n` upon edition. Cleanup of past hidden repetition task instances (when saving a calendar and month changes). Improved tests (more to come).
-- 2018-01-09: Bring back action buttons for small (phone) screens. Improved (less terrible) favicon and colors.
-- 2017-12-22: "Hide" button to remove individual instances of repetitive/recurrent tasks
-- 2017-12-21: Cleanup of internal data files when a day/month becomes empty of tasks
-- 2017-12-20: Basic drag & drop (to change day inside same month of a non-recurring task). Intended only for desktop, probably rough on the edges but working.
-- 2017-12-30: Event edition. Mobile drag & drop disabled. Mobile CSS improvements.
-
 
 ## Requirements
 
@@ -73,11 +50,11 @@ Other requirements are on the `requirements.txt` file. Install them with `pip` o
 
 ## Docker Environment
 
-- Requires Docker and Docker Compose
+- Development strongly encourages using Docker and Docker Compose.
 
 ### Running
 
-- copy `config.py.sample` to `config.py` and fill in.
+- Edit `config.py` and fill in or adapt to your needs.
 
 ```bash
 make run
@@ -168,7 +145,6 @@ authentication.delete_user(username="a username")
 This are initially the only features I plan to build:
 
 - TESTS! Need to increase coverage
-- ICAL export (ongoing at [a separate branch](https://github.com/Kartones/flask-calendar/tree/icalendar-exporter))
 - fortify cookie
 - desktop notifications (only for specific hour tasks)
 - a decent weekday and month day choosers when recurrency is selected
