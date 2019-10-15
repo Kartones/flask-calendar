@@ -1,9 +1,10 @@
-from typing import cast, Dict, List, Optional
+from datetime import datetime
 import json
 import os
 import time
+from typing import (cast, Dict, List, Optional)
 
-
+import config
 from flask_calendar.gregorian_calendar import GregorianCalendar
 
 
@@ -334,23 +335,19 @@ class CalendarData:
     @staticmethod
     def _clear_past_hidden_entries(data: Dict) -> None:
         _, current_month, current_year = GregorianCalendar.current_date()
-        task_ids_to_delete = []
+        # normalize to 1st day of month
+        current_date = datetime(current_year, current_month, 1, 0, 0)
+        tasks_to_delete = []
 
         for task_id in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK]:
-            years_to_delete = []
             for year in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id]:
-                months_to_delete = []
                 for month in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year]:
-                    if (int(year) < current_year) or (int(year) == current_year and int(month) < current_month):
-                        months_to_delete.append(month)
-                for month in months_to_delete:
-                    del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year][month])
-                if len(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year]) == 0:
-                    years_to_delete.append(year)
-            for year in years_to_delete:
-                del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year])
-            if len(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id]) == 0:
-                task_ids_to_delete.append(task_id)
+                    task_date = datetime(int(year), int(month), 1, 0, 0)
+                    if (current_date - task_date).days > config.DAYS_PAST_TO_KEEP_HIDDEN_TASKS:
+                        tasks_to_delete.append((year, month, task_id))
 
-        for task_id in task_ids_to_delete:
-            del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id])
+        for task_info in tasks_to_delete:
+            year, month, task_id = task_info
+            del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year][month])
+            if len(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id]) == 0:
+                del(data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id])
