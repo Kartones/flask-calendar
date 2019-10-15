@@ -12,33 +12,31 @@ def calendar_data() -> CalendarData:
 
 
 @pytest.fixture
+def sample_data_file_data(calendar_data: CalendarData) -> Dict:
+    return calendar_data.load_calendar(filename="sample_data_file")
+
+
+@pytest.fixture
 def past_normal_tasks_data(calendar_data: CalendarData) -> Dict:
     return calendar_data.load_calendar(filename="past_normal_tasks")
 
 
-def test_error_retrieving_tasks_from_calendar(subtests, calendar_data: CalendarData) -> None:
-    test_data = [
-        {"year": 2001, "month": 1, "data": None},
-        {"year": 2001, "month": 1, "data": {}},
-        {"year": 2001, "month": 1, "data": {"tasks": {}}},
-        {"year": 2001, "month": 1, "data": {"tasks": {
-            "normal": {},
-            "hidden_repetition": {}}}},
-        {"year": 2001, "month": 1, "data": {"tasks": {
-            "normal": {},
-            "repetition": {}}}},
-        {"year": 2001, "month": 1, "data": {"tasks": {
-            "repetition": {},
-            "hidden_repetition": {}}}},
-    ]
-    for data in test_data:
-        with subtests.test(data=data["data"]):
-            with pytest.raises(ValueError):
-                calendar_data.tasks_from_calendar(**data)
+@pytest.mark.parametrize("year, month, data", [
+    (2001, 1, None),
+    (2001, 1, {}),
+    (2001, 1, {"tasks": {}}),
+    (2001, 1, {"tasks": {"normal": {}, "hidden_repetition": {}}}),
+    (2001, 1, {"tasks": {"normal": {}, "repetition": {}}}),
+    (2001, 1, {"tasks": {"repetition": {}, "hidden_repetition": {}}})
+])
+def test_error_retrieving_tasks_from_calendar(year: int, month: int, data: Dict, calendar_data: CalendarData) -> None:
+    with pytest.raises(ValueError):
+        calendar_data.tasks_from_calendar(year, month, data)
 
 
-def test_loads_a_valid_data_file(calendar_data: CalendarData) -> None:
-    calendar = calendar_data.load_calendar("sample_data_file")
+def test_loads_a_valid_data_file(calendar_data: CalendarData, sample_data_file_data: Dict) -> None:
+    # If fails at loading time fixture itself will error
+    calendar = sample_data_file_data
     assert calendar is not None
     assert type(calendar) == dict
     assert "tasks" in calendar
@@ -54,13 +52,12 @@ def test_loads_a_valid_data_file(calendar_data: CalendarData) -> None:
     assert task["is_all_day"] is False
 
 
-def test_loads_normal_tasks_from_calendar_given_data(calendar_data: CalendarData) -> None:
-    data = calendar_data.load_calendar("sample_data_file")
+def test_loads_normal_tasks_from_calendar_given_data(calendar_data: CalendarData, sample_data_file_data: Dict) -> None:
     year = 2017
     month = 12
     month_str = str(month)
 
-    tasks = calendar_data.tasks_from_calendar(year, month, data)
+    tasks = calendar_data.tasks_from_calendar(year, month, sample_data_file_data)
     assert len(tasks[month_str]) == 1
     assert len(tasks[month_str]["25"]) == 2
     assert tasks[month_str]["25"][0]["id"] in [0, 1]
@@ -68,16 +65,15 @@ def test_loads_normal_tasks_from_calendar_given_data(calendar_data: CalendarData
     assert tasks[month_str]["25"][0]["id"] != tasks[month_str]["25"][1]["id"]
 
 
-def test_joins_repetitive_tasks_with_normal_ones(calendar_data: CalendarData) -> None:
+def test_joins_repetitive_tasks_with_normal_ones(calendar_data: CalendarData, sample_data_file_data: Dict) -> None:
     year = 2017
     month = 11
     month_str = str(month)
-    data = calendar_data.load_calendar("sample_data_file")
 
-    tasks = calendar_data.tasks_from_calendar(year, month, data)
+    tasks = calendar_data.tasks_from_calendar(year, month, sample_data_file_data)
     assert len(tasks[month_str]) == 1
 
-    tasks = calendar_data.add_repetitive_tasks_from_calendar(year, month, data, tasks)
+    tasks = calendar_data.add_repetitive_tasks_from_calendar(year, month, sample_data_file_data, tasks)
     assert len(tasks[month_str]) > 0
     # month has 4 mondays
     repetitive_weekly_weekday_task_ocurrences = 4
@@ -165,7 +161,6 @@ def test_tasks_can_be_filtered_after_retrieval(calendar_data: CalendarData, past
 
     tasks = calendar_data.tasks_from_calendar(year, 1, past_normal_tasks_data)
     assert len(tasks["1"]) > 0
-
     # if we switch to next month, month 1 should become empty
     calendar_data.hide_past_tasks(year, 2, tasks)
     assert len(tasks["1"]) == 0
@@ -173,7 +168,8 @@ def test_tasks_can_be_filtered_after_retrieval(calendar_data: CalendarData, past
 
 def test_existing_individual_task_retrieval(calendar_data: CalendarData) -> None:
     task_id = 4
-    task = calendar_data.task_from_calendar(calendar_id="sample_data_file", year=2017, month=11, day=6, task_id=4)
+
+    task = calendar_data.task_from_calendar(calendar_id="sample_data_file", year=2017, month=11, day=6, task_id=task_id)
     assert task is not None
     assert task["id"] == task_id
     assert task["is_all_day"] is True
