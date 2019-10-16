@@ -22,8 +22,12 @@ authentication = Authentication(
     data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
     failed_login_delay_base=config.FAILED_LOGIN_DELAY_BASE
 )
+
 if config.LOCALE is not None:
-    locale.setlocale(locale.LC_ALL, config.LOCALE)
+    try:
+        locale.setlocale(locale.LC_ALL, config.LOCALE)
+    except locale.Error as e:
+        app.logger.warning("{} ({})".format(str(e), config.LOCALE))
 
 
 # To avoid main_calendar_action below shallowing favicon requests and generating error logs
