@@ -17,7 +17,7 @@ def authentication() -> Authentication:
     (EXISTING_USERNAME, "an_irrelevant_password", False),
     (EXISTING_USERNAME, CORRECT_PASSWORD, True),
 ])
-def test_is_valid_authentication(authentication: Authentication, username: str, password: str, expected: bool):
+def test_is_valid_authentication(authentication: Authentication, username: str, password: str, expected: bool) -> None:
     assert authentication.is_valid(username=username, password=password) is expected
 
 
