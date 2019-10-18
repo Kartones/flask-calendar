@@ -25,7 +25,7 @@ def test_mypy_compliance() -> None:
 
     result = subprocess.call("{} --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs"
                              " --warn-redundant-casts --warn-return-any --warn-unused-ignores --strict-optional"
-                             " {}".format(mypy_binary, CODE_SOURCE_PATH),
+                             " {}".format(mypy_binary, " ".join([CODE_SOURCE_PATH, TEST_SOURCE_PATH])),
                              shell=True,
                              stdout=sys.stdout,
                              stderr=sys.stderr)
