@@ -138,18 +138,3 @@ authentication.add_user(
 # Delete a user
 authentication.delete_user(username="a username")
 ```
-
-
-## TODOs / Roadmap
-
-This are initially the only features I plan to build:
-
-- TESTS! Need to increase coverage
-- fortify cookie
-- desktop notifications (only for specific hour tasks)
-- a decent weekday and month day choosers when recurrency is selected
-- Yearly repetition? (would need month and day)
-- search: simple, just python lowercased search at task titles. think how to represent results, if to go to the month or what
-- Multi-day tasks?
-- task copy/clone functionality?
-- multi-calendars: json structure already supports a user having N calendars and a calendar having N users. Should also be trivial to add to the cookie a list of calendar names + ids to do a quick switcher combobox topright
