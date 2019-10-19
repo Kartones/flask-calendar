@@ -6,6 +6,7 @@
 cov_html/*
 .coverage
 *.py[c|o]
+*.swp
 .pytest_cache/*
 pytest_cache/*
 .project
