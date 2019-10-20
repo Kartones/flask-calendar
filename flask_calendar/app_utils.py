@@ -36,7 +36,7 @@ def authorized(decorated_function: Callable) -> Any:
     @wraps(decorated_function)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         username = get_session_username(str(request.cookies.get(SESSION_ID)))
-        authorization = Authorization(calendar_data=CalendarData(data_folder=config.DATA_FOLTER))
+        authorization = Authorization(calendar_data=CalendarData(data_folder=config.DATA_FOLDER))
         if "calendar_id" not in kwargs:
             raise ValueError("calendar_id")
         calendar_id = str(kwargs["calendar_id"])

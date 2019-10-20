@@ -62,7 +62,7 @@ def main_calendar_action(calendar_id: str) -> Response:
     else:
         view_past_tasks = request.cookies.get("ViewPastTasks", "1") == "1"
 
-    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data = CalendarData(config.DATA_FOLDER)
     try:
         data = calendar_data.load_calendar(calendar_id)
     except FileNotFoundError:
@@ -130,7 +130,7 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
 @authorized
 def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id: int) -> Response:
     month_names = GregorianCalendar.MONTH_NAMES
-    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data = CalendarData(config.DATA_FOLDER)
 
     repeats = request.args.get("repeats") == "1"
     try:
@@ -168,7 +168,7 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
 def update_task_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     # Logic is same as save + delete, could refactor but can wait until need to change any save/delete logic
 
-    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data = CalendarData(config.DATA_FOLDER)
 
     # For creation of "updated" task use only form data
     title = request.form["title"].strip()
@@ -236,7 +236,7 @@ def save_task_action(calendar_id: str) -> Response:
     repetition_subtype = request.form.get("repetition_subtype")
     repetition_value = int(request.form["repetition_value"])
 
-    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data = CalendarData(config.DATA_FOLDER)
     calendar_data.create_task(calendar_id=calendar_id,
                               year=year,
                               month=month,
@@ -260,7 +260,7 @@ def save_task_action(calendar_id: str) -> Response:
 @authenticated
 @authorized
 def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
-    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data = CalendarData(config.DATA_FOLDER)
     calendar_data.delete_task(calendar_id=calendar_id,
                               year_str=year,
                               month_str=month,
@@ -275,7 +275,7 @@ def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 def update_task_day_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     new_day = request.data.decode("utf-8")
 
-    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data = CalendarData(config.DATA_FOLDER)
     calendar_data.update_task_day(calendar_id=calendar_id,
                                   year_str=year,
                                   month_str=month,
@@ -289,7 +289,7 @@ def update_task_day_action(calendar_id: str, year: str, month: str, day: str, ta
 @authenticated
 @authorized
 def hide_repetition_task_instance_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
-    calendar_data = CalendarData(config.DATA_FOLTER)
+    calendar_data = CalendarData(config.DATA_FOLDER)
     calendar_data.hide_repetition_task_instance(calendar_id=calendar_id,
                                                 year_str=year,
                                                 month_str=month,
