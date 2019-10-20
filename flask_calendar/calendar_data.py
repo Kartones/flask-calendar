@@ -4,7 +4,8 @@ import os
 import time
 from typing import (cast, Dict, List, Optional)
 
-import config
+from flask import current_app
+
 from flask_calendar.gregorian_calendar import GregorianCalendar
 
 
@@ -343,7 +344,7 @@ class CalendarData:
             for year in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id]:
                 for month in data[KEY_TASKS][KEY_REPETITIVE_HIDDEN_TASK][task_id][year]:
                     task_date = datetime(int(year), int(month), 1, 0, 0)
-                    if (current_date - task_date).days > config.DAYS_PAST_TO_KEEP_HIDDEN_TASKS:
+                    if (current_date - task_date).days > current_app.config['DAYS_PAST_TO_KEEP_HIDDEN_TASKS']:
                         tasks_to_delete.append((year, month, task_id))
 
         for task_info in tasks_to_delete:

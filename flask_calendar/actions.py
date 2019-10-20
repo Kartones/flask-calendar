@@ -3,9 +3,8 @@ import re
 from typing import (cast, Optional)  # noqa: F401
 from werkzeug.wrappers import Response
 
-from flask import render_template, request, jsonify, redirect, abort, make_response
+from flask import render_template, request, jsonify, redirect, abort, make_response, current_app, g
 
-import config
 from flask_calendar.constants import SESSION_ID
 from flask_calendar.gregorian_calendar import GregorianCalendar
 from flask_calendar.calendar_data import CalendarData
@@ -14,16 +13,21 @@ from flask_calendar.app_utils import (previous_month_link, next_month_link, new_
                                       get_session_username, authorized)
 
 
-authentication = Authentication(
-    data_folder=config.USERS_DATA_FOLDER,
-    password_salt=config.PASSWORD_SALT,
-    failed_login_delay_base=config.FAILED_LOGIN_DELAY_BASE
-)
+def get_authentication() -> Authentication:
+    auth = getattr(g, '_auth', None)
+    if auth is None:
+        auth = g._auth = Authentication(
+            data_folder=current_app.config['USERS_DATA_FOLDER'],
+            password_salt=current_app.config['PASSWORD_SALT'],
+            failed_login_delay_base=current_app.config['FAILED_LOGIN_DELAY_BASE'],
+        )
+    return cast(Authentication, auth)
 
 
 @authenticated
 def index_action() -> Response:
     username = get_session_username(session_id=str(request.cookies.get(SESSION_ID)))
+    authentication = get_authentication()
     user_data = authentication.user_data(username)
     return redirect("/{}/".format(user_data["default_calendar"]))
 
@@ -35,6 +39,7 @@ def login_action() -> Response:
 def do_login_action() -> Response:
     username = request.form.get("username", "")
     password = request.form.get("password", "")
+    authentication = get_authentication()
 
     if authentication.is_valid(username, password):
         session_id = new_session_id()
@@ -52,17 +57,17 @@ def do_login_action() -> Response:
 def main_calendar_action(calendar_id: str) -> Response:
     current_day, current_month, current_year = GregorianCalendar.current_date()
     year = int(request.args.get("y", current_year))
-    year = max(min(year, config.MAX_YEAR), config.MIN_YEAR)
+    year = max(min(year, current_app.config['MAX_YEAR']), current_app.config['MIN_YEAR'])
     month = int(request.args.get("m", current_month))
     month = max(min(month, 12), 1)
     month_name = GregorianCalendar.MONTH_NAMES[month - 1]
 
-    if config.HIDE_PAST_TASKS:
+    if current_app.config['HIDE_PAST_TASKS']:
         view_past_tasks = False
     else:
         view_past_tasks = request.cookies.get("ViewPastTasks", "1") == "1"
 
-    calendar_data = CalendarData(config.DATA_FOLDER)
+    calendar_data = CalendarData(current_app.config['DATA_FOLDER'])
     try:
         data = calendar_data.load_calendar(calendar_id)
     except FileNotFoundError:
@@ -86,16 +91,16 @@ def main_calendar_action(calendar_id: str) -> Response:
         month_days=GregorianCalendar.month_days(year, month),
         previous_month_link=previous_month_link(year, month),
         next_month_link=next_month_link(year, month),
-        base_url=config.BASE_URL,
+        base_url=current_app.config['BASE_URL'],
         tasks=tasks,
-        display_view_past_button=config.SHOW_VIEW_PAST_BUTTON))
+        display_view_past_button=current_app.config['SHOW_VIEW_PAST_BUTTON']))
 
 
 @authenticated
 @authorized
 def new_task_action(calendar_id: str, year: int, month: int) -> Response:
     current_day, current_month, current_year = GregorianCalendar.current_date()
-    year = max(min(int(year), config.MAX_YEAR), config.MIN_YEAR)
+    year = max(min(int(year), current_app.config['MAX_YEAR']), current_app.config['MIN_YEAR'])
     month = max(min(int(month), 12), 1)
     month_names = GregorianCalendar.MONTH_NAMES
 
@@ -117,11 +122,11 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
         calendar_id=calendar_id,
         year=year,
         month=month,
-        min_year=config.MIN_YEAR,
-        max_year=config.MAX_YEAR,
+        min_year=current_app.config['MIN_YEAR'],
+        max_year=current_app.config['MAX_YEAR'],
         month_names=month_names,
         task=task,
-        base_url=config.BASE_URL,
+        base_url=current_app.config['BASE_URL'],
         editing=False)
     )
 
@@ -130,7 +135,7 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
 @authorized
 def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id: int) -> Response:
     month_names = GregorianCalendar.MONTH_NAMES
-    calendar_data = CalendarData(config.DATA_FOLDER)
+    calendar_data = CalendarData(current_app.config['DATA_FOLDER'])
 
     repeats = request.args.get("repeats") == "1"
     try:
@@ -154,11 +159,11 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
         year=year,
         month=month,
         day=day,
-        min_year=config.MIN_YEAR,
-        max_year=config.MAX_YEAR,
+        min_year=current_app.config['MIN_YEAR'],
+        max_year=current_app.config['MAX_YEAR'],
         month_names=month_names,
         task=task,
-        base_url=config.BASE_URL,
+        base_url=current_app.config['BASE_URL'],
         editing=True)
     )
 
@@ -168,7 +173,7 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
 def update_task_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     # Logic is same as save + delete, could refactor but can wait until need to change any save/delete logic
 
-    calendar_data = CalendarData(config.DATA_FOLDER)
+    calendar_data = CalendarData(current_app.config['DATA_FOLDER'])
 
     # For creation of "updated" task use only form data
     title = request.form["title"].strip()
@@ -210,9 +215,11 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
                               task_id=int(task_id))
 
     if updated_year is None:
-        return redirect("{}/{}/".format(config.BASE_URL, calendar_id), code=302)
+        return redirect("{}/{}/".format(current_app.config['BASE_URL'], calendar_id), code=302)
     else:
-        return redirect("{}/{}/?y={}&m={}".format(config.BASE_URL, calendar_id, updated_year, updated_month), code=302)
+        return redirect("{}/{}/?y={}&m={}".format(
+            current_app.config['BASE_URL'], calendar_id, updated_year, updated_month), code=302
+        )
 
 
 @authenticated
@@ -236,7 +243,7 @@ def save_task_action(calendar_id: str) -> Response:
     repetition_subtype = request.form.get("repetition_subtype")
     repetition_value = int(request.form["repetition_value"])
 
-    calendar_data = CalendarData(config.DATA_FOLDER)
+    calendar_data = CalendarData(current_app.config['DATA_FOLDER'])
     calendar_data.create_task(calendar_id=calendar_id,
                               year=year,
                               month=month,
@@ -252,15 +259,15 @@ def save_task_action(calendar_id: str) -> Response:
                               repetition_value=repetition_value)
 
     if year is None:
-        return redirect("{}/{}/".format(config.BASE_URL, calendar_id), code=302)
+        return redirect("{}/{}/".format(current_app.config['BASE_URL'], calendar_id), code=302)
     else:
-        return redirect("{}/{}/?y={}&m={}".format(config.BASE_URL, calendar_id, year, month), code=302)
+        return redirect("{}/{}/?y={}&m={}".format(current_app.config['BASE_URL'], calendar_id, year, month), code=302)
 
 
 @authenticated
 @authorized
 def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
-    calendar_data = CalendarData(config.DATA_FOLDER)
+    calendar_data = CalendarData(current_app.config['DATA_FOLDER'])
     calendar_data.delete_task(calendar_id=calendar_id,
                               year_str=year,
                               month_str=month,
@@ -275,7 +282,7 @@ def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 def update_task_day_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     new_day = request.data.decode("utf-8")
 
-    calendar_data = CalendarData(config.DATA_FOLDER)
+    calendar_data = CalendarData(current_app.config['DATA_FOLDER'])
     calendar_data.update_task_day(calendar_id=calendar_id,
                                   year_str=year,
                                   month_str=month,
@@ -289,7 +296,7 @@ def update_task_day_action(calendar_id: str, year: str, month: str, day: str, ta
 @authenticated
 @authorized
 def hide_repetition_task_instance_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
-    calendar_data = CalendarData(config.DATA_FOLDER)
+    calendar_data = CalendarData(current_app.config['DATA_FOLDER'])
     calendar_data.hide_repetition_task_instance(calendar_id=calendar_id,
                                                 year_str=year,
                                                 month_str=month,
