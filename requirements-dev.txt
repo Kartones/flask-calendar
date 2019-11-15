@@ -1,6 +1,6 @@
-pytest
-flake8
-mypy
+pytest==5.2.3
+flake8==3.7.9
+mypy==0.740
 coverage
-pytest-cov
-pytest-subtests
+pytest-cov==2.8.1
+pytest-randomly==3.1.0
