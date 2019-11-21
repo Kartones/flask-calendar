@@ -62,12 +62,14 @@
                 class="hidden"
             {% endif %}
              >
+
             <input type="radio" id="type_weekly" name="repetition_type" value="w"
                 {% if task.get("repetition_type") == "w" %}
                     checked="checked"
                 {% endif %}
                 >
             <label for="type_weekly">Occurs Weekly</label>
+
             <input type="radio" id="type_monthly" name="repetition_type" value="m"
                 {% if task.get("repetition_type") == "m" %}
                     checked="checked"
@@ -81,19 +83,74 @@
                     checked="checked"
                 {% endif %}
                 >
-            <label for="subtype_weekly">Week day (0: monday → 6: sunday)</label>
+            <label for="subtype_weekly">Week day</label>
+
             <input type="radio" id="subtype_monthly" name="repetition_subtype" value="m"
                 {% if task.get("repetition_subtype") == "m" %}
                     checked="checked"
+                {% else %}
+                    disabled="disabled"
                 {% endif %}
                 >
             <label for="subtype_monthly">Month day</label>
             <br/>
 
-            <label for="repetition_value">Value</label>
-            <input type="number" min="0" max="31" id="repetition_value" name="repetition_value"
-            value="{{ task.get("repetition_value", 0) }}" />
-            <br/>
+            <label for="repetition_value_weekday">Week Day</label>
+            <select name="repetition_value_weekday" id="repetition_value_weekday"
+                {% if task.get("repetition_subtype") == "m" %}
+                    disabled="disabled"
+                {% endif %}
+                >
+                <option value="0">Monday</option>
+                <option value="1">Tuesday</option>
+                <option value="2">Wednesday</option>
+                <option value="3">Thursday</option>
+                <option value="4">Friday</option>
+                <option value="5">Saturday</option>
+                <option value="6">Sunday</option>
+            </select>
+
+            <label for="repetition_value_monthday">Month Day</label>
+            <select name="repetition_value_monthday" id="repetition_value_monthday"
+                {% if task.get("repetition_subtype") == "w" %}
+                    disabled="disabled"
+                {% endif %}
+                >
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+            </select>
+
+            <input type="hidden" min="0" max="31" id="repetition_value" name="repetition_value" value="0" />
+
         </div>
 
         <label for="details">Details</label><br/>
@@ -102,7 +159,7 @@
         <br/>
 
         <label for="color">Color</label>
-        <input type="color" value="{{ task.get("color", "#53A93F") }}" id="color_custom" />
+        <input class="form-button" type="color" value="{{ task.get("color", "#53A93F") }}" id="color_custom" />
         <input class="form-button color" style="color: #EB5A46" data-color="#EB5A46" type="button" value="Red" />
         <input class="form-button color" style="color: #53A93F" data-color="#53A93F" type="button" value="Green" />
         <input class="form-button color" style="color: #0079BF" data-color="#0079BF" type="button" value="Blue" />
@@ -112,18 +169,56 @@
         <input type="hidden" value="{{ task.get("color", "#53A93F") }}" id="color" name="color" />
         <br/>
 
-        <input class="form-button new-task" type="submit" value="Save">
-        {% if editing %}
-            <input class="form-button delete-task" id="delete-task" type="button" value="Delete">
-        {% endif %}
+        <input class="form-button new-task" type="submit" value="Save" />
+            <input class="form-button delete-task" id="delete-task" type="button" value="Delete" />
+
         <input class="form-button" type="button" value="Cancel" onclick="window.history.go(-1); return false;" />
     </div>
     </form>
 
 <script type="text/javascript">
+    const editing = {% if editing %}true{% else %}false{% endif %};
+    const currentRepetitionValue = {{ task.get("repetition_value", 0) }};
+    const repetitionType = "{{ task.get("repetition_type", "") }}";
+    const repetitionSubtype = "{{ task.get("repetition_subtype", "") }}";
+
+    if (editing === true) {
+        document.getElementById("delete-task").style = "visibility:hidden;width:0;padding:0;margin:0";
+        document.getElementById("repetition_value").value = currentRepetitionValue;
+        if (repetitionSubtype === "m") {
+            document.getElementById("repetition_value_monthday").selectedIndex = currentRepetitionValue - 1;
+        }
+        if (repetitionSubtype === "w") {
+            // week days are 0-index
+            document.getElementById("repetition_value_weekday").selectedIndex = currentRepetitionValue;
+        }
+    }
+
+    select_repetition_value_weekday = function(resetRepetitionValue = false) {
+        document.getElementById("repetition_value_weekday").disabled = false;
+        document.getElementById("repetition_value_monthday").disabled = true;
+        document.getElementById("repetition_value_weekday").selectedIndex = 0;
+        // first weekday
+        document.getElementById("repetition_value").value = 0;
+    };
+
+    select_repetition_value_monthday = function() {
+        document.getElementById("repetition_value_weekday").disabled = true;
+        document.getElementById("repetition_value_monthday").disabled = false;
+        document.getElementById("repetition_value_monthday").selectedIndex = 0;
+        // first day of the month
+        document.getElementById("repetition_value").value = 1;
+    };
+
+    select_type_weekly = function() {
+        select_repetition_value_weekday();
+        document.getElementById("subtype_monthly").disabled = true;
+        document.getElementById("subtype_weekly").disabled = false;
+    };
+
     window.onload = function() {
         document.getElementById("is_all_day").onclick = function(eventData) {
-            if (eventData.target.checked == true) {
+            if (eventData.target.checked === true) {
                 document.getElementById("due_time_block").className = "hidden";
                 document.getElementById("due_time").value ="00:00";
             } else {
@@ -132,19 +227,47 @@
         };
 
         document.getElementById("repeats").onclick = function(eventData) {
-            if (eventData.target.checked == true) {
+            if (eventData.target.checked === true) {
                 document.getElementById("type_weekly").checked = true;
                 document.getElementById("subtype_weekly").checked = true;
-                document.getElementById("repetition_value").value = 0;
                 document.getElementById("repetition_block").className = "";
+                select_type_weekly();
             } else {
                 document.getElementById("repetition_block").className = "hidden";
-                // To uncheck everything
+                // hide everything
+                document.getElementById("repetition_value_weekday").disabled = false;
+                document.getElementById("repetition_value_monthday").disabled = true;
+                // and set defaults
                 document.getElementById("type_weekly").checked = true;
-                document.getElementById("type_weekly").checked = false;
                 document.getElementById("subtype_weekly").checked = true;
-                document.getElementById("subtype_weekly").checked = false;
             }
+        };
+
+        document.getElementById("type_weekly").onclick = function(eventData) {
+            select_type_weekly();
+            document.getElementById("subtype_weekly").checked = true;
+        };
+
+        document.getElementById("type_monthly").onclick = function(eventData) {
+            document.getElementById("subtype_monthly").disabled = false;
+        };
+
+        document.getElementById("subtype_weekly").onclick = function(eventData) {
+            select_repetition_value_weekday();
+        };
+
+        document.getElementById("subtype_monthly").onclick = function(eventData) {
+            select_repetition_value_monthday();
+        };
+
+        document.getElementById("repetition_value_weekday").onchange = function(eventData) {
+            document.getElementById("repetition_value").value =
+                eventData.target.options[eventData.target.selectedIndex].value;
+        };
+
+        document.getElementById("repetition_value_monthday").onchange = function(eventData) {
+            document.getElementById("repetition_value").value =
+                eventData.target.options[eventData.target.selectedIndex].value;
         };
 
         document.getElementById("date_picker").onchange = function(eventData) {
@@ -165,22 +288,20 @@
             }
         };
 
-        {% if editing %}
-            document.getElementById("delete-task").onclick = function() {
-                if (confirm("Remove task?") == true) {
-                    fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/{{ task.get("id") }}/",
-                      {
-                        method: "delete",
-                        credentials: "include"
-                      })
-                    .then(response => {
-                        if (response.status == 200) {
-                            window.location = "{{ base_url }}/{{ calendar_id }}/?y={{ year }}&m={{ month }}";
-                        }
-                    });
-                }
-            };
-        {% endif %}
+        document.getElementById("delete-task").onclick = function() {
+            if (confirm("Remove task?") === true) {
+                fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/{{ task.get("id") }}/",
+                    {
+                    method: "delete",
+                    credentials: "include"
+                    })
+                .then(response => {
+                    if (response.status === 200) {
+                        window.location = "{{ base_url }}/{{ calendar_id }}/?y={{ year }}&m={{ month }}";
+                    }
+                });
+            }
+        };
     }
 </script>
 </body>

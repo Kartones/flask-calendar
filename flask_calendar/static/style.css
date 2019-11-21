@@ -60,7 +60,6 @@ li {
     padding: 3px 6px 3px 6px;
     margin-top: 9px;
     margin-right: 3px;
-    border: 1px solid #777777;
     border-radius: 4px;
     text-decoration: none;
 }
@@ -221,6 +220,7 @@ ul.tasks li a {
     height: 0;
     overflow: hidden;
     margin: 0;
+    visibility: hidden;
 }
 
 .task-details-form label {
