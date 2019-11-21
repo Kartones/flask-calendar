@@ -170,7 +170,8 @@
         <br/>
 
         <input class="form-button new-task" type="submit" value="Save" />
-            <input class="form-button delete-task" id="delete-task" type="button" value="Delete" />
+
+        <input class="form-button delete-task" id="delete-task" type="button" value="Delete" />
 
         <input class="form-button" type="button" value="Cancel" onclick="window.history.go(-1); return false;" />
     </div>
@@ -183,7 +184,6 @@
     const repetitionSubtype = "{{ task.get("repetition_subtype", "") }}";
 
     if (editing === true) {
-        document.getElementById("delete-task").style = "visibility:hidden;width:0;padding:0;margin:0";
         document.getElementById("repetition_value").value = currentRepetitionValue;
         if (repetitionSubtype === "m") {
             document.getElementById("repetition_value_monthday").selectedIndex = currentRepetitionValue - 1;
@@ -192,6 +192,8 @@
             // week days are 0-index
             document.getElementById("repetition_value_weekday").selectedIndex = currentRepetitionValue;
         }
+    } else {
+        document.getElementById("delete-task").style = "visibility:hidden;width:0;padding:0;margin:0";
     }
 
     select_repetition_value_weekday = function(resetRepetitionValue = false) {
