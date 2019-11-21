@@ -1,5 +1,6 @@
 body {
-    font:1em/1.4 Verdana, Arial, Helvetica, sans-serif;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1em/1.4;
     color: #222;
     background-color: #FCFCFC;
 }
@@ -44,13 +45,13 @@ li {
     padding: 3px 6px 3px 6px;
     margin-left: 1px;
     margin-right: 1px;
-    border-radius: 4px;
+    border-radius: 2px;
     text-decoration: none;
 }
 
 .new-task {
     color: #F7F7F7;
-    background-color: #A1D360;
+    background-color: #3EB34F;
     margin-top: 18px;
 }
 
@@ -60,7 +61,7 @@ li {
     padding: 3px 6px 3px 6px;
     margin-top: 9px;
     margin-right: 3px;
-    border-radius: 4px;
+    border-radius: 2px;
     text-decoration: none;
 }
 
@@ -71,7 +72,7 @@ li {
 
 .smaller {
     padding: 0px 3px 2px 3px;
-    font-size: 95%;
+    font-size: 11px;
 }
 
 .change-date {
@@ -123,18 +124,23 @@ li {
   -webkit-flex-flow: row wrap;
   justify-content: space-around;
   min-width: 400px;
+  border-left: #DADCE0 1px solid;
 }
 
 .weekday-header {
-  background-color: #C0C9CC;
+  background-color: #F6F6F6;
   color: #666;
-  padding: 1px;
-  margin: 1px;
+  padding: 3px;
+  margin: 0;
   list-style:none;
   flex-grow: 1;
   flex-basis: 12%;
   overflow: auto;
   box-sizing: border-box;
+  text-align: center;
+  font-size: 12px;
+  border-top: #DADCE0 1px solid;
+  border-right: #DADCE0 1px solid;
 }
 
 .calendar {
@@ -145,39 +151,44 @@ li {
   -webkit-flex-flow: row wrap;
   justify-content: space-around;
   min-width: 400px;
+  border-bottom: #DADCE0 1px solid;
+  border-left: #DADCE0 1px solid;
 }
 
 .day {
-  background-color: #F2F1F0;
+  background-color: #F9F9F9;
   padding: 3px;
-  margin: 1px;
+  margin: 0;
   min-height: 120px;
-  margin-top: 6px;
   list-style:none;
   flex-grow: 1;
   flex-basis: 13.5%;
   overflow: auto;
   box-sizing: border-box;
   cursor: pointer;
+  border-top: #DADCE0 1px solid;
+  border-right: #DADCE0 1px solid;
 }
 
 .othermonth {
-  background-color: #DEDDDB;
+  background-color: #F3F3F3;
   cursor: auto;
 }
 
 span.daynumber {
+    font-size: 13.5px;
     font-weight: 400;
     color: #666;
     padding: 3px;
 }
 
 span.daynumber-current {
+    font-size: 13.5px;
     font-weight: 700;
     color: #F7F7F7;
-    background-color: #A1D360;
-    padding: 3px;
-    border-radius: 15%;
+    background-color: #3EB34F;
+    padding: 4px;
+    border-radius: 12px;
 }
 
 .othermonth span.daynumber {
@@ -185,9 +196,10 @@ span.daynumber-current {
 }
 
 ul.tasks {
-    font-weight: 300;
-    font-size: 75%;
+    font-weight: 400;
+    font-size: 12px;
     margin: 1px;
+    margin-top: 3px;
     padding: 0;
 }
 
@@ -195,8 +207,9 @@ ul.tasks li {
     background-color: #444;
     color: #FEFEFE;
     margin-bottom: 1px;
-    padding: 0 4px;
+    padding: 1px 4px 2px 2px;
     cursor: pointer;
+    border-radius: 2px;
 }
 
 ul.tasks li a {
@@ -213,7 +226,7 @@ ul.tasks li a {
 .accordion-visible {
     border-top: 1px dashed #CCC;
     margin: 0;
-    padding: 0 0 3px 0;
+    padding: 0 0 2px 0;
 }
 
 .hidden {
