@@ -11,11 +11,11 @@ At December 2017, I decided I wanted to opt out from Google services as much as 
 
 Main calendar view:
 
-![Main calendar view](doc/sample_01.png)
+![Main calendar view](doc/screenshot_calendar.png)
 
 Create new task view:
 
-![Create new task view](doc/sample_02.png)
+![Create new task view](doc/screenshot_new_task.png)
 
 Supports a basic drag & drop on desktop of days (like Google Calendar), edition of existing tasks, creation of repetitive tasks (daily, montly, by weekday, by month day or on specific day number), custom colors, and a few options like hiding past tasks or being able to manually hide those repetitive task ocurrences (I like a "clean view" and usually remove/hide past tasks).
 
@@ -33,13 +33,6 @@ No databases, as I don't need to do any querying or complex stuff I couldn't als
 Authentication works using werkzeug SimpleCache for storage, which means if the application runs with more than one thread you'll get into problems. Run it with a single process uwsgi or similar.
 
 HTML inputs are favoring HTML5 ones instead of fancy jquery-like plugins to reduce support and increase mobile compatibility.
-
-Overall, lessons learned:
-
-- Next project will be Django. What I win in speed building the routing and views, I lose then building forms and validations.
-- I suck at CSS so I'll stick to Bootstrap/Foundation. This time what I did works but I've spent more time fighting with CSS than building code.
-- I'll give a try next time to turbolinks, to trully try to avoid javascript for tiny projects.
-- Introduce tests (including application ones) from the beginning, at least for critical paths always pays off. At least next project can benefit from the docker setup (with pytest, mypy, flake8 and coverage).
 
 
 ## Requirements
