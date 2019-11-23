@@ -158,20 +158,20 @@
             rows="6">{{ task["details"]|replace("<br>","\n") }}</textarea>
         <br/>
 
-        <label for="color">Color</label>
-        <input class="form-button" type="color" value="{{ task.get("color", "#3EB34F") }}" id="color_custom" />
+        <label for="color">Color</label><br/>
+        <input class="form-button color-picker" type="color" value="{{ task.get("color", "#3EB34F") }}" id="color_custom" />
         <input class="form-button color" style="color: #FF4848" data-color="#FF4848" type="button" value="Red" />
         <input class="form-button color" style="color: #3EB34F" data-color="#3EB34F" type="button" value="Green" />
         <input class="form-button color" style="color: #2966B8" data-color="#2966B8" type="button" value="Blue" />
-        <input class="form-button color" style="color: #4D4D4D" data-color="#4D4D4D" type="button" value="Grey" />
+        <input class="form-button color" style="color: #808080" data-color="#808080" type="button" value="Grey" />
         <input class="form-button color" style="color: #B05F3C" data-color="#B05F3C" type="button" value="Brown" />
         <input class="form-button color" style="color: #9588EC" data-color="#9588EC" type="button" value="Purple" />
         <input type="hidden" value="{{ task.get("color", "#3EB34F") }}" id="color" name="color" />
         <br/>
 
-        <input class="form-button new-task" type="submit" value="Save" />
+        <input class="form-button" type="submit" value="Save" />
 
-        <input class="form-button delete-task" id="delete-task" type="button" value="Delete" />
+        <input class="form-button" id="delete-task" type="button" value="Delete" />
 
         <input class="form-button" type="button" value="Cancel" onclick="window.history.go(-1); return false;" />
     </div>
@@ -193,7 +193,7 @@
             document.getElementById("repetition_value_weekday").selectedIndex = currentRepetitionValue;
         }
     } else {
-        document.getElementById("delete-task").style = "visibility:hidden;width:0;padding:0;margin:0";
+        document.getElementById("delete-task").disabled = true;
     }
 
     select_repetition_value_weekday = function(resetRepetitionValue = false) {

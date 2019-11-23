@@ -39,7 +39,13 @@ li {
     text-decoration: none;
 }
 
-.button, .button a {
+.header-button {
+    padding: 1px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.button {
     font-size: 1.3em;
     font-weight: 700;
     padding: 3px 6px 3px 6px;
@@ -49,25 +55,14 @@ li {
     text-decoration: none;
 }
 
-.new-task {
-    color: #F7F7F7;
-    background-color: #3EB34F;
-    margin-top: 18px;
-}
-
 .form-button {
-    font-size: 1em;
-    font-weight: 700;
-    padding: 3px 6px 3px 6px;
+    padding: 1px;
     margin-top: 9px;
     margin-right: 3px;
-    border-radius: 2px;
-    text-decoration: none;
 }
 
-.form-button.delete-task {
-    color: #F7F7F7;
-    background-color: #D04040;
+.color-picker {
+    padding: 0;
 }
 
 .smaller {
@@ -75,15 +70,7 @@ li {
     font-size: 11px;
 }
 
-.change-date {
-    color: #444;
-    background-color: #DDD;
-}
-
 .toggle-past-events {
-    color: #444;
-    background-color: #DDD;
-    border-radius: 4px;
     float: right;
 }
 
@@ -117,7 +104,7 @@ li {
 
 .calendar-header {
   padding: 0;
-  margin-top: 3px;
+  margin-top: 5px;
   margin-bottom: 0;
   display: flex;
   flex-flow: row wrap;
@@ -141,6 +128,7 @@ li {
   font-size: 12px;
   border-top: #DADCE0 1px solid;
   border-right: #DADCE0 1px solid;
+  border-bottom: 0px;
 }
 
 .calendar {
@@ -168,6 +156,11 @@ li {
   cursor: pointer;
   border-top: #DADCE0 1px solid;
   border-right: #DADCE0 1px solid;
+  border-bottom: 0px;
+}
+
+.task.greyed {
+    background-color:#B8B8B8 !important;
 }
 
 .othermonth {
@@ -267,6 +260,11 @@ ul.tasks li a {
 
 @media screen and (max-width:650px) {
 
+    .header-button {
+        font-size: 18px;
+        padding: 2px;
+    }
+
     .header .current-date {
         font-size: 0.85em;
         padding-left: 3px;
@@ -277,21 +275,7 @@ ul.tasks li a {
         font-size: 0.60em;
     }
 
-    .button, .button a {
-        font-size: 2em;
-    }
-
-    .form-button {
-        font-size: 1em;
-    }
-
-    .toggle-past-events {
-    font-size: 1.1em;
-    }
-
     .day {
     min-height: 30px;
-    margin-top: 3px;
     }
-
 }

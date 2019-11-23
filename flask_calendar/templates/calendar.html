@@ -12,9 +12,12 @@
     <div id="statusbar" class="">Processing...</div>
 
     <div class="header">
-        <a class="button new-task" href="/{{ calendar_id }}/{{ year }}/{{ month}}/new_task" title="New task">+</a>
-        <a class="button change-date" href="{{ previous_month_link }}" title="Previous month">&lt;</a>
-        <a class="button change-date" href="{{ next_month_link }}" title="Next month">&gt;</a>
+        <input type="button" class="header-button" value="+"
+            onclick="window.location='/{{ calendar_id }}/{{ year }}/{{ month}}/new_task'" title="New task" />
+        <input type="button" class="header-button" value="&lt;" onclick="window.location='{{ previous_month_link }}'"
+            title="Previous month" />
+        <input type="button" class="header-button" value="&gt;" onclick="window.location='{{ next_month_link }}'"
+            title="Next month" />
         <div class="current-date">
             {{ month_name }} {{ year }}
         </div>
@@ -24,7 +27,7 @@
             </div>
         {% endif %}
         {% if display_view_past_button %}
-            <a id="toggle-past-events" class="button toggle-past-events" href="" onclick="ToggleViewPastTasks();" title="Toggle viewing past events">View Past</a>
+            <input id="toggle-past-events" class="toggle-past-events" type="button" value="View Past" onclick="ToggleViewPastTasks();" />
         {% endif %}
     </div>
 
@@ -60,10 +63,10 @@
                     {% if day.month|string in tasks and day.day|string in tasks[day.month|string] %}
                         {% for task in tasks[day.month|string][day.day|string]|sort(attribute="due_time") %}
                             <li
-                                class="task"
                                 {% if day.month != month %}
-                                    style="background-color:grey"
+                                    class="task greyed"
                                 {% else %}
+                                    class="task"
                                     style="background-color:{{ task["color"] }}"
                                 {% endif %}
                                 data-year="{{ day.year }}"
@@ -182,7 +185,7 @@
         for(var i=0; i < allCookies.length; i++) {
             var cookie = allCookies[i];
             if (cookie.indexOf(targetName) > -1) {
-                return cookie.substring(targetName.length + 1, cookie.length) === "1";
+                return cookie.substring(targetName.length + 2, cookie.length) !== "0";
             }
         }
         return true;
