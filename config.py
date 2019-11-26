@@ -26,3 +26,6 @@ HIDE_PAST_TASKS = False
 
 # days past to keep hidden tasks (future ones always kept) counting all months as 31 days long
 DAYS_PAST_TO_KEEP_HIDDEN_TASKS = 62
+
+# If to render emoji buttons at the task create/edit page
+EMOJIS_ENABLED = True

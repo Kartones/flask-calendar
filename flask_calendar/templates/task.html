@@ -155,7 +155,7 @@
 
         <label for="details">Details</label><br/>
         <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="42"
-            rows="6">{{ task["details"]|replace("<br>","\n") }}</textarea>
+            rows="8">{{ task["details"]|replace("<br>","\n") }}</textarea>
         <br/>
 
         <label for="color">Color</label><br/>
@@ -164,10 +164,30 @@
         <input class="form-button color" style="color: #3EB34F" data-color="#3EB34F" type="button" value="Green" />
         <input class="form-button color" style="color: #2966B8" data-color="#2966B8" type="button" value="Blue" />
         <input class="form-button color" style="color: #808080" data-color="#808080" type="button" value="Grey" />
+        <br/>
         <input class="form-button color" style="color: #B05F3C" data-color="#B05F3C" type="button" value="Brown" />
         <input class="form-button color" style="color: #9588EC" data-color="#9588EC" type="button" value="Purple" />
+        <input class="form-button color" style="color: #F2981A" data-color="#F2981A" type="button" value="Orange" />
+        <input class="form-button color" style="color: #3d3d3d" data-color="#3d3d3d" type="button" value="Black" />
         <input type="hidden" value="{{ task.get("color", "#3EB34F") }}" id="color" name="color" />
         <br/>
+
+        {% if emojis_enabled %}
+        <input class="form-button emoji" type="button" value="💬" />
+        <input class="form-button emoji" type="button" value="📞" />
+        <input class="form-button emoji" type="button" value="🍴" />
+        <input class="form-button emoji" type="button" value="🍺" />
+        <input class="form-button emoji" type="button" value="📽️" />
+        <input class="form-button emoji" type="button" value="🎂" />
+        <br/>
+        <input class="form-button emoji" type="button" value="💻" />
+        <input class="form-button emoji" type="button" value="📔" />
+        <input class="form-button emoji" type="button" value="✂️" />
+        <input class="form-button emoji" type="button" value="🚂" />
+        <input class="form-button emoji" type="button" value="🐶" />
+        <input class="form-button emoji" type="button" value="🐱" />
+        <br/>
+        {% endif %}
 
         <input class="form-button" type="submit" value="Save" />
 
@@ -281,17 +301,27 @@
         };
 
         document.getElementById("task-details-form").onclick = function(eventData) {
-            if (eventData.target.nodeName === "INPUT" && eventData.target.className === "form-button color") {
-                document.getElementById("color").value = eventData.target.getAttribute("data-color");
-                document.getElementById("color_custom").value = eventData.target.getAttribute("data-color");
-                return false;
-            } else {
-                return;
+            if (eventData.target.nodeName === "INPUT") {
+                switch (eventData.target.className) {
+                    case "form-button color":
+                        document.getElementById("color").value = eventData.target.getAttribute("data-color");
+                        document.getElementById("color_custom").value = eventData.target.getAttribute("data-color");
+                        return false;
+                        break;
+                    case "form-button emoji":
+                        let titleTextbox = document.getElementById("title");
+                        titleTextbox.value = eventData.target.value + " " + titleTextbox.value;
+                        break;
+                    default:
+                        return;
+                }
             }
+
+            return;
         };
 
         document.getElementById("delete-task").onclick = function() {
-            if (confirm("Remove task?") === true) {
+            if (confirm("Remove task '" + document.getElementById("title").value +  "'?") === true) {
                 fetch("{{ base_url }}/{{ calendar_id }}/{{ year }}/{{ month }}/{{ day }}/{{ task.get("id") }}/",
                     {
                     method: "delete",
