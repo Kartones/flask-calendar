@@ -1,4 +1,4 @@
-FROM python:3.5.6
+FROM python:3.8.0
 
 LABEL title "Flask-calendar"
 LABEL maintainer "Diego / Kartones"
