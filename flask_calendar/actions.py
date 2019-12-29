@@ -46,7 +46,7 @@ def do_login_action() -> Response:
         add_session(session_id, username)
         response = make_response(redirect("/"))
         # TODO: other params from http://flask.pocoo.org/docs/0.12/api/#flask.Response.set_cookie
-        response.set_cookie(key=SESSION_ID, value=session_id, max_age=2678400)  # 1 month
+        response.set_cookie(key=SESSION_ID, value=session_id, max_age=2678400, secure=True, httponly=True, samesite='Lax')  # 1 month
         return cast(Response, response)
     else:
         return redirect("/login")
