@@ -29,3 +29,7 @@ DAYS_PAST_TO_KEEP_HIDDEN_TASKS = 62
 
 # If to render emoji buttons at the task create/edit page
 EMOJIS_ENABLED = True
+
+# Cookies config
+COOKIE_HTTPS_ONLY = False
+COOKIE_SAMESITE_POLICY = "Lax"
