@@ -67,7 +67,7 @@ li {
 
 .smaller {
     padding: 0px 3px 2px 3px;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .toggle-past-events {
@@ -262,7 +262,7 @@ ul.tasks li a {
 
     .header-button {
         font-size: 18px;
-        padding: 2px;
+        padding: 4px;
     }
 
     .header .current-date {
@@ -276,6 +276,13 @@ ul.tasks li a {
     }
 
     .day {
-    min-height: 30px;
+        min-height: 30px;
+    }
+
+    ul.tasks li a, span.recurrent-task {
+        padding: 3px 4px 3px 4px;
+        min-width: 8px;
+        text-align: center;
+        min-height: 8px;
     }
 }
