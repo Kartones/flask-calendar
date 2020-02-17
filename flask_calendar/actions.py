@@ -45,11 +45,21 @@ def do_login_action() -> Response:
         session_id = new_session_id()
         add_session(session_id, username)
         response = make_response(redirect("/"))
-        # 1 month lifespan
-        response.set_cookie(
-            key=SESSION_ID, value=session_id, max_age=2678400, secure=current_app.config["COOKIE_HTTPS_ONLY"],
-            httponly=True, samesite=current_app.config["COOKIE_SAMESITE_POLICY"]
-        )
+
+        # max age is 1 month
+        samesite_policy = current_app.config.get("COOKIE_SAMESITE_POLICY", None)
+        # Avoic certain Flask version errors if don't support 'samesite'
+        if samesite_policy:
+            response.set_cookie(
+                key=SESSION_ID, value=session_id, max_age=2678400, secure=current_app.config["COOKIE_HTTPS_ONLY"],
+                httponly=True, samesite=current_app.config["COOKIE_SAMESITE_POLICY"]
+            )
+        else:
+            response.set_cookie(
+                key=SESSION_ID, value=session_id, max_age=2678400, secure=current_app.config["COOKIE_HTTPS_ONLY"],
+                httponly=True
+            )
+
         return cast(Response, response)
     else:
         return redirect("/login")
@@ -120,6 +130,8 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
         "details": ""
     }
 
+    emojis_enabled = current_app.config.get("EMOJIS_ENABLED", False)
+
     return cast(Response, render_template(
         "task.html",
         calendar_id=calendar_id,
@@ -131,8 +143,11 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
         task=task,
         base_url=current_app.config["BASE_URL"],
         editing=False,
-        emojis_enabled=current_app.config.get("EMOJIS_ENABLED", False))
-    )
+        emojis_enabled=emojis_enabled,
+        button_default_color_value=current_app.config["BUTTON_CUSTOM_COLOR_VALUE"],
+        buttons_colors=current_app.config["BUTTONS_COLORS_LIST"],
+        buttons_emojis=current_app.config["BUTTONS_EMOJIS_LIST"] if emojis_enabled else tuple()
+    ))
 
 
 @authenticated
@@ -157,6 +172,8 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
     if task["details"] == "&nbsp;":
         task["details"] = ""
 
+    emojis_enabled = current_app.config.get("EMOJIS_ENABLED", False)
+
     return cast(Response, render_template(
         "task.html",
         calendar_id=calendar_id,
@@ -169,8 +186,11 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
         task=task,
         base_url=current_app.config["BASE_URL"],
         editing=True,
-        emojis_enabled=current_app.config.get("EMOJIS_ENABLED", False))
-    )
+        emojis_enabled=emojis_enabled,
+        button_default_color_value=current_app.config["BUTTON_CUSTOM_COLOR_VALUE"],
+        buttons_colors=current_app.config["BUTTONS_COLORS_LIST"],
+        buttons_emojis=current_app.config["BUTTONS_EMOJIS_LIST"] if emojis_enabled else tuple()
+    ))
 
 
 @authenticated

@@ -154,41 +154,25 @@
         </div>
 
         <label for="details">Details</label><br/>
-        <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="42"
+        <textarea id="details" name="details" placeholder="Details" autocomplete="off" cols="45"
             rows="8">{{ task["details"]|replace("<br>","\n") }}</textarea>
         <br/>
 
         <label for="color">Color</label><br/>
-        <input class="form-button color-picker" type="color" value="{{ task.get("color", "#3EB34F") }}" id="color_custom" />
-        <input class="form-button color" style="color: #FF4848" data-color="#FF4848" type="button" value="Red" />
-        <input class="form-button color" style="color: #3EB34F" data-color="#3EB34F" type="button" value="Green" />
-        <input class="form-button color" style="color: #2966B8" data-color="#2966B8" type="button" value="Blue" />
-        <input class="form-button color" style="color: #808080" data-color="#808080" type="button" value="Grey" />
-        <br/>
-        <input class="form-button color" style="color: #B05F3C" data-color="#B05F3C" type="button" value="Brown" />
-        <input class="form-button color" style="color: #9588EC" data-color="#9588EC" type="button" value="Purple" />
-        <input class="form-button color" style="color: #F2981A" data-color="#F2981A" type="button" value="Orange" />
-        <input class="form-button color" style="color: #3d3d3d" data-color="#3d3d3d" type="button" value="Black" />
-        <input type="hidden" value="{{ task.get("color", "#3EB34F") }}" id="color" name="color" />
+        <input class="form-button color-picker" type="color"
+            value="{{ task.get("color", button_default_color_value) }}" id="color_custom" />
+        {% for color, label in buttons_colors %}
+            <input class="form-button color" style="color:{{ color }}" data-color="{{ color }}" type="button"
+                value="{{ label }}" />
+        {% endfor %}
+        <input type="hidden" value="{{ task.get("color", button_default_color_value) }}" id="color" name="color" />
         <br/>
 
         {% if emojis_enabled %}
-        <input class="form-button emoji" type="button" value="💬" />
-        <input class="form-button emoji" type="button" value="📞" />
-        <input class="form-button emoji" type="button" value="🍔" />
-        <input class="form-button emoji" type="button" value="🍺" />
-        <input class="form-button emoji" type="button" value="📽️" />
-        <input class="form-button emoji" type="button" value="🎂" />
-        <input class="form-button emoji" type="button" value="🏖️" />
-        <br/>
-        <input class="form-button emoji" type="button" value="💻" />
-        <input class="form-button emoji" type="button" value="📔" />
-        <input class="form-button emoji" type="button" value="✂️" />
-        <input class="form-button emoji" type="button" value="🚂" />
-        <input class="form-button emoji" type="button" value="🏡" />
-        <input class="form-button emoji" type="button" value="🐶" />
-        <input class="form-button emoji" type="button" value="🐱" />
-        <br/>
+            {% for emoji in buttons_emojis %}
+                <input class="form-button emoji" type="button" value="{{ emoji }}" />
+            {% endfor %}
+            <br/>
         {% endif %}
 
         <input class="form-button" type="submit" value="Save" />
