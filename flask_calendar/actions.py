@@ -46,20 +46,21 @@ def do_login_action() -> Response:
         add_session(session_id, username)
         response = make_response(redirect("/"))
 
-        # max age is 1 month
-        samesite_policy = current_app.config.get("COOKIE_SAMESITE_POLICY", None)
-        # Avoic certain Flask version errors if don't support 'samesite'
-        if samesite_policy:
-            response.set_cookie(
-                key=SESSION_ID, value=session_id, max_age=2678400, secure=current_app.config["COOKIE_HTTPS_ONLY"],
-                httponly=True, samesite=current_app.config["COOKIE_SAMESITE_POLICY"]
-            )
-        else:
-            response.set_cookie(
-                key=SESSION_ID, value=session_id, max_age=2678400, secure=current_app.config["COOKIE_HTTPS_ONLY"],
-                httponly=True
-            )
+        cookie_kwargs = {
+            "key": SESSION_ID,
+            "value": session_id,
+            # 1 month
+            "max_age": 2678400,
+            "secure": current_app.config["COOKIE_HTTPS_ONLY"],
+            "httponly": True
+        }
 
+        samesite_policy = current_app.config.get("COOKIE_SAMESITE_POLICY", None)
+        # Certain Flask versions don't support 'samesite' param
+        if samesite_policy:
+            cookie_kwargs.update({"samesite": samesite_policy})
+
+        response.set_cookie(**cookie_kwargs)
         return cast(Response, response)
     else:
         return redirect("/login")
