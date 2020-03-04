@@ -32,13 +32,9 @@
     </div>
 
     <ul class="calendar-header">
-        <li class="weekday-header">MON</li>
-        <li class="weekday-header">TUE</li>
-        <li class="weekday-header">WED</li>
-        <li class="weekday-header">THU</li>
-        <li class="weekday-header">FRI</li>
-        <li class="weekday-header">SAT</li>
-        <li class="weekday-header">SUN</li>
+        {% for weekday_header in weekdays_headers %}
+            <li class="weekday-header">{{ weekday_header }}</li>
+        {% endfor %}
     </ul>
 
     <ul class="calendar" id="calendar">

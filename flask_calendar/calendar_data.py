@@ -6,6 +6,7 @@ from typing import (cast, Dict, List, Optional)
 
 from flask import current_app
 
+import flask_calendar.constants as constants
 from flask_calendar.gregorian_calendar import GregorianCalendar
 
 
@@ -23,8 +24,10 @@ class CalendarData:
     REPETITION_SUBTYPE_WEEK_DAY = "w"
     REPETITION_SUBTYPE_MONTH_DAY = "m"
 
-    def __init__(self, data_folder: str) -> None:
+    def __init__(self, data_folder: str, first_weekday: int = constants.WEEK_START_DAY_MONDAY) -> None:
         self.data_folder = data_folder
+        self.gregorian_calendar = GregorianCalendar
+        self.gregorian_calendar.setfirstweekday(first_weekday)
 
     def load_calendar(self, filename: str) -> Dict:
         with open(os.path.join(".", self.data_folder, "{}.json".format(filename))) as file:
@@ -76,9 +79,9 @@ class CalendarData:
 
         tasks = {}  # type: Dict
 
-        current_day, current_month, current_year = GregorianCalendar.current_date()
+        current_day, current_month, current_year = self.gregorian_calendar.current_date()
 
-        for day in GregorianCalendar.month_days(year, month):
+        for day in self.gregorian_calendar.month_days(year, month):
             month_str = str(day.month)
             year_str = str(day.year)
             if (
@@ -91,9 +94,9 @@ class CalendarData:
         return tasks
 
     def hide_past_tasks(self, year: int, month: int, tasks: Dict) -> None:
-        current_day, current_month, current_year = GregorianCalendar.current_date()
+        current_day, current_month, current_year = self.gregorian_calendar.current_date()
 
-        for day in GregorianCalendar.month_days(year, month):
+        for day in self.gregorian_calendar.month_days(year, month):
             month_str = str(day.month)
 
             if self.is_past(day.year, day.month, current_year, current_month):
@@ -130,7 +133,7 @@ class CalendarData:
         return "{0}-{1:02d}-{2:02d}".format(int(year), int(month), int(day))
 
     def add_repetitive_tasks_from_calendar(self, year: int, month: int, data: Dict, tasks: Dict) -> Dict:
-        current_day, current_month, current_year = GregorianCalendar.current_date()
+        current_day, current_month, current_year = self.gregorian_calendar.current_date()
 
         repetitive_tasks = self._repetitive_tasks_from_calendar(year, month, data)
 
@@ -251,7 +254,7 @@ class CalendarData:
 
         repetitive_tasks = {}  # type: Dict
         year_and_months = set([
-            (source_day.year, source_day.month) for source_day in GregorianCalendar.month_days(year, month)
+            (source_day.year, source_day.month) for source_day in self.gregorian_calendar.month_days(year, month)
         ])
 
         for source_year, source_month in year_and_months:
@@ -262,7 +265,7 @@ class CalendarData:
             for task in data[KEY_TASKS][KEY_REPETITIVE_TASK]:
                 id_str = str(task["id"])
                 monthly_task_assigned = False
-                for week in GregorianCalendar.month_days_with_weekday(source_year, source_month):
+                for week in self.gregorian_calendar.month_days_with_weekday(source_year, source_month):
                     for weekday, day in enumerate(week):
                         if day == 0:
                             continue
@@ -333,9 +336,8 @@ class CalendarData:
         for year in years_to_delete:
             del(data[KEY_TASKS][KEY_NORMAL_TASK][year])
 
-    @staticmethod
-    def _clear_past_hidden_entries(data: Dict) -> None:
-        _, current_month, current_year = GregorianCalendar.current_date()
+    def _clear_past_hidden_entries(self, data: Dict) -> None:
+        _, current_month, current_year = self.gregorian_calendar.current_date()
         # normalize to 1st day of month
         current_date = datetime(current_year, current_month, 1, 0, 0)
         tasks_to_delete = []
