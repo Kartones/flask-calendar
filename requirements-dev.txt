@@ -1,6 +1,6 @@
-pytest==5.3.1
+coverage==5.0.4
 flake8==3.7.9
-mypy==0.750
-coverage
+mypy==0.770
+pytest==5.4.1
 pytest-cov==2.8.1
-pytest-randomly==3.1.0
+pytest-randomly==3.2.1

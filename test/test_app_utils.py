@@ -13,6 +13,8 @@ EXPECTED_STRING_PLACEHOLDER = "pre <a href=\"{}\" target=\"_blank\">{}</a> post"
     ("http://www.test.test", "www-prefixed url"),
     ("http://127.0.0.1", "ip url"),
     ("http://test.test/?test=test&test2=test2", "url with query string"),
+    ("http://test.test/?param1=value1&param2=value2", "url with ampersand"),
+    ("http://test.test/?param1=value1&param2[]=value2", "url with brackets"),
 ])
 def test_supported_task_details_for_markup(app: Flask, url: str, description: str) -> None:
     with app.app_context():
