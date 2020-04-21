@@ -14,8 +14,8 @@ from flask_calendar.gregorian_calendar import GregorianCalendar
 
 cache = SimpleCache()
 
-# captures patterns like www.xxx xxx. plus querystring parameters
-URLS_REGEX_PATTERN = r"((?:(?:https?):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.&\[\]]+)"
+# captures patterns like www.xxx xxx. plus querystring parameters (see tests for details)
+URLS_REGEX_PATTERN = r"((?:(?:https?):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.&\[\]\#]+)"
 DECORATED_URL_FORMAT = "<a href=\"{}\" target=\"_blank\">{}</a>"
 
 

@@ -15,6 +15,7 @@ EXPECTED_STRING_PLACEHOLDER = "pre <a href=\"{}\" target=\"_blank\">{}</a> post"
     ("http://test.test/?test=test&test2=test2", "url with query string"),
     ("http://test.test/?param1=value1&param2=value2", "url with ampersand"),
     ("http://test.test/?param1=value1&param2[]=value2", "url with brackets"),
+    ("http://test.test/#some=thing", "url with hash"),
 ])
 def test_supported_task_details_for_markup(app: Flask, url: str, description: str) -> None:
     with app.app_context():
@@ -24,7 +25,6 @@ def test_supported_task_details_for_markup(app: Flask, url: str, description: st
 
 
 @pytest.mark.parametrize("url, description", [
-    ("http://test.test/#some=thing", "hash url"),
     ("http://localhost/", "localhost url"),
     ("http://test.test:8000", "specified port url"),
 ])
