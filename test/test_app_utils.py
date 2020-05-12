@@ -29,6 +29,9 @@ def test_supported_task_details_for_markup(app: Flask, url: str, description: st
 @pytest.mark.parametrize("url, description", [
     ("http://localhost/", "localhost url"),
     ("http://test.test:8000", "specified port url"),
+    ("192.168.1.1", "numeric url without http(s)"),
+    ("www.test.test", "url without http(s)"),
+    ("ftp.test.test", "ftp url"),
 ])
 def test_unsupported_task_details_for_markup(app: Flask, url: str, description: str) -> None:
     with app.app_context():
