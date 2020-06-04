@@ -68,6 +68,7 @@ sudo dpkg-reconfigure locales
 
 
 ### Testing
+
 - Run tests:
 ```bash
 make test
@@ -77,6 +78,11 @@ make test
 ```bash
 make coverage
 ```
+
+### Contributing / Pull Requests
+
+Please ensure you've setup pre-commit (it's [installed](https://pre-commit.com/#installation), then run `pre-commit install` on the repository) so that flake8 and other linters run before pushing the code.
+This project uses [black](https://github.com/psf/black) and [isort](https://github.com/timothycrosley/isort) so it might auto-format your files and modify them. Just check them and add to the commit (should only be text formatting and import ordering related).
 
 ## Virtualenv Environment
 
