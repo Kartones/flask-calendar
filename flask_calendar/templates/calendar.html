@@ -181,7 +181,7 @@
         for(var i=0; i < allCookies.length; i++) {
             var cookie = allCookies[i];
             if (cookie.indexOf(targetName) > -1) {
-                return cookie.substring(targetName.length + 2, cookie.length) !== "0";
+                return cookie.substring(targetName.length + 1, cookie.length) !== "0";
             }
         }
         return true;

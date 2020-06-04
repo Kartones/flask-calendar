@@ -78,16 +78,6 @@ class CalendarData:
                 return True
         return False
 
-    def is_future(
-        self, year: int, month: int, current_year: int, current_month: int
-    ) -> bool:
-        if year > current_year:
-            return True
-        elif year == current_year:
-            if month > current_month:
-                return True
-        return False
-
     def tasks_from_calendar(self, year: int, month: int, data: Dict) -> Dict:
         if not data or KEY_TASKS not in data:
             raise ValueError("Incomplete data for calendar")
@@ -130,9 +120,8 @@ class CalendarData:
         for day in self.gregorian_calendar.month_days(year, month):
             month_str = str(day.month)
 
-            if self.is_past(day.year, day.month, current_year, current_month):
-                tasks[month_str] = {}
-            elif self.is_future(day.year, day.month, current_year, current_month):
+            # empty past months and be careful of future dates, which might not have tasks
+            if self.is_past(day.year, day.month, current_year, current_month) or month_str not in tasks:
                 tasks[month_str] = {}
 
             for task_day_number in tasks[month_str]:
