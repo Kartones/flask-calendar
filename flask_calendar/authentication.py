@@ -2,9 +2,9 @@ import hashlib
 import json
 import os
 import time
-from typing import cast, Dict
-from cachelib.simple import SimpleCache
+from typing import Dict, cast
 
+from cachelib.simple import SimpleCache
 
 cache = SimpleCache()
 
@@ -41,8 +41,8 @@ class Authentication:
             "username": username,
             "password": hashed_password,
             "default_calendar": default_calendar,
-            "ics_key": "an_ics_key"
-            }
+            "ics_key": "an_ics_key",
+        }
         self._save()
 
     def delete_user(self, username: str) -> None:
@@ -65,6 +65,6 @@ class Authentication:
             attempts = 0
         else:
             attempts = int(attempts) + 1
-        wait = self.failed_login_delay_base**attempts
+        wait = self.failed_login_delay_base ** attempts
         cache.set(key, attempts, timeout=7200)  # Keep for 2h
         time.sleep(wait)

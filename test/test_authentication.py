@@ -1,5 +1,4 @@
 import pytest
-
 from flask_calendar.authentication import Authentication
 
 EXISTING_USERNAME = "a_username"
@@ -8,15 +7,17 @@ CORRECT_PASSWORD = "a_password"
 
 @pytest.fixture
 def authentication() -> Authentication:
-    return Authentication(
-            data_folder="test/fixtures", password_salt="a test salt", failed_login_delay_base=0)
+    return Authentication(data_folder="test/fixtures", password_salt="a test salt", failed_login_delay_base=0,)
 
 
-@pytest.mark.parametrize("username, password, expected", [
-    ("an_irrelevant_username", "an_irrelevant_password", False),
-    (EXISTING_USERNAME, "an_irrelevant_password", False),
-    (EXISTING_USERNAME, CORRECT_PASSWORD, True),
-])
+@pytest.mark.parametrize(
+    "username, password, expected",
+    [
+        ("an_irrelevant_username", "an_irrelevant_password", False),
+        (EXISTING_USERNAME, "an_irrelevant_password", False),
+        (EXISTING_USERNAME, CORRECT_PASSWORD, True),
+    ],
+)
 def test_is_valid_authentication(authentication: Authentication, username: str, password: str, expected: bool) -> None:
     assert authentication.is_valid(username=username, password=password) is expected
 

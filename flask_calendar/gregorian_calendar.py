@@ -5,18 +5,20 @@ from typing import Iterable, List, Tuple
 
 class GregorianCalendar:
 
-    MONTH_NAMES = ["January",
-                   "February",
-                   "March",
-                   "April",
-                   "May",
-                   "June",
-                   "July",
-                   "August",
-                   "September",
-                   "October",
-                   "November",
-                   "December"]
+    MONTH_NAMES = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ]
 
     @staticmethod
     def setfirstweekday(weekday: int) -> None:

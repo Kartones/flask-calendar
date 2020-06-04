@@ -1,8 +1,7 @@
 from typing import Dict
-from unittest.mock import ANY, patch, MagicMock
+from unittest.mock import ANY, MagicMock, patch
 
 import pytest
-
 from flask_calendar.calendar_data import CalendarData
 
 
@@ -21,14 +20,17 @@ def past_normal_tasks_data(calendar_data: CalendarData) -> Dict:
     return calendar_data.load_calendar(filename="past_normal_tasks")
 
 
-@pytest.mark.parametrize("year, month, data", [
-    (2001, 1, None),
-    (2001, 1, {}),
-    (2001, 1, {"tasks": {}}),
-    (2001, 1, {"tasks": {"normal": {}, "hidden_repetition": {}}}),
-    (2001, 1, {"tasks": {"normal": {}, "repetition": {}}}),
-    (2001, 1, {"tasks": {"repetition": {}, "hidden_repetition": {}}})
-])
+@pytest.mark.parametrize(
+    "year, month, data",
+    [
+        (2001, 1, None),
+        (2001, 1, {}),
+        (2001, 1, {"tasks": {}}),
+        (2001, 1, {"tasks": {"normal": {}, "hidden_repetition": {}}}),
+        (2001, 1, {"tasks": {"normal": {}, "repetition": {}}}),
+        (2001, 1, {"tasks": {"repetition": {}, "hidden_repetition": {}}}),
+    ],
+)
 def test_error_retrieving_tasks_from_calendar(year: int, month: int, data: Dict, calendar_data: CalendarData) -> None:
     with pytest.raises(ValueError):
         calendar_data.tasks_from_calendar(year, month, data)
@@ -84,8 +86,10 @@ def test_joins_repetitive_tasks_with_normal_ones(calendar_data: CalendarData, sa
 
     # We're counting the number of days with tasks, not the exact number of tasks (day 6 has 2 tasks)
     assert len(tasks[month_str]) == (
-        repetitive_weekly_weekday_task_ocurrences + repetitive_monthly_weekday_task_ocurrences +
-        repetitive_monthly_monthday_task_ocurrences + repetitive_weekly_weekday_3_task_ocurrences
+        repetitive_weekly_weekday_task_ocurrences
+        + repetitive_monthly_weekday_task_ocurrences
+        + repetitive_monthly_monthday_task_ocurrences
+        + repetitive_weekly_weekday_3_task_ocurrences
     )
     assert len(tasks[month_str]["6"]) == 2
 
@@ -114,11 +118,21 @@ def test_creates_new_normal_task(save_calendar_mock: MagicMock, calendar_data: C
     repetition_value = 0
     calendar_id = "sample_empty_data_file"
 
-    result = calendar_data.create_task(calendar_id=calendar_id, year=year, month=month, day=day,
-                                       title=title,
-                                       is_all_day=is_all_day, due_time=due_time, details=details, color=color,
-                                       has_repetition=has_repetition, repetition_type=repetition_type,
-                                       repetition_subtype=repetition_subtype, repetition_value=repetition_value)
+    result = calendar_data.create_task(
+        calendar_id=calendar_id,
+        year=year,
+        month=month,
+        day=day,
+        title=title,
+        is_all_day=is_all_day,
+        due_time=due_time,
+        details=details,
+        color=color,
+        has_repetition=has_repetition,
+        repetition_type=repetition_type,
+        repetition_subtype=repetition_subtype,
+        repetition_value=repetition_value,
+    )
     assert result is True
 
     save_calendar_mock.assert_called_once_with(ANY, filename=calendar_id)
@@ -134,7 +148,7 @@ def test_creates_new_normal_task(save_calendar_mock: MagicMock, calendar_data: C
     assert data["tasks"]["normal"][str(year)][str(month)][str(day)][0]["title"] == title
 
 
-def test_hidden_montly_monthday_repetitions_dont_appear(calendar_data: CalendarData) -> None:
+def test_hidden_montly_monthday_repetitions_dont_appear(calendar_data: CalendarData,) -> None:
     year = 2017
     month = 12
     data = calendar_data.load_calendar("repetitive_monthly_monthday_hidden_task_data_file")
@@ -145,7 +159,7 @@ def test_hidden_montly_monthday_repetitions_dont_appear(calendar_data: CalendarD
     assert str(month) not in tasks
 
 
-def test_hidden_montly_weekday_repetitions_dont_appear(calendar_data: CalendarData) -> None:
+def test_hidden_montly_weekday_repetitions_dont_appear(calendar_data: CalendarData,) -> None:
     year = 2017
     month = 12
     data = calendar_data.load_calendar("repetitive_monthly_weekday_hidden_task_data_file")

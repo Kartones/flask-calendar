@@ -1,4 +1,3 @@
-
 SESSION_ID = "sid"
 
 # Could also use `calendar.SUNDAY` etc.

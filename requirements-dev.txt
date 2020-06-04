@@ -4,3 +4,4 @@ mypy==0.770
 pytest==5.4.1
 pytest-cov==2.8.1
 pytest-randomly==3.2.1
+pre-commit==2.4.0
