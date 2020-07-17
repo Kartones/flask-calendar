@@ -109,7 +109,7 @@ def test_creates_new_normal_task(save_calendar_mock: MagicMock, calendar_data: C
     day = 10
     title = "an irrelevant title"
     is_all_day = True
-    due_time = "00:00"
+    start_time = "00:00"
     details = ""
     color = "an_irrelevant_color"
     has_repetition = False
@@ -125,7 +125,7 @@ def test_creates_new_normal_task(save_calendar_mock: MagicMock, calendar_data: C
         day=day,
         title=title,
         is_all_day=is_all_day,
-        due_time=due_time,
+        start_time=start_time,
         details=details,
         color=color,
         has_repetition=has_repetition,
@@ -146,6 +146,60 @@ def test_creates_new_normal_task(save_calendar_mock: MagicMock, calendar_data: C
     assert len(data["tasks"]["normal"][str(year)][str(month)][str(day)]) == 1
     assert "title" in data["tasks"]["normal"][str(year)][str(month)][str(day)][0]
     assert data["tasks"]["normal"][str(year)][str(month)][str(day)][0]["title"] == title
+
+
+@patch("flask_calendar.calendar_data.CalendarData._save_calendar")
+def test_creates_task_with_start_and_end_dates(save_calendar_mock: MagicMock, calendar_data: CalendarData) -> None:
+    year = 2017
+    month = 12
+    day = 10
+    title = "an irrelevant title"
+    is_all_day = False
+    start_time = "12:00"
+    end_time = "13:00"
+    details = ""
+    color = "an_irrelevant_color"
+    has_repetition = False
+    repetition_type = ""
+    repetition_subtype = ""
+    repetition_value = 0
+    calendar_id = "sample_empty_data_file"
+
+    result = calendar_data.create_task(
+        calendar_id=calendar_id,
+        year=year,
+        month=month,
+        day=day,
+        title=title,
+        is_all_day=is_all_day,
+        start_time=start_time,
+        end_time=end_time,
+        details=details,
+        color=color,
+        has_repetition=has_repetition,
+        repetition_type=repetition_type,
+        repetition_subtype=repetition_subtype,
+        repetition_value=repetition_value,
+    )
+    assert result is True
+
+    save_calendar_mock.assert_called_once_with(ANY, filename=calendar_id)
+    call_args, _ = save_calendar_mock.call_args
+    data = call_args[0]
+    assert "tasks" in data
+    assert "normal" in data["tasks"]
+    assert str(year) in data["tasks"]["normal"]
+    assert str(month) in data["tasks"]["normal"][str(year)]
+    assert str(day) in data["tasks"]["normal"][str(year)][str(month)]
+    assert len(data["tasks"]["normal"][str(year)][str(month)][str(day)]) == 1
+
+    task_data = data["tasks"]["normal"][str(year)][str(month)][str(day)][0]
+
+    assert "title" in task_data
+    assert task_data["title"] == title
+    assert task_data["is_all_day"] is False
+    assert task_data["start_time"] == start_time
+    assert task_data["end_time"] == end_time
 
 
 def test_hidden_montly_monthday_repetitions_dont_appear(calendar_data: CalendarData,) -> None:

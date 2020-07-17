@@ -237,7 +237,8 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
     else:
         updated_year = updated_month = updated_day = None
     is_all_day = request.form.get("is_all_day", "0") == "1"
-    due_time = request.form["due_time"]
+    start_time = request.form["start_time"]
+    end_time = request.form.get("end_time", None)
     details = request.form["details"].replace("\r", "").replace("\n", "<br>")
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
@@ -252,7 +253,8 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
         day=updated_day,
         title=title,
         is_all_day=is_all_day,
-        due_time=due_time,
+        start_time=start_time,
+        end_time=end_time,
         details=details,
         color=color,
         has_repetition=has_repetition,
@@ -287,7 +289,8 @@ def save_task_action(calendar_id: str) -> Response:
     else:
         year = month = day = None
     is_all_day = request.form.get("is_all_day", "0") == "1"
-    due_time = request.form["due_time"]
+    start_time = request.form["start_time"]
+    end_time = request.form.get("end_time", None)
     details = request.form["details"].replace("\r", "").replace("\n", "<br>")
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
@@ -303,7 +306,8 @@ def save_task_action(calendar_id: str) -> Response:
         day=day,
         title=title,
         is_all_day=is_all_day,
-        due_time=due_time,
+        start_time=start_time,
+        end_time=end_time,
         details=details,
         color=color,
         has_repetition=has_repetition,

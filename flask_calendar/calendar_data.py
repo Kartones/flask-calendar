@@ -200,13 +200,14 @@ class CalendarData:
         day: Optional[int],
         title: str,
         is_all_day: bool,
-        due_time: str,
+        start_time: str,
         details: str,
         color: str,
         has_repetition: bool,
         repetition_type: Optional[str],
         repetition_subtype: Optional[str],
         repetition_value: int,
+        end_time: Optional[str] = None,
     ) -> bool:
         details = details if len(details) > 0 else "&nbsp;"
         data = self.load_calendar(calendar_id)
@@ -214,7 +215,8 @@ class CalendarData:
         new_task = {
             "id": int(time.time()),
             "color": color,
-            "due_time": due_time,
+            "start_time": start_time,
+            "end_time": end_time if end_time else start_time,
             "is_all_day": is_all_day,
             "title": title,
             "details": details,

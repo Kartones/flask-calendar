@@ -41,6 +41,14 @@ HTML inputs are favoring HTML5 ones instead of fancy jquery-like plugins to redu
 
 Other requirements are on the `requirements.txt` file. Install them with `pip` or similar.
 
+## Data Migrations
+
+Starting with version `v1.0`, there is a `\scripts` folder that will contain any required migrations. They will be listed here in this section to simplify things.
+
+### Migrations
+
+- `data_migration_001`: **`v0.9` -> `v1.0`**. Not backwards compatible once migrated. Must be run before `v1.0` logic or server will throw errors and maybe could override old `due_time` fields.
+
 ## Docker Environment
 
 - Development strongly encourages using Docker and Docker Compose.
