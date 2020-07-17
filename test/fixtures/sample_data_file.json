@@ -8,7 +8,8 @@
         "title": "Repetitive weekly weekday",
         "details": "every monday (all day task)",
         "id": 0,
-        "due_time": "00:00",
+        "start_time": "00:00",
+        "end_time": "00:00",
         "repetition_value": 0,
         "repetition_subtype": "w",
         "repetition_type": "w",
@@ -19,7 +20,8 @@
         "title": "Repetitive monthly weekday",
         "details": "1st saturday of the month",
         "id": 1,
-        "due_time": "00:00",
+        "start_time": "00:00",
+        "end_time": "00:00",
         "repetition_value": 5,
         "repetition_subtype": "w",
         "repetition_type": "m",
@@ -30,7 +32,8 @@
         "title": "Repetitive monthly monthday",
         "details": "1st day of the month",
         "id": 2,
-        "due_time": "00:00",
+        "start_time": "00:00",
+        "end_time": "00:00",
         "repetition_value": 1,
         "repetition_subtype": "m",
         "repetition_type": "m",
@@ -41,7 +44,8 @@
         "title": "Repetitive weekly weekday",
         "details": "every thursday at afternoon",
         "id": 3,
-        "due_time": "19:30",
+        "start_time": "19:30",
+        "end_time": "00:00",
         "repetition_value": 3,
         "repetition_subtype": "w",
         "repetition_type": "w",
@@ -57,7 +61,8 @@
               "title": "Month 11 task",
               "details": "Task details",
               "id": 4,
-              "due_time": "00:00",
+              "start_time": "00:00",
+              "end_time": "00:00",
               "color": "#000"
             }
           ]
@@ -69,7 +74,8 @@
               "title": "Task title",
               "details": "Task details",
               "id": 0,
-              "due_time": "00:00",
+              "start_time": "00:00",
+              "end_time": "00:00",
               "color": "#039BE5"
             },
             {
@@ -77,7 +83,8 @@
               "title": "Task #2",
               "details": "Task 2 details",
               "id": 1,
-              "due_time": "15:30",
+              "start_time": "15:30",
+              "end_time": "15:30",
               "color": "#EF6C00"
             }
           ]

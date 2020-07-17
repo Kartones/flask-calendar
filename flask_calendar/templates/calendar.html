@@ -57,7 +57,7 @@
                 {{ day.day }}</span>
                 <ul class="tasks">
                     {% if day.month|string in tasks and day.day|string in tasks[day.month|string] %}
-                        {% for task in tasks[day.month|string][day.day|string]|sort(attribute="due_time") %}
+                        {% for task in tasks[day.month|string][day.day|string]|sort(attribute="start_time") %}
                             <li
                                 {% if day.month != month %}
                                     class="task greyed"
@@ -72,7 +72,7 @@
                                 {% if "repetition_type" in task %}data-recurrent="1"{% endif %}>
 
                                 {% if not task["is_all_day"] %}
-                                    {{ task["due_time"] }}
+                                    <span class="time">{{ task["start_time"] }}{% if task["start_time"] != task["end_time"] %} - {{ task["end_time"] }}{% endif %}</span>
                                 {% endif %}
                                 {{ task["title"] }}
                                 <p class="accordion-hidden">
@@ -324,7 +324,8 @@
                 return;
             }
             if (eventData.target.nodeName === "LI" && eventData.target.className === "task") {
-                ToggleDetails(eventData.target.children[0]);
+                // If is not "all day" there will be a span containing the time before the content
+                ToggleDetails(eventData.target.children[eventData.target.children.length - 1]);
                 return;
             }
             if (eventData.target.nodeName === "P" && (eventData.target.className === "accordion-hidden" ||

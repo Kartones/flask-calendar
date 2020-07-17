@@ -9,7 +9,7 @@
               "title": "Task title",
               "id": 0,
               "color": "#039BE5",
-              "due_time": "00:00",
+              "start_time": "00:00","end_time": "00:00",
               "is_all_day": true
             },
             {
@@ -17,7 +17,7 @@
               "title": "Task #2",
               "id": 1,
               "color": "#EF6C00",
-              "due_time": "15:30",
+              "start_time": "15:30","end_time": "15:30",
               "is_all_day": false
             }
           ]
@@ -32,7 +32,7 @@
         "title": "Repetitive weekly weekday",
         "id": 0,
         "color": "#B19CDA",
-        "due_time": "00:00",
+        "start_time": "00:00","end_time": "00:00",
         "repetition_subtype": "w",
         "is_all_day": true
       },
@@ -43,7 +43,7 @@
         "title": "Repetitive monthly weekday",
         "id": 1,
         "color": "#53A93F",
-        "due_time": "00:00",
+        "start_time": "00:00","end_time": "00:00",
         "repetition_subtype": "w",
         "is_all_day": true
       },
@@ -54,7 +54,7 @@
         "title": "Repetitive monthly monthday",
         "id": 2,
         "color": "#777777",
-        "due_time": "00:00",
+        "start_time": "00:00","end_time": "00:00",
         "repetition_subtype": "m",
         "is_all_day": true
       },
@@ -65,7 +65,7 @@
         "title": "Repetitive weekly weekday",
         "id": 3,
         "color": "#785649",
-        "due_time": "19:30",
+        "start_time": "19:30","end_time": "19:30",
         "repetition_subtype": "w",
         "is_all_day": false
       }

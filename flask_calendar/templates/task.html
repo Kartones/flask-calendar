@@ -41,13 +41,16 @@
              />
         <br/>
 
-        <div id="due_time_block"
+        <div id="start_time_block"
             {% if task["is_all_day"] %}
                 class="hidden"
             {% endif %}
              >
-            <label for="due_time">Due time</label>
-            <input type="time" id="due_time" name="due_time" value="{{ task.get("due_time", "00:00") }}" />
+            <label for="start_time">Start time</label>
+            <input type="time" id="start_time" name="start_time" value="{{ task.get("start_time", "00:00") }}" />
+            <br/>
+            <label for="end_time">End time</label>
+            <input type="time" id="end_time" name="end_time" value="{{ task.get("end_time", "00:00") }}" />
             <br/>
         </div>
 
@@ -227,12 +230,17 @@
     window.onload = function() {
         document.getElementById("is_all_day").onclick = function(eventData) {
             if (eventData.target.checked === true) {
-                document.getElementById("due_time_block").className = "hidden";
-                document.getElementById("due_time").value ="00:00";
+                document.getElementById("start_time_block").className = "hidden";
+                document.getElementById("start_time").value ="00:00";
+                document.getElementById("end_time").value ="00:00";
             } else {
-                document.getElementById("due_time_block").className = "";
+                document.getElementById("start_time_block").className = "";
             }
         };
+
+        document.getElementById("start_time").onchange = function(eventData) {
+            document.getElementById("end_time").value = eventData.target.value;
+        }
 
         document.getElementById("repeats").onclick = function(eventData) {
             if (eventData.target.checked === true) {

@@ -168,6 +168,10 @@ li {
   cursor: auto;
 }
 
+span.time {
+    font-size: 9px;
+}
+
 span.daynumber {
     font-size: 13.5px;
     font-weight: 400;
