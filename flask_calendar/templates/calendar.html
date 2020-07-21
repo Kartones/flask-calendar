@@ -323,16 +323,24 @@
                 }
                 return;
             }
+
             if (eventData.target.nodeName === "LI" && eventData.target.className === "task") {
                 // If is not "all day" there will be a span containing the time before the content
                 ToggleDetails(eventData.target.children[eventData.target.children.length - 1]);
                 return;
+            } else if (eventData.target.nodeName === "SPAN" && eventData.target.parentNode.nodeName === "LI"
+                       && eventData.target.parentNode.className === "task") {
+                // If is not "all day" there will be a span containing the time before the content
+                ToggleDetails(eventData.target.parentNode.children[eventData.target.parentNode.children.length - 1]);
+                return;
             }
+
             if (eventData.target.nodeName === "P" && (eventData.target.className === "accordion-hidden" ||
                                                       eventData.target.className === "accordion-visible")) {
                 ToggleDetails(eventData.target);
                 return;
             }
+
             if (eventData.target.nodeName === "A") {
                 if (eventData.target.className.indexOf("remove-task") > -1) {
                     DeleteTask(eventData.target.getAttribute("data-year"),
@@ -350,6 +358,7 @@
                     }
                 }
             }
+
             return;
         };
     };
