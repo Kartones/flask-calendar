@@ -18,7 +18,11 @@ RUN getent passwd $uid || useradd -m -u $uid -g $gid flask-calendar
 
 RUN chown -R $uid:$gid /usr/local
 
+# To upgrade pip below
+RUN apt-get update
+
 USER $uid
 
+RUN pip install --upgrade pip
 COPY requirements.txt /code/requirements.txt
 RUN pip install -r /code/requirements.txt
