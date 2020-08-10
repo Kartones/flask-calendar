@@ -291,84 +291,74 @@
         movingTimeout = undefined;
     };
 
-    function reloadIfStale() {
-        var ts = localStorage.getItem("ts");
-        localStorage.setItem("ts", Date.now());
-        if (ts !== null && Date.now() - parseInt(ts) > 3600000) {
-            location.reload();
-        }
-    };
 
-    window.onload = function() {
-        reloadIfStale();
 
-        if (!smallScreen) {
-            document.getElementById("calendar").onmousedown = function(eventData) {
-                if (eventData.target.nodeName === "LI" && eventData.target.className === "task" &&
-                    !eventData.target.hasAttribute("data-recurrent")) {
+    if (!smallScreen) {
+        document.getElementById("calendar").onmousedown = function(eventData) {
+            if (eventData.target.nodeName === "LI" && eventData.target.className === "task" &&
+                !eventData.target.hasAttribute("data-recurrent")) {
 
-                    moving = true;
-                    movingElement = eventData.target;
-                    movingElement.onmouseup = DragEnd;
-                    movingElement.onmousemove = Dragging;
-                    movingElement.style.width = movingElement.clientWidth - 12 + "px";
-                    movingElement.style.position = "absolute";
-                }
-                return;
-            };
-        }
-
-        document.getElementById("calendar").onclick = function(eventData) {
-            if (eventData.target.nodeName === "LI" && eventData.target.className === "day") {
-                if (++clicksCounter == 1) {
-                    // Single click behaviour (nothing)
-                    clicksTimeout = setTimeout(function() { clicksCounter = 0; }, 300);
-                } else {
-                    clearTimeout(clicksTimeout);
-                    clicksCounter = 0;
-                    window.location = "/{{ calendar_id }}/{{ year }}/{{ month }}/new_task?day=" +
-                                       eventData.target.getAttribute("data-day");
-                }
-                return;
+                moving = true;
+                movingElement = eventData.target;
+                movingElement.onmouseup = DragEnd;
+                movingElement.onmousemove = Dragging;
+                movingElement.style.width = movingElement.clientWidth - 12 + "px";
+                movingElement.style.position = "absolute";
             }
-
-            if (eventData.target.nodeName === "LI" && eventData.target.className === "task") {
-                // If is not "all day" there will be a span containing the time before the content
-                ToggleDetails(eventData.target.children[eventData.target.children.length - 1]);
-                return;
-            } else if (eventData.target.nodeName === "SPAN" && eventData.target.parentNode.nodeName === "LI"
-                       && eventData.target.parentNode.className === "task") {
-                // If is not "all day" there will be a span containing the time before the content
-                ToggleDetails(eventData.target.parentNode.children[eventData.target.parentNode.children.length - 1]);
-                return;
-            }
-
-            if (eventData.target.nodeName === "P" && (eventData.target.className === "accordion-hidden" ||
-                                                      eventData.target.className === "accordion-visible")) {
-                ToggleDetails(eventData.target);
-                return;
-            }
-
-            if (eventData.target.nodeName === "A") {
-                if (eventData.target.className.indexOf("remove-task") > -1) {
-                    DeleteTask(eventData.target.getAttribute("data-year"),
-                           eventData.target.getAttribute("data-month"),
-                           eventData.target.getAttribute("data-day"),
-                           eventData.target.getAttribute("data-id"),
-                           eventData.target.getAttribute("data-title"));
-                } else {
-                    if (eventData.target.className.indexOf("hide-recurrent-task") > -1) {
-                        DeleteTaskOcurrence(eventData.target.getAttribute("data-year"),
-                                        eventData.target.getAttribute("data-month"),
-                                        eventData.target.getAttribute("data-day"),
-                                        eventData.target.getAttribute("data-id"),
-                                        eventData.target.getAttribute("data-title"));
-                    }
-                }
-            }
-
             return;
         };
+    }
+
+    document.getElementById("calendar").onclick = function(eventData) {
+        if (eventData.target.nodeName === "LI" && eventData.target.className === "day") {
+            if (++clicksCounter == 1) {
+                // Single click behaviour (nothing)
+                clicksTimeout = setTimeout(function() { clicksCounter = 0; }, 300);
+            } else {
+                clearTimeout(clicksTimeout);
+                clicksCounter = 0;
+                window.location = "/{{ calendar_id }}/{{ year }}/{{ month }}/new_task?day=" +
+                                    eventData.target.getAttribute("data-day");
+            }
+            return;
+        }
+
+        if (eventData.target.nodeName === "LI" && eventData.target.className === "task") {
+            // If is not "all day" there will be a span containing the time before the content
+            ToggleDetails(eventData.target.children[eventData.target.children.length - 1]);
+            return;
+        } else if (eventData.target.nodeName === "SPAN" && eventData.target.parentNode.nodeName === "LI"
+                    && eventData.target.parentNode.className === "task") {
+            // If is not "all day" there will be a span containing the time before the content
+            ToggleDetails(eventData.target.parentNode.children[eventData.target.parentNode.children.length - 1]);
+            return;
+        }
+
+        if (eventData.target.nodeName === "P" && (eventData.target.className === "accordion-hidden" ||
+                                                    eventData.target.className === "accordion-visible")) {
+            ToggleDetails(eventData.target);
+            return;
+        }
+
+        if (eventData.target.nodeName === "A") {
+            if (eventData.target.className.indexOf("remove-task") > -1) {
+                DeleteTask(eventData.target.getAttribute("data-year"),
+                        eventData.target.getAttribute("data-month"),
+                        eventData.target.getAttribute("data-day"),
+                        eventData.target.getAttribute("data-id"),
+                        eventData.target.getAttribute("data-title"));
+            } else {
+                if (eventData.target.className.indexOf("hide-recurrent-task") > -1) {
+                    DeleteTaskOcurrence(eventData.target.getAttribute("data-year"),
+                                    eventData.target.getAttribute("data-month"),
+                                    eventData.target.getAttribute("data-day"),
+                                    eventData.target.getAttribute("data-id"),
+                                    eventData.target.getAttribute("data-title"));
+                }
+            }
+        }
+
+        return;
     };
 </script>
 </body>
