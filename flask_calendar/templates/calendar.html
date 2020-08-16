@@ -291,7 +291,29 @@
         movingTimeout = undefined;
     };
 
+    var hiddenValue, visibilityChangeEventName;
+    if (typeof document.hidden !== "undefined") {
+        hiddenValue = "hidden";
+        visibilityChangeEventName = "visibilitychange";
+    } else if (typeof document.msHidden !== "undefined") {
+        hiddenValue = "msHidden";
+        visibilityChangeEventName = "msvisibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        hiddenValue = "webkitHidden";
+        visibilityChangeEventName = "webkitvisibilitychange";
+    }
 
+    function refreshIfStale() {
+        if (!document[hiddenValue]) {
+            var ts = localStorage.getItem("ts");
+            localStorage.setItem("ts", Date.now());
+            if (ts !== null && Date.now() - parseInt(ts) > 3600000) {
+                location.reload();
+            }
+        }
+    };
+
+    document.addEventListener(visibilityChangeEventName, refreshIfStale, false);
 
     if (!smallScreen) {
         document.getElementById("calendar").onmousedown = function(eventData) {
