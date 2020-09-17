@@ -161,22 +161,24 @@
             rows="8">{{ task["details"]|replace("<br>","\n") }}</textarea>
         <br/>
 
-        <label for="color">Color</label><br/>
-        <input class="form-button color-picker" type="color"
-            value="{{ task.get("color", button_default_color_value) }}" id="color_custom" />
-        {% for color, label in buttons_colors %}
-            <input class="form-button color" style="color:{{ color }}" data-color="{{ color }}" type="button"
-                value="{{ label }}" />
-        {% endfor %}
-        <input type="hidden" value="{{ task.get("color", button_default_color_value) }}" id="color" name="color" />
-        <br/>
-
-        {% if emojis_enabled %}
-            {% for emoji in buttons_emojis %}
-                <input class="form-button emoji" type="button" value="{{ emoji }}" />
+        <div id="colors-and-emojis">
+            <label for="color">Color</label><br/>
+            <input class="form-button color-picker" type="color"
+                value="{{ task.get("color", button_default_color_value) }}" id="color_custom" />
+            {% for color, label in buttons_colors %}
+                <input class="form-button color" style="color:{{ color }}" data-color="{{ color }}" type="button"
+                    value="{{ label }}" />
             {% endfor %}
+            <input type="hidden" value="{{ task.get("color", button_default_color_value) }}" id="color" name="color" />
             <br/>
-        {% endif %}
+
+            {% if emojis_enabled %}
+                {% for emoji in buttons_emojis %}
+                    <input class="form-button emoji" type="button" value="{{ emoji }}" />
+                {% endfor %}
+                <br/>
+            {% endif %}
+        </div>
 
         <input class="form-button" type="submit" value="Save" />
 
@@ -294,7 +296,7 @@
             document.getElementById("color").value = eventData.target.value;
         };
 
-        document.getElementById("task-details-form").onclick = function(eventData) {
+        document.getElementById("colors-and-emojis").onclick = function(eventData) {
             if (eventData.target.nodeName === "INPUT") {
                 switch (eventData.target.className) {
                     case "form-button color":
