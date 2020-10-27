@@ -303,18 +303,6 @@
         visibilityChangeEventName = "webkitvisibilitychange";
     }
 
-    function refreshIfStale() {
-        if (!document[hiddenValue]) {
-            var ts = localStorage.getItem("ts");
-            localStorage.setItem("ts", Date.now());
-            if (ts !== null && Date.now() - parseInt(ts) > 3600000) {
-                location.reload();
-            }
-        }
-    };
-
-    document.addEventListener(visibilityChangeEventName, refreshIfStale, false);
-
     if (!smallScreen) {
         document.getElementById("calendar").onmousedown = function(eventData) {
             if (eventData.target.nodeName === "LI" && eventData.target.className === "task" &&

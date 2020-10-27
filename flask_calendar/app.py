@@ -2,7 +2,7 @@
 
 import locale
 import os
-from typing import Dict, cast
+from typing import Dict
 
 import config  # noqa: F401
 from flask import Flask, Response, send_from_directory
@@ -38,11 +38,8 @@ def create_app(config_overrides: Dict = None) -> Flask:
     # To avoid main_calendar_action below shallowing favicon requests and generating error logs
     @app.route("/favicon.ico")
     def favicon() -> Response:
-        return cast(
-            Response,
-            send_from_directory(
-                os.path.join(cast(str, app.root_path), "static"), "favicon.ico", mimetype="image/vnd.microsoft.icon",
-            ),
+        return send_from_directory(
+            os.path.join(app.root_path, "static"), "favicon.ico", mimetype="image/vnd.microsoft.icon",
         )
 
     app.add_url_rule("/", "index_action", index_action, methods=["GET"])
