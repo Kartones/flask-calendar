@@ -3,7 +3,7 @@ import flask_calendar.constants as constants
 DEBUG = True
 DATA_FOLDER = "data"
 USERS_DATA_FOLDER = "users"
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "http://0.0.0.0:5000"
 MIN_YEAR = 2017
 MAX_YEAR = 2100
 PASSWORD_SALT = "something random and full of non-standard characters"
@@ -68,3 +68,7 @@ BUTTONS_EMOJIS_LIST = (
     "🐶",
     "🐱",
 )
+
+# percent of chance to do a GC-like sweep on save and clean empty and/or past hidden entries.
+# values [0, 100] -> Note that 0 disables it, 100 makes it run every time
+GC_ON_SAVE_CHANCE = 30

@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import time
 from datetime import datetime
 from typing import Dict, List, Optional, cast
@@ -331,8 +332,10 @@ class CalendarData:
         return False
 
     def _save_calendar(self, data: Dict, filename: str) -> None:
-        self._clear_empty_entries(data)
-        self._clear_past_hidden_entries(data)
+        if random.randint(0, 99) < current_app.config.get("GC_ON_SAVE_CHANCE", 100):
+            self._clear_empty_entries(data)
+            self._clear_past_hidden_entries(data)
+
         with open(os.path.join(".", self.data_folder, "{}.json".format(filename)), "w+") as file:
             json.dump(data, file)
 
