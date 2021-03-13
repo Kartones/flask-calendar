@@ -28,9 +28,14 @@
             id="title" name="title" minlength="2" required />
         <br/>
 
-        <label for="date_picker">Date</label>
+        <label for="date_picker">Start date</label>
         <input id="date_picker" type="date" value="{{ task["date"] }}">
         <input type="hidden" id="date" name="date" value="{{ task["date"] }}" />
+        <br/>
+
+        <label for="date_picker2">End date</label>
+        <input id="date_picker2" type="date" value="{{ task["date"] }}">
+        <input type="hidden" id="enddate" name="enddate" value="{{ task["date"] }}" />
         <br/>
 
         <label for="is_all_day">All day event</label>
@@ -290,6 +295,10 @@
 
         document.getElementById("date_picker").onchange = function(eventData) {
             document.getElementById("date").value = eventData.target.value;
+        };
+
+        document.getElementById("date_picker2").onchange = function(eventData) {
+            document.getElementById("enddate").value = eventData.target.value;
         };
 
         document.getElementById("color_custom").onchange = function(eventData) {
