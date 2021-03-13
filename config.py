@@ -5,14 +5,14 @@ DATA_FOLDER = "data"
 USERS_DATA_FOLDER = "users"
 BASE_URL = "http://0.0.0.0:5000"
 MIN_YEAR = 2017
-MAX_YEAR = 2100
+MAX_YEAR = 2200
 PASSWORD_SALT = "something random and full of non-standard characters"
 HOST_IP = "0.0.0.0"  # set to None for production
 LOCALE = "es_ES.UTF-8"
 # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-TIMEZONE = "Europe/Madrid"
+TIMEZONE = "Europe/Moscow"
 
-WEEK_STARTING_DAY = constants.WEEK_START_DAY_SUNDAY
+WEEK_STARTING_DAY = constants.WEEK_START_DAY_MONDAY
 
 MONTHS_TO_EXPORT = 6  # currently only used for ICS export
 
