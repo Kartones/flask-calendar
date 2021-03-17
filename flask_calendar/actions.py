@@ -1,4 +1,5 @@
 import re
+
 from typing import Optional, cast  # noqa: F401
 
 import flask_calendar.constants as constants
@@ -281,6 +282,8 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 def save_task_action(calendar_id: str) -> Response:
     title = request.form["title"].strip()
     date = request.form.get("date", "")
+    startdate=date
+    enddate = request.form.get("enddate", "")
     if len(date) > 0:
         date_fragments = re.split("-", date)
         year = int(date_fragments[0])  # type: Optional[int]
@@ -299,22 +302,56 @@ def save_task_action(calendar_id: str) -> Response:
     repetition_value = int(request.form["repetition_value"])
 
     calendar_data = CalendarData(current_app.config["DATA_FOLDER"], current_app.config["WEEK_STARTING_DAY"])
-    calendar_data.create_task(
-        calendar_id=calendar_id,
-        year=year,
-        month=month,
-        day=day,
-        title=title,
-        is_all_day=is_all_day,
-        start_time=start_time,
-        end_time=end_time,
-        details=details,
-        color=color,
-        has_repetition=has_repetition,
-        repetition_type=repetition_type,
-        repetition_subtype=repetition_subtype,
-        repetition_value=repetition_value,
-    )
+
+    if date != enddate:
+        from datetime import date, timedelta
+        
+        startdate_fragments = re.split("-", startdate)
+        enddate_fragments = re.split("-", enddate)
+        sdate = date(int(startdate_fragments[0]), int(startdate_fragments[1]), int(startdate_fragments[2]))   # start date
+        edate = date(int(enddate_fragments[0]), int(enddate_fragments[1]), int(enddate_fragments[2]))   # end date
+        delta = edate - sdate       # as timedelta
+        for i in range(delta.days + 1):
+            currentdate = re.split("-", str(sdate + timedelta(days=i)))
+            
+            year = int(currentdate[0])  # type: Optional[int]
+            month = int(currentdate[1])  # type: Optional[int]
+            day = int(currentdate[2])  # type: Optional[int]
+
+            calendar_data.create_task(
+                calendar_id=calendar_id,
+                year=year,
+                month=month,
+                day=day,
+                title=title,
+                is_all_day=is_all_day,
+                start_time=start_time,
+                end_time=end_time,
+                details=details,
+                color=color,
+                has_repetition=has_repetition,
+                repetition_type=repetition_type,
+                repetition_subtype=repetition_subtype,
+                repetition_value=repetition_value,
+            )
+    else:
+        #
+        calendar_data.create_task(
+            calendar_id=calendar_id,
+            year=year,
+            month=month,
+            day=day,
+            title=title,
+            is_all_day=is_all_day,
+            start_time=start_time,
+            end_time=end_time,
+            details=details,
+            color=color,
+            has_repetition=has_repetition,
+            repetition_type=repetition_type,
+            repetition_subtype=repetition_subtype,
+            repetition_value=repetition_value,
+        )
 
     if year is None:
         return redirect("{}/{}/".format(current_app.config["BASE_URL"], calendar_id), code=302)
