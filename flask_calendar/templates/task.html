@@ -208,6 +208,7 @@
             // week days are 0-index
             document.getElementById("repetition_value_weekday").selectedIndex = currentRepetitionValue;
         }
+        document.getElementById("date_picker2").disabled = true;
     } else {
         document.getElementById("delete-task").disabled = true;
     }
@@ -251,11 +252,13 @@
 
         document.getElementById("repeats").onclick = function(eventData) {
             if (eventData.target.checked === true) {
+                document.getElementById("date_picker2").disabled = true;
                 document.getElementById("type_weekly").checked = true;
                 document.getElementById("subtype_weekly").checked = true;
                 document.getElementById("repetition_block").className = "";
                 select_type_weekly();
             } else {
+                document.getElementById("date_picker2").disabled = false;
                 document.getElementById("repetition_block").className = "hidden";
                 // hide everything
                 document.getElementById("repetition_value_weekday").disabled = false;

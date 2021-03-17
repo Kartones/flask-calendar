@@ -10,7 +10,7 @@ PASSWORD_SALT = "something random and full of non-standard characters"
 HOST_IP = "0.0.0.0"  # set to None for production
 LOCALE = "es_ES.UTF-8"
 # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-TIMEZONE = "Europe/Moscow"
+TIMEZONE = "Europe/Madrid"
 
 WEEK_STARTING_DAY = constants.WEEK_START_DAY_MONDAY
 

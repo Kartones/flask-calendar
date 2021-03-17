@@ -1,9 +1,11 @@
 import re
+from datetime import date, timedelta
+from typing import List, Optional, Tuple, cast  # noqa: F401
 
-from typing import Optional, cast  # noqa: F401
+from flask import abort, current_app, g, jsonify, make_response, redirect, render_template, request
+from werkzeug.wrappers import Response
 
 import flask_calendar.constants as constants
-from flask import abort, current_app, g, jsonify, make_response, redirect, render_template, request
 from flask_calendar.app_utils import (
     add_session,
     authenticated,
@@ -16,7 +18,6 @@ from flask_calendar.app_utils import (
 from flask_calendar.authentication import Authentication
 from flask_calendar.calendar_data import CalendarData
 from flask_calendar.gregorian_calendar import GregorianCalendar
-from werkzeug.wrappers import Response
 
 
 def get_authentication() -> Authentication:
@@ -188,7 +189,11 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
             )
         else:
             task = calendar_data.task_from_calendar(
-                calendar_id=calendar_id, year=year, month=month, day=day, task_id=int(task_id),
+                calendar_id=calendar_id,
+                year=year,
+                month=month,
+                day=day,
+                task_id=int(task_id),
             )
     except (FileNotFoundError, IndexError):
         abort(404)
@@ -229,9 +234,9 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 
     # For creation of "updated" task use only form data
     title = request.form["title"].strip()
-    date = request.form.get("date", "")
-    if len(date) > 0:
-        fragments = re.split("-", date)
+    start_date = request.form.get("date", "")
+    if len(start_date) > 0:
+        fragments = re.split("-", start_date)
         updated_year = int(fragments[0])  # type: Optional[int]
         updated_month = int(fragments[1])  # type: Optional[int]
         updated_day = int(fragments[2])  # type: Optional[int]
@@ -265,7 +270,11 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
     )
     # For deletion of old task data use only url data
     calendar_data.delete_task(
-        calendar_id=calendar_id, year_str=year, month_str=month, day_str=day, task_id=int(task_id),
+        calendar_id=calendar_id,
+        year_str=year,
+        month_str=month,
+        day_str=day,
+        task_id=int(task_id),
     )
 
     if updated_year is None:
@@ -281,11 +290,11 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 @authorized
 def save_task_action(calendar_id: str) -> Response:
     title = request.form["title"].strip()
-    date = request.form.get("date", "")
-    startdate=date
+    startdate = request.form.get("date", "")
     enddate = request.form.get("enddate", "")
-    if len(date) > 0:
-        date_fragments = re.split("-", date)
+
+    if len(startdate) > 0:
+        date_fragments = re.split("-", startdate)
         year = int(date_fragments[0])  # type: Optional[int]
         month = int(date_fragments[1])  # type: Optional[int]
         day = int(date_fragments[2])  # type: Optional[int]
@@ -303,39 +312,28 @@ def save_task_action(calendar_id: str) -> Response:
 
     calendar_data = CalendarData(current_app.config["DATA_FOLDER"], current_app.config["WEEK_STARTING_DAY"])
 
-    if date != enddate:
-        from datetime import date, timedelta
-        
+    dates_to_create = []  # type: List[Tuple[Optional[int], Optional[int], Optional[int]]]
+
+    # repetitive tasks not supported
+    if startdate != enddate and not has_repetition:
         startdate_fragments = re.split("-", startdate)
         enddate_fragments = re.split("-", enddate)
-        sdate = date(int(startdate_fragments[0]), int(startdate_fragments[1]), int(startdate_fragments[2]))   # start date
-        edate = date(int(enddate_fragments[0]), int(enddate_fragments[1]), int(enddate_fragments[2]))   # end date
-        delta = edate - sdate       # as timedelta
+        sdate = date(int(startdate_fragments[0]), int(startdate_fragments[1]), int(startdate_fragments[2]))
+        edate = date(int(enddate_fragments[0]), int(enddate_fragments[1]), int(enddate_fragments[2]))
+        delta = edate - sdate
         for i in range(delta.days + 1):
             currentdate = re.split("-", str(sdate + timedelta(days=i)))
-            
-            year = int(currentdate[0])  # type: Optional[int]
-            month = int(currentdate[1])  # type: Optional[int]
-            day = int(currentdate[2])  # type: Optional[int]
 
-            calendar_data.create_task(
-                calendar_id=calendar_id,
-                year=year,
-                month=month,
-                day=day,
-                title=title,
-                is_all_day=is_all_day,
-                start_time=start_time,
-                end_time=end_time,
-                details=details,
-                color=color,
-                has_repetition=has_repetition,
-                repetition_type=repetition_type,
-                repetition_subtype=repetition_subtype,
-                repetition_value=repetition_value,
-            )
+            year = int(currentdate[0])
+            month = int(currentdate[1])
+            day = int(currentdate[2])
+
+            dates_to_create.append((year, month, day))
     else:
-        #
+        dates_to_create.append((year, month, day))
+
+    for date_tuple in dates_to_create:
+        year, month, day = date_tuple
         calendar_data.create_task(
             calendar_id=calendar_id,
             year=year,
@@ -356,7 +354,10 @@ def save_task_action(calendar_id: str) -> Response:
     if year is None:
         return redirect("{}/{}/".format(current_app.config["BASE_URL"], calendar_id), code=302)
     else:
-        return redirect("{}/{}/?y={}&m={}".format(current_app.config["BASE_URL"], calendar_id, year, month), code=302,)
+        return redirect(
+            "{}/{}/?y={}&m={}".format(current_app.config["BASE_URL"], calendar_id, year, month),
+            code=302,
+        )
 
 
 @authenticated
@@ -364,7 +365,11 @@ def save_task_action(calendar_id: str) -> Response:
 def delete_task_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     calendar_data = CalendarData(current_app.config["DATA_FOLDER"], current_app.config["WEEK_STARTING_DAY"])
     calendar_data.delete_task(
-        calendar_id=calendar_id, year_str=year, month_str=month, day_str=day, task_id=int(task_id),
+        calendar_id=calendar_id,
+        year_str=year,
+        month_str=month,
+        day_str=day,
+        task_id=int(task_id),
     )
 
     return cast(Response, jsonify({}))
@@ -377,7 +382,12 @@ def update_task_day_action(calendar_id: str, year: str, month: str, day: str, ta
 
     calendar_data = CalendarData(current_app.config["DATA_FOLDER"], current_app.config["WEEK_STARTING_DAY"])
     calendar_data.update_task_day(
-        calendar_id=calendar_id, year_str=year, month_str=month, day_str=day, task_id=int(task_id), new_day_str=new_day,
+        calendar_id=calendar_id,
+        year_str=year,
+        month_str=month,
+        day_str=day,
+        task_id=int(task_id),
+        new_day_str=new_day,
     )
 
     return cast(Response, jsonify({}))
@@ -388,7 +398,11 @@ def update_task_day_action(calendar_id: str, year: str, month: str, day: str, ta
 def hide_repetition_task_instance_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     calendar_data = CalendarData(current_app.config["DATA_FOLDER"], current_app.config["WEEK_STARTING_DAY"])
     calendar_data.hide_repetition_task_instance(
-        calendar_id=calendar_id, year_str=year, month_str=month, day_str=day, task_id_str=task_id,
+        calendar_id=calendar_id,
+        year_str=year,
+        month_str=month,
+        day_str=day,
+        task_id_str=task_id,
     )
 
     return cast(Response, jsonify({}))

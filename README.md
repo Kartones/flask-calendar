@@ -34,6 +34,14 @@ Authentication works using werkzeug SimpleCache for storage, which means if the 
 
 HTML inputs are favoring HTML5 ones instead of fancy jquery-like plugins to reduce support and increase mobile compatibility.
 
+### Multi-Day tasks
+
+This feature is built with a basic implementation, with certain limitations:
+
+- It will clone the task over to each day of the chosen timespan.
+- It doesn't supports edition. Once created, each day's task counts as a single, normal task.
+- It doesn't supports repetition.
+
 
 ## Requirements
 

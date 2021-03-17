@@ -1,1 +1,61 @@
-{"tasks": {"normal": {"2017": {"12": {"25": [{"details": "Task details", "title": "Task title", "id": 0, "color": "#039BE5", "start_time": "00:00", "end_time": "00:00", "is_all_day": true}, {"details": "Task 2 details", "title": "Task #2", "id": 1, "color": "#EF6C00", "start_time": "15:30", "end_time": "15:30", "is_all_day": false}]}}, "2021": {"3": {"13": []}}}, "repetition": [], "hidden_repetition": {}}, "users": ["a_username"], "name": "Personal"}
+{
+    "tasks": {
+        "normal": {
+        },
+        "repetition": [
+            {
+                "repetition_value": 0,
+                "repetition_type": "w",
+                "details": "every monday (all day task)",
+                "title": "Repetitive weekly weekday",
+                "id": 0,
+                "color": "#B19CDA",
+                "start_time": "00:00",
+                "end_time": "00:00",
+                "repetition_subtype": "w",
+                "is_all_day": true
+            },
+            {
+                "repetition_value": 5,
+                "repetition_type": "m",
+                "details": "1st saturday of the month",
+                "title": "Repetitive monthly weekday",
+                "id": 1,
+                "color": "#53A93F",
+                "start_time": "00:00",
+                "end_time": "00:00",
+                "repetition_subtype": "w",
+                "is_all_day": true
+            },
+            {
+                "repetition_value": 1,
+                "repetition_type": "m",
+                "details": "1st day of the month",
+                "title": "Repetitive monthly monthday",
+                "id": 2,
+                "color": "#777777",
+                "start_time": "00:00",
+                "end_time": "00:00",
+                "repetition_subtype": "m",
+                "is_all_day": true
+            },
+            {
+                "repetition_value": 3,
+                "repetition_type": "w",
+                "details": "every thursday at afternoon",
+                "title": "Repetitive weekly weekday",
+                "id": 3,
+                "color": "#785649",
+                "start_time": "19:30",
+                "end_time": "19:30",
+                "repetition_subtype": "w",
+                "is_all_day": false
+            }
+        ],
+        "hidden_repetition": {}
+    },
+    "users": [
+        "a_username"
+    ],
+    "name": "Personal"
+}
