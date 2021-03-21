@@ -14,6 +14,8 @@
     <div class="header">
         <input type="button" class="header-button" value="+"
             onclick="window.location='/{{ calendar_id }}/{{ year }}/{{ month}}/new_task'" title="New task" />
+            <input type="button" class="header-button" value="-"
+            onclick="window.location='/{{ calendar_id }}/{{ year }}/{{ month}}/new_task'" title="Delete task" />            
         <input type="button" class="header-button" value="&lt;" onclick="window.location='{{ previous_month_link }}'"
             title="Previous month" />
         <input type="button" class="header-button" value="&gt;" onclick="window.location='{{ next_month_link }}'"
@@ -26,9 +28,17 @@
                 <a href="/{{ calendar_id }}/">back to current</a>
             </div>
         {% endif %}
+        
         {% if display_view_past_button %}
-            <input id="toggle-past-events" class="toggle-past-events" type="button" value="View Past" onclick="ToggleViewPastTasks();" />
+           
+        <input id="toggle-past-events" class="toggle-past-events" type="button" value="View Past" onclick="ToggleViewPastTasks();" />
+            
         {% endif %}
+        
+        
+        <a href="{{ url_for('.show_dutys') }}"><button id="toggle-past-events" class="toggle-past-events" style="margin-right: 5px;">Manage Duty</button></a>
+         
+        
     </div>
 
     <ul class="calendar-header">

@@ -133,6 +133,7 @@ def main_calendar_action(calendar_id: str) -> Response:
 def new_task_action(calendar_id: str, year: int, month: int) -> Response:
     GregorianCalendar.setfirstweekday(current_app.config["WEEK_STARTING_DAY"])
 
+
     current_day, current_month, current_year = GregorianCalendar.current_date()
     year = max(min(int(year), current_app.config["MAX_YEAR"]), current_app.config["MIN_YEAR"])
     month = max(min(int(month), 12), 1)

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for("static", filename="") }}favicon_{{ current_day }}.png" id="favicon">
+    <meta name="viewport" content="width=400" />
+
+    <style>
+        #dutys {
+          font-family: Arial, Helvetica, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        #dutys td, #dutys th {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
+        
+        #dutys tr:nth-child(even){background-color: #f2f2f2;}
+        
+        #dutys tr:hover {background-color: #ddd;}
+        
+        #dutys th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #BABFBA;
+          color: white;
+        }
+        </style>
+
+</head>
+<body>
+    <div class="header">
+        <a href="javascript:history.back()"><button id="toggle-past-events" class="toggle-past-events" style="margin-right: 5px;">Back</button></a>
+         
+        
+    </div>
+    <br>
+    <br>
+<div id="dutys">
+    <h2>Remove Duty</h2>
+    {% from "_formhelpers.html" import render_field %}
+    <form method="post">
+        <dl>
+            {{ render_field(form.name) }}
+            {{ render_field(form.project) }}
+            {{ render_field(form.phone) }}
+            {{ render_field(form.email) }}
+        </dl>
+        <p><input type="submit" value="Remove">
+    </p></form>
+</div>
+ </body>
+</html>

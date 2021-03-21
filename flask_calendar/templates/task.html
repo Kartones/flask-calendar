@@ -13,7 +13,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for("static", filename="favicon.ico") }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
+<body >
 
     {% if editing %}
         <form autocomplete="off" method="POST"
@@ -26,6 +26,12 @@
         <label for="text">Title</label>
         <input type="text" autocomplete="off" tabindex="0" placeholder="Title" value="{{ task.get("title", "") }}"
             id="title" name="title" minlength="2" required />
+        <br/>
+
+        <label for="text">Project</label>
+        <select class="form-control duty" id="projects" onclick="prj(); this.onclick=null;">
+        <option selected="selected">Choose here</option>
+        </select>
         <br/>
 
         <label for="date_picker">Start date</label>
@@ -192,6 +198,100 @@
         <input class="form-button" type="button" value="Cancel" onclick="window.history.go(-1); return false;" />
     </div>
     </form>
+
+    <script>
+
+let projects = document.getElementById('projects');
+
+function prj(){
+
+      
+            fetch('/duty_projects/').then(function(response){
+      
+                response.json().then(function(data){
+                    let optionHTML1 = '';
+      
+                    for(let opt of data.PROJECTS){
+                        optionHTML1 += '<option value ="'  + opt + '">' + opt + '</option>';
+                    }
+      
+                    projects.innerHTML = optionHTML1;
+        
+      
+      
+        
+      
+                });
+            });
+        }
+                
+</script>
+<script>
+        let project = document.getElementById('projects');
+        let duty = document.getElementById('duty');
+      
+        project.onchange = function(){
+            value = project.value;
+      
+            fetch('/duty_choice/' + value).then(function(response){
+      
+                response.json().then(function(data){
+                    let optionHTML = '';
+      
+                    for(let opt of data.DUTY){
+                        optionHTML += '<option value ="'  + opt + '">' + opt + '</option>';
+                    }
+      
+                    duty.innerHTML = optionHTML;
+                    let duty2 = document.getElementById('duty2');
+        
+      
+            value1 = project.value;
+            value2 = duty.value;
+      
+            fetch('/duty_choice2/' + value1 + '&' + value2).then(function(response){
+      
+                response.json().then(function(data2){
+                    let optionHTML2 = '';
+      
+                    for(let opt2 of data2.DUTY){
+                        optionHTML2 += '<option value ="'  + opt2 + '">' + opt2 + '</option>';
+                    }
+      
+                    duty2.innerHTML = optionHTML2;
+      
+                });
+            });
+        
+      
+      
+        
+      
+                });
+            });
+        }
+      
+        let duty2 = document.getElementById('duty2');
+        
+        duty.onchange = function(){
+            value1 = project.value;
+            value2 = duty.value;
+      
+            fetch('/duty_choice2/' + value1 + '&' + value2).then(function(response){
+      
+                response.json().then(function(data2){
+                    let optionHTML2 = '';
+      
+                    for(let opt2 of data2.DUTY){
+                        optionHTML2 += '<option value ="'  + opt2 + '">' + opt2 + '</option>';
+                    }
+      
+                    duty2.innerHTML = optionHTML2;
+      
+                });
+            });
+        }
+      </script>
 
 <script type="text/javascript">
     const editing = {% if editing %}true{% else %}false{% endif %};
