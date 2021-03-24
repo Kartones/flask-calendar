@@ -23,16 +23,37 @@
     {% endif %}
     <div id="task-details-form" class="task-details-form">
 
-        <label for="text">Title</label>
-        <input type="text" autocomplete="off" tabindex="0" placeholder="Title" value="{{ task.get("title", "") }}"
-            id="title" name="title" minlength="2" required />
-        <br/>
 
+
+        {% if editing %}
         <label for="text">Project</label>
-        <select class="form-control duty" id="projects" onclick="prj(); this.onclick=null;">
+        <select class="form-control duty" id="projects" name="project" onclick="prj(); this.onclick=null;">
+        <option selected="selected">{{ task.get("project", "") }}</option>
+        </select>       
+        {% else %}
+        <label for="text">Project</label>
+        <select class="form-control duty" id="projects" name="project" onclick="prj(); this.onclick=null;">
         <option selected="selected">Choose here</option>
         </select>
+        {% endif %}
+        
+        {% if editing %}
+        <br><label for="text">Duty 1</label>
+        <select class="form-control duty" id="duty1" name="duty1">
+        <option selected="selected">{{ task.get("duty1", "") }}</option>
+        </select>
+        <br><label for="text">Duty 2</label>
+        <select class="form-control duty2" id="duty2" name="duty2">
+        <option selected="selected">{{ task.get("duty2", "") }}</option>
+        </select>
+        <br/>        
+        {% else %}
+        <br><label for="text">Duty 1</label>
+        <select class="form-control duty" id="duty1" name="duty1"></select>
+        <br><label for="text">Duty 2</label>
+        <select class="form-control duty2" id="duty2" name="duty2"></select>
         <br/>
+        {% endif %}
 
         <label for="date_picker">Start date</label>
         <input id="date_picker" type="date" value="{{ task["date"] }}">
@@ -228,7 +249,7 @@ function prj(){
 </script>
 <script>
         let project = document.getElementById('projects');
-        let duty = document.getElementById('duty');
+        let duty = document.getElementById('duty1');
       
         project.onchange = function(){
             value = project.value;

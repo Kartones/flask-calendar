@@ -204,6 +204,9 @@ class CalendarData:
         start_time: str,
         details: str,
         color: str,
+        duty1:str,
+        duty2:str,
+        project:str,
         has_repetition: bool,
         repetition_type: Optional[str],
         repetition_subtype: Optional[str],
@@ -220,6 +223,9 @@ class CalendarData:
             "end_time": end_time if end_time else start_time,
             "is_all_day": is_all_day,
             "title": title,
+            "duty1": duty1,
+            "duty2": duty2,
+            "project": project,
             "details": details,
         }
         if has_repetition:

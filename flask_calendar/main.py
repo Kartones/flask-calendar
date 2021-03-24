@@ -16,6 +16,14 @@ from flask_calendar.app_utils import (
 )
 init_db()
 app=app
+
+def getphone(duty):
+    phones = db_session.query(Project.phone).filter(Project.name==duty).all()
+    phones = [item[0] for item in phones]
+    phone=phones[0]
+    return phone
+
+
 @app.route('/allduty')
 @authenticated
 def show_dutys():
@@ -131,6 +139,12 @@ def duty_projects():
     projects = [item[0] for item in projects]
     projects =list(set(projects))
     return jsonify({'PROJECTS': projects})
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=app.config["DEBUG"], host=app.config["HOST_IP"])

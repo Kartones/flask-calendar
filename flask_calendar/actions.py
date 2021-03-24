@@ -2,6 +2,9 @@ import re
 
 from typing import Optional, cast  # noqa: F401
 
+
+
+
 import flask_calendar.constants as constants
 from flask import abort, current_app, g, jsonify, make_response, redirect, render_template, request
 from flask_calendar.app_utils import (
@@ -225,12 +228,20 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
 @authorized
 def update_task_action(calendar_id: str, year: str, month: str, day: str, task_id: str) -> Response:
     # Logic is same as save + delete, could refactor but can wait until need to change any save/delete logic
+    from flask_calendar.main import getphone
 
     calendar_data = CalendarData(current_app.config["DATA_FOLDER"], current_app.config["WEEK_STARTING_DAY"])
 
     # For creation of "updated" task use only form data
-    title = request.form["title"].strip()
+    #title = request.form["title"].strip()
     date = request.form.get("date", "")
+    Project = request.form["project"].strip()
+    Duty1 = request.form["duty1"].strip()
+    Duty2 = request.form["duty2"].strip()
+    phone1=getphone(Duty1)
+    phone2=getphone(Duty2)
+    title=(Project  + ' ' + Duty1 + ' ' + phone1)
+    #duty = request.form.get("duty", "")
     if len(date) > 0:
         fragments = re.split("-", date)
         updated_year = int(fragments[0])  # type: Optional[int]
@@ -241,7 +252,8 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
     is_all_day = request.form.get("is_all_day", "0") == "1"
     start_time = request.form["start_time"]
     end_time = request.form.get("end_time", None)
-    details = request.form["details"].replace("\r", "").replace("\n", "<br>")
+    details1 = request.form["details"].replace("\r", "").replace("\n", "<br>")
+    details=(Duty2 + ' ' + phone2 + ' ' + details1)
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
     repetition_type = request.form.get("repetition_type", "")
@@ -258,6 +270,9 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
         start_time=start_time,
         end_time=end_time,
         details=details,
+        duty1=Duty1,
+        duty2=Duty2,
+        project=Project,
         color=color,
         has_repetition=has_repetition,
         repetition_type=repetition_type,
@@ -281,10 +296,18 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
 @authenticated
 @authorized
 def save_task_action(calendar_id: str) -> Response:
-    title = request.form["title"].strip()
+    from flask_calendar.main import getphone
+    #title = request.form["title"].strip()
     date = request.form.get("date", "")
     startdate=date
     enddate = request.form.get("enddate", "")
+    Project = request.form["project"].strip()
+    Duty1 = request.form["duty1"].strip()
+    Duty2 = request.form["duty2"].strip()
+    phone1=getphone(Duty1)
+    phone2=getphone(Duty2)
+    title=(Project  + ' ' + Duty1 + ' ' + phone1)
+    #Duty1 = 'test'
     if len(date) > 0:
         date_fragments = re.split("-", date)
         year = int(date_fragments[0])  # type: Optional[int]
@@ -295,7 +318,8 @@ def save_task_action(calendar_id: str) -> Response:
     is_all_day = request.form.get("is_all_day", "0") == "1"
     start_time = request.form["start_time"]
     end_time = request.form.get("end_time", None)
-    details = request.form["details"].replace("\r", "").replace("\n", "<br>")
+    details1 = request.form["details"].replace("\r", "").replace("\n", "<br>")
+    details=(Duty2 + ' ' + phone2 + ' ' + details1)
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
     repetition_type = request.form.get("repetition_type")
@@ -329,6 +353,9 @@ def save_task_action(calendar_id: str) -> Response:
                 start_time=start_time,
                 end_time=end_time,
                 details=details,
+                duty1=Duty1,
+                duty2=Duty2,
+                project=Project,
                 color=color,
                 has_repetition=has_repetition,
                 repetition_type=repetition_type,
@@ -347,6 +374,9 @@ def save_task_action(calendar_id: str) -> Response:
             start_time=start_time,
             end_time=end_time,
             details=details,
+            duty1=Duty1,
+            duty2=Duty2,
+            project=Project,            
             color=color,
             has_repetition=has_repetition,
             repetition_type=repetition_type,
