@@ -26,9 +26,6 @@ from flask_calendar.actions import (
 )
 from flask_calendar.app_utils import task_details_for_markup
 
-#dbapp = Flask(__name__)
-#dbapp.config.from_object("config")
-#dbapp = SQLAlchemy(dbapp)
 
 def get_db(app):
     db = SQLAlchemy(app)
@@ -38,10 +35,8 @@ def get_db(app):
 def create_app(config_overrides: Dict = None) -> Flask:
     app = Flask(__name__)
     app.config.from_object("config")
-
-    #init_db()
-    #db = SQLAlchemy(app)
-    #db = get_db(app)
+    app.secret_key = app.config["SECRET_KEY"]
+    
 
     if config_overrides is not None:
         app.config.from_mapping(config_overrides)
@@ -102,18 +97,6 @@ def create_app(config_overrides: Dict = None) -> Flask:
     return app
 
 app = create_app()
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///duty.db'
-app.secret_key = "justkey"
 db = SQLAlchemy(app)
 
-#if __name__ == "__main__":
-#    app = create_app()
 
-    #init_db()
-    #get_db(app)
-    #global db
-    #db = SQLAlchemy(app)
-
-
-
-#   app.run(debug=app.config["DEBUG"], host=app.config["HOST_IP"])

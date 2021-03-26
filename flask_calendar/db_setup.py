@@ -1,7 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-engine = create_engine('sqlite:///duty.db', convert_unicode=True)
+import config  # noqa: F401
+from flask import Flask
+db = Flask(__name__)
+db.config.from_object("config")
+database=db.config["SQLALCHEMY_DATABASE_URI"]
+engine = create_engine(database, convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

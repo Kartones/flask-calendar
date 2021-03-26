@@ -15,7 +15,7 @@ TIMEZONE = "Europe/Moscow"
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///duty.db'
 
-secret_key = "justkey"
+SECRET_KEY = "justkey"
 
 WEEK_STARTING_DAY = constants.WEEK_START_DAY_MONDAY
 
