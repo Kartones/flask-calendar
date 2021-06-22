@@ -1,5 +1,6 @@
 import pytest
 from flask.testing import FlaskClient
+
 from flask_calendar.constants import SESSION_ID
 
 
@@ -35,7 +36,10 @@ def test_login_credentials(client: FlaskClient, username: str, password: str, su
 def test_session_id_cookie_set_when_logged_in(client: FlaskClient, username: str, password: str, success: bool) -> None:
     response = client.post("/do_login", data=dict(username=username, password=password))
     assert response.status_code == 302
-    cookie = next((c for c in client.cookie_jar), None)
+    cookie = None
+    if client.cookie_jar:
+        cookie = next((c for c in client.cookie_jar), None)
+
     if cookie is not None:
         assert success and cookie.name == SESSION_ID
     else:
