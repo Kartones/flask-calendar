@@ -5,8 +5,9 @@ import time
 from datetime import datetime
 from typing import Dict, List, Optional, cast
 
-import flask_calendar.constants as constants
 from flask import current_app
+
+import flask_calendar.constants as constants
 from flask_calendar.gregorian_calendar import GregorianCalendar
 
 KEY_TASKS = "tasks"
@@ -33,7 +34,7 @@ class CalendarData:
             contents = json.load(file)
         if type(contents) is not dict:
             raise ValueError("Error loading calendar from file '{}'".format(filename))
-        return cast(Dict, contents)
+        return contents
 
     def users_list(self, data: Optional[Dict] = None, calendar_id: Optional[str] = None) -> List:
         if data is None:
@@ -46,7 +47,12 @@ class CalendarData:
 
         return cast(List, data[KEY_USERS])
 
-    def user_details(self, username: str, data: Optional[Dict] = None, calendar_id: Optional[str] = None,) -> Dict:
+    def user_details(
+        self,
+        username: str,
+        data: Optional[Dict] = None,
+        calendar_id: Optional[str] = None,
+    ) -> Dict:
         if data is None:
             if calendar_id is None:
                 raise ValueError("Need to provide either calendar_id or loaded data")
@@ -80,7 +86,11 @@ class CalendarData:
 
         tasks = {}  # type: Dict
 
-        (current_day, current_month, current_year,) = self.gregorian_calendar.current_date()
+        (
+            current_day,
+            current_month,
+            current_year,
+        ) = self.gregorian_calendar.current_date()
 
         for day in self.gregorian_calendar.month_days(year, month):
             month_str = str(day.month)
@@ -95,7 +105,11 @@ class CalendarData:
         return tasks
 
     def hide_past_tasks(self, year: int, month: int, tasks: Dict) -> None:
-        (current_day, current_month, current_year,) = self.gregorian_calendar.current_date()
+        (
+            current_day,
+            current_month,
+            current_year,
+        ) = self.gregorian_calendar.current_date()
 
         for day in self.gregorian_calendar.month_days(year, month):
             month_str = str(day.month)
@@ -135,7 +149,11 @@ class CalendarData:
         return "{0}-{1:02d}-{2:02d}".format(int(year), int(month), int(day))
 
     def add_repetitive_tasks_from_calendar(self, year: int, month: int, data: Dict, tasks: Dict) -> Dict:
-        (current_day, current_month, current_year,) = self.gregorian_calendar.current_date()
+        (
+            current_day,
+            current_month,
+            current_year,
+        ) = self.gregorian_calendar.current_date()
 
         repetitive_tasks = self._repetitive_tasks_from_calendar(year, month, data)
 
@@ -151,7 +169,14 @@ class CalendarData:
 
         return tasks
 
-    def delete_task(self, calendar_id: str, year_str: str, month_str: str, day_str: str, task_id: int,) -> None:
+    def delete_task(
+        self,
+        calendar_id: str,
+        year_str: str,
+        month_str: str,
+        day_str: str,
+        task_id: int,
+    ) -> None:
         deleted = False
         data = self.load_calendar(calendar_id)
 
@@ -175,7 +200,13 @@ class CalendarData:
         self._save_calendar(data, filename=calendar_id)
 
     def update_task_day(
-        self, calendar_id: str, year_str: str, month_str: str, day_str: str, task_id: int, new_day_str: str,
+        self,
+        calendar_id: str,
+        year_str: str,
+        month_str: str,
+        day_str: str,
+        task_id: int,
+        new_day_str: str,
     ) -> None:
         data = self.load_calendar(calendar_id)
 
@@ -247,7 +278,12 @@ class CalendarData:
         return True
 
     def hide_repetition_task_instance(
-        self, calendar_id: str, year_str: str, month_str: str, day_str: str, task_id_str: str,
+        self,
+        calendar_id: str,
+        year_str: str,
+        month_str: str,
+        day_str: str,
+        task_id_str: str,
     ) -> None:
         data = self.load_calendar(calendar_id)
 
