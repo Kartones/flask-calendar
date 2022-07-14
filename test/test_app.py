@@ -18,9 +18,9 @@ def test_login_credentials(client: FlaskClient, username: str, password: str, su
     response = client.post("/do_login", data=dict(username=username, password=password))
     assert response.status_code == 302
     if success:
-        assert response.headers["Location"] == "http://localhost/"
+        assert response.headers["Location"] in ["http://localhost/", "/"]
     else:
-        assert response.headers["Location"] == "http://localhost/login"
+        assert response.headers["Location"] in ["http://localhost/login", "/login"]
 
 
 @pytest.mark.parametrize(
@@ -50,4 +50,4 @@ def test_redirects_to_calendar_when_logged_in(client: FlaskClient) -> None:
     client.post("/do_login", data=dict(username="a_username", password="a_password"))
     response = client.get("/")
     assert response.status_code == 302
-    assert response.headers["Location"] == "http://localhost/sample/"
+    assert response.headers["Location"] in ["http://localhost/sample/", "/sample/"]
