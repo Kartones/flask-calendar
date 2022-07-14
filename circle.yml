@@ -9,13 +9,13 @@ workflows:
 jobs:
   build:
     docker:
-      - image: circleci/python:3.8
+      - image: cimg/python:3.10
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
     resource_class: small
     steps:
-       - checkout
-       - run: sudo pip install -r requirements.txt
-       - run: sudo pip install -r requirements-dev.txt
-       - run: pytest
+      - checkout
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest
