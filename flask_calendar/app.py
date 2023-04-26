@@ -2,10 +2,11 @@
 
 import locale
 import os
-from typing import Dict
+from typing import Dict, Optional
+
+from flask import Flask, Response, send_from_directory
 
 import config  # noqa: F401
-from flask import Flask, Response, send_from_directory
 from flask_calendar.actions import (
     delete_task_action,
     do_login_action,
@@ -22,7 +23,7 @@ from flask_calendar.actions import (
 from flask_calendar.app_utils import task_details_for_markup
 
 
-def create_app(config_overrides: Dict = None) -> Flask:
+def create_app(config_overrides: Optional[Dict] = None) -> Flask:
     app = Flask(__name__)
     app.config.from_object("config")
 
@@ -39,7 +40,9 @@ def create_app(config_overrides: Dict = None) -> Flask:
     @app.route("/favicon.ico")
     def favicon() -> Response:
         return send_from_directory(
-            os.path.join(app.root_path, "static"), "favicon.ico", mimetype="image/vnd.microsoft.icon",
+            os.path.join(app.root_path, "static"),
+            "favicon.ico",
+            mimetype="image/vnd.microsoft.icon",
         )
 
     app.add_url_rule("/", "index_action", index_action, methods=["GET"])
@@ -47,10 +50,16 @@ def create_app(config_overrides: Dict = None) -> Flask:
     app.add_url_rule("/do_login", "do_login_action", do_login_action, methods=["POST"])
     app.add_url_rule("/<calendar_id>/", "main_calendar_action", main_calendar_action, methods=["GET"])
     app.add_url_rule(
-        "/<calendar_id>/<year>/<month>/new_task", "new_task_action", new_task_action, methods=["GET"],
+        "/<calendar_id>/<year>/<month>/new_task",
+        "new_task_action",
+        new_task_action,
+        methods=["GET"],
     )
     app.add_url_rule(
-        "/<calendar_id>/<year>/<month>/<day>/<task_id>/", "edit_task_action", edit_task_action, methods=["GET"],
+        "/<calendar_id>/<year>/<month>/<day>/<task_id>/",
+        "edit_task_action",
+        edit_task_action,
+        methods=["GET"],
     )
     app.add_url_rule(
         "/<calendar_id>/<year>/<month>/<day>/task/<task_id>",
@@ -59,10 +68,16 @@ def create_app(config_overrides: Dict = None) -> Flask:
         methods=["POST"],
     )
     app.add_url_rule(
-        "/<calendar_id>/new_task", "save_task_action", save_task_action, methods=["POST"],
+        "/<calendar_id>/new_task",
+        "save_task_action",
+        save_task_action,
+        methods=["POST"],
     )
     app.add_url_rule(
-        "/<calendar_id>/<year>/<month>/<day>/<task_id>/", "delete_task_action", delete_task_action, methods=["DELETE"],
+        "/<calendar_id>/<year>/<month>/<day>/<task_id>/",
+        "delete_task_action",
+        delete_task_action,
+        methods=["DELETE"],
     )
     app.add_url_rule(
         "/<calendar_id>/<year>/<month>/<day>/<task_id>/",
