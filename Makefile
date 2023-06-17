@@ -10,7 +10,7 @@ HISTORY_FILE := ~/.bash_history.$(SERVICE_NAME)
 SHELL := $(shell which bash)
 
 DOCKER := $(shell command -v docker)
-COMPOSE := $(shell command -v docker-compose)
+COMPOSE := $(shell command -v docker) compose
 
 COMPOSE_ENV := $(COMPOSE) -f build/$(BUILD_ENV)/docker-compose.yml
 COMPOSE_CMD := $(COMPOSE_ENV) run --rm $(SERVICE_NAME)
