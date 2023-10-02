@@ -1,2 +1,2 @@
-flask==2.3.3
+flask==3.0.0
 cachelib==0.10.2
