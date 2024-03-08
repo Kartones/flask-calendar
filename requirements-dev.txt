@@ -1,5 +1,5 @@
 coverage==7.4.3
-mypy==1.8.0
+mypy==1.9.0
 pytest==8.1.0
 pytest-cov==4.1.0
 pytest-randomly==3.15.0
