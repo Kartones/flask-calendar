@@ -1,2 +1,2 @@
 flask==3.0.3
-cachelib==0.12.0
+cachelib==0.13.0
