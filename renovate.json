@@ -3,6 +3,9 @@
   "extends": [
     "config:base"
   ],
+  "pre-commit": {
+    "enabled": true
+  },
   "assigneesFromCodeOwners": true,
   "packageRules": [
     {
