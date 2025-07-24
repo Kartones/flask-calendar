@@ -1,4 +1,4 @@
-coverage==7.9.2
+coverage==7.10.0
 mypy==1.17.0
 pytest==8.4.1
 pytest-cov==6.2.1
