@@ -1,6 +1,6 @@
 coverage==7.12.0
 mypy==1.19.0
-pytest==9.0.1
+pytest==9.0.2
 pytest-cov==7.0.0
 pytest-randomly==4.0.1
 pre-commit==4.5.0
