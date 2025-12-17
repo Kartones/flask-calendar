@@ -3,4 +3,4 @@ mypy==1.19.1
 pytest==9.0.2
 pytest-cov==7.0.0
 pytest-randomly==4.0.1
-pre-commit==4.5.0
+pre-commit==4.5.1
