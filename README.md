@@ -56,7 +56,7 @@ The project has been tested with Linux, but should work without problems on OSX 
 0. You need to have Python (3.5 or greater) installed
 1. Clone or download the repository to wherever you want to install it
 2. Run `pip install -r requirements.txt` to install the required dependencies
-3. Unless you want to run it locally, you'll probably need to serve it via a wb server. For Flask (the framework that powers this project), the best way is to use `uWSGI`. For example, [this tutorial](https://jdhao.github.io/2020/06/13/flask_serving_via_wsgi_server/) looks quite complete.
+3. Unless you want to run it locally, you'll probably need to serve it via a web server. For Flask (the framework that powers this project), the best way is to use `uWSGI`. For example, [this tutorial](https://jdhao.github.io/2020/06/13/flask_serving_via_wsgi_server/) looks quite complete.
 4. Optionally, if you already have a webserver like `nginx`, it is not hard to pipe them so that nginx keeps serving everything. If I recall correctly, I followed [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-set-up-uwsgi-and-nginx-to-serve-python-apps-on-ubuntu-14-04).
 5. Depending on your operating system, user and permissions, you might need to give write access to the user you run your web server to the `DATA_FOLDER`, so it can store changes.
 6. Refer to the `config.py` file for additional configuration, and check the ***Miscellaneous*** section below to see how to create users.
