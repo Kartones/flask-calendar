@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.15-slim
 
 LABEL title "Flask-calendar"
 LABEL maintainer "Diego / Kartones"
@@ -23,6 +23,6 @@ RUN apt-get update
 
 USER $uid
 
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip==26.2.2
 COPY requirements.txt /code/requirements.txt
 RUN pip install -r /code/requirements.txt
