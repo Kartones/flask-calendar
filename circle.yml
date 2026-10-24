@@ -9,7 +9,7 @@ workflows:
 jobs:
   build:
     docker:
-      - image: cimg/python:3.10
+      - image: cimg/python:3.15
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
