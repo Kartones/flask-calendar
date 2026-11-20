@@ -1,7 +1,8 @@
 import pytest
+from flask import Flask
 from flask.testing import FlaskClient
 
-from flask_calendar.constants import SESSION_ID
+from flask_calendar.constants import LINE_BREAK_MARKER, NEWLINE, SESSION_ID
 
 
 @pytest.mark.parametrize(
@@ -50,3 +51,9 @@ def test_redirects_to_calendar_when_logged_in(client: FlaskClient) -> None:
     response = client.get("/")
     assert response.status_code == 302
     assert response.headers["Location"] in ["http://localhost/sample/", "/sample/"]
+
+
+def test_line_break_marker_is_available_to_templates(app: Flask) -> None:
+    template = app.jinja_env.from_string("{{ details|replace(LINE_BREAK_MARKER, NEWLINE) }}")
+
+    assert template.render(details=f"line1{LINE_BREAK_MARKER}line2") == f"line1{NEWLINE}line2"

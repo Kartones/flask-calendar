@@ -21,6 +21,7 @@ from flask_calendar.actions import (
     update_task_day_action,
 )
 from flask_calendar.app_utils import task_details_for_markup
+from flask_calendar.constants import LINE_BREAK_MARKER, NEWLINE
 
 
 def create_app(config_overrides: Optional[Dict] = None) -> Flask:
@@ -93,6 +94,8 @@ def create_app(config_overrides: Optional[Dict] = None) -> Flask:
     )
 
     app.jinja_env.filters["task_details_for_markup"] = task_details_for_markup
+    app.jinja_env.globals["LINE_BREAK_MARKER"] = LINE_BREAK_MARKER
+    app.jinja_env.globals["NEWLINE"] = NEWLINE
 
     return app
 

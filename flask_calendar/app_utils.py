@@ -5,9 +5,11 @@ from typing import Any, Callable
 
 from cachelib.simple import SimpleCache
 from flask import abort, current_app, redirect, request
+from markupsafe import Markup, escape
+
 from flask_calendar.authorization import Authorization
 from flask_calendar.calendar_data import CalendarData
-from flask_calendar.constants import SESSION_ID
+from flask_calendar.constants import EMPTY_DETAILS_PLACEHOLDER, LINE_BREAK_MARKER, SESSION_ID
 from flask_calendar.gregorian_calendar import GregorianCalendar
 
 cache = SimpleCache()
@@ -79,17 +81,25 @@ def get_session_username(session_id: str) -> str:
     return str(cache.get(session_id))
 
 
-def task_details_for_markup(details: str) -> str:
+def task_details_for_markup(details: str) -> Markup:
+    if details == EMPTY_DETAILS_PLACEHOLDER:
+        return Markup(details)
+
+    lines = details.split(LINE_BREAK_MARKER)
+    return Markup(LINE_BREAK_MARKER).join(_markup_line(line) for line in lines)
+
+
+def _markup_line(line: str) -> Markup:
     if not current_app.config["AUTO_DECORATE_TASK_DETAILS_HYPERLINK"]:
-        return details
+        return escape(line)
 
-    decorated_fragments = []
+    fragments = re.split(URLS_REGEX_PATTERN, line)
+    return Markup("").join(_markup_fragment(index, fragment) for index, fragment in enumerate(fragments))
 
-    fragments = re.split(URLS_REGEX_PATTERN, details)
-    for index, fragment in enumerate(fragments):
-        if index % 2 == 1:
-            decorated_fragments.append(DECORATED_URL_FORMAT.format(fragment, fragment))
-        else:
-            decorated_fragments.append(fragment)
 
-    return "".join(decorated_fragments)
+def _markup_fragment(index: int, fragment: str) -> Markup:
+    is_url = index % 2 == 1
+    if is_url:
+        return Markup(DECORATED_URL_FORMAT).format(fragment, fragment)
+
+    return escape(fragment)

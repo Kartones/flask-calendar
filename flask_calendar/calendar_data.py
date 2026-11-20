@@ -241,7 +241,7 @@ class CalendarData:
         repetition_value: int,
         end_time: Optional[str] = None,
     ) -> bool:
-        details = details if len(details) > 0 else "&nbsp;"
+        details = details if len(details) > 0 else constants.EMPTY_DETAILS_PLACEHOLDER
         data = self.load_calendar(calendar_id)
 
         new_task = {

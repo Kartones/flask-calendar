@@ -198,7 +198,7 @@ def edit_task_action(calendar_id: str, year: int, month: int, day: int, task_id:
     except (FileNotFoundError, IndexError):
         abort(404)
 
-    if task["details"] == "&nbsp;":
+    if task["details"] == constants.EMPTY_DETAILS_PLACEHOLDER:
         task["details"] = ""
 
     emojis_enabled = current_app.config.get("EMOJIS_ENABLED", False)
@@ -245,7 +245,11 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
     is_all_day = request.form.get("is_all_day", "0") == "1"
     start_time = request.form["start_time"]
     end_time = request.form.get("end_time", None)
-    details = request.form["details"].replace("\r", "").replace("\n", "<br>")
+    details = (
+        request.form["details"]
+        .replace(constants.CARRIAGE_RETURN, "")
+        .replace(constants.NEWLINE, constants.LINE_BREAK_MARKER)
+    )
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
     repetition_type = request.form.get("repetition_type", "")
@@ -303,7 +307,11 @@ def save_task_action(calendar_id: str) -> Response:
     is_all_day = request.form.get("is_all_day", "0") == "1"
     start_time = request.form["start_time"]
     end_time = request.form.get("end_time", None)
-    details = request.form["details"].replace("\r", "").replace("\n", "<br>")
+    details = (
+        request.form["details"]
+        .replace(constants.CARRIAGE_RETURN, "")
+        .replace(constants.NEWLINE, constants.LINE_BREAK_MARKER)
+    )
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
     repetition_type = request.form.get("repetition_type")
