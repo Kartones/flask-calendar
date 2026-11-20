@@ -3,3 +3,8 @@ SESSION_ID = "sid"
 # Could also use `calendar.SUNDAY` etc.
 WEEK_START_DAY_MONDAY = 0
 WEEK_START_DAY_SUNDAY = 6
+
+CARRIAGE_RETURN = "\r"
+NEWLINE = "\n"
+LINE_BREAK_MARKER = "<br>"
+EMPTY_DETAILS_PLACEHOLDER = "&nbsp;"

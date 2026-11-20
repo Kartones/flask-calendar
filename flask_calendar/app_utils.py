@@ -5,19 +5,18 @@ from typing import Any, Callable
 
 from cachelib.simple import SimpleCache
 from flask import abort, current_app, redirect, request
+from markupsafe import Markup, escape
+
 from flask_calendar.authorization import Authorization
 from flask_calendar.calendar_data import CalendarData
-from flask_calendar.constants import SESSION_ID
+from flask_calendar.constants import EMPTY_DETAILS_PLACEHOLDER, LINE_BREAK_MARKER, SESSION_ID
 from flask_calendar.gregorian_calendar import GregorianCalendar
-from markupsafe import Markup, escape
 
 cache = SimpleCache()
 
 # see `app_utils` tests for details, but TL;DR is that urls must start with `http://` or `https://` to match
 URLS_REGEX_PATTERN = r"(https?\:\/\/[\w/\-?=%.]+\.[\w/\+\-?=%.~&\[\]\#]+)"
 DECORATED_URL_FORMAT = '<a href="{}" target="_blank">{}</a>'
-LINE_BREAK_MARKER = "<br>"
-EMPTY_DETAILS_PLACEHOLDER = "&nbsp;"
 
 
 def authenticated(decorated_function: Callable) -> Any:
