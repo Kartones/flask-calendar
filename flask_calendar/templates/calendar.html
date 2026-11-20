@@ -76,7 +76,7 @@
                                 {% endif %}
                                 {{ task["title"] }}
                                 <p class="accordion-hidden">
-                                    {{ task["details"]|task_details_for_markup|safe }}
+                                    {{ task["details"]|task_details_for_markup }}
                                     {% if day.month == month %}
                                         <a href="#"
                                             data-id="{{ task["id"] }}"
